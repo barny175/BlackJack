@@ -1,0 +1,5 @@
+hrac "busts"
+remiza - hrac i dealer maji stejny soucet
+hrac i dealer "bust"
+splitting
+doubling
