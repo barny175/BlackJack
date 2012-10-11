@@ -14,5 +14,5 @@ public interface Player extends CardHolder {
     
     void result(GameResult result);
 
-    public Move move();
+    Move move();
 }

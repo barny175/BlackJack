@@ -7,6 +7,10 @@ import blackjack.engine.Card;
 import blackjack.engine.CardShuffler;
 import blackjack.engine.Engine;
 import blackjack.engine.GameResult;
+import java.io.BufferedReader;
+import java.io.Console;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 /**
@@ -14,25 +18,72 @@ import java.util.List;
  * @author mbarnas
  */
 public class BlackJack {
-
-    private static Engine engine = new Engine(new CardShuffler(1));
+    public static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     
+    private static Engine engine = new Engine(new CardShuffler(1));
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         CmdLinePlayer cmdLinePlayer = new CmdLinePlayer(100);
         engine.addPlayer(cmdLinePlayer);
-        engine.start();
-        while (engine.getGameState() == GameResult.Continuing) {
-            printCards(cmdLinePlayer.getCards());
-            engine.continueGame();
+        char c = 'y';
+        while (c == 'y') {
+            engine.start();
+            printCards(cmdLinePlayer);
+            
+            while (engine.getGameState() == GameResult.Continuing) {
+                engine.nextDraw();
+                printCards(cmdLinePlayer);
+            }
+
+            printCards(cmdLinePlayer);
+            println("Result: " + engine.getGameState());
+            println("Player credit: " + cmdLinePlayer.getMoney());
+            
+            c = getChoice("Another round", "yn");
         }
     }
 
+    private static void printCards(CmdLinePlayer cmdLinePlayer) {
+        print("Player cards: ");
+        printCards(cmdLinePlayer.getCards());
+        print("Dealer cards: ");
+        printCards(engine.getDealerCards());
+    }
+
+    public static char getChoice(String message, String choices) throws IOException {
+        print(message);
+        print(" ");
+        print(choices);
+        print(": ");
+        
+        char c = 0;
+        do {
+            String line = reader.readLine();
+            c = (char) line.charAt(0);
+            for (char x : choices.toCharArray()) {
+                if (x == c)
+                    return c;
+            }
+        } while(c == 0);
+        
+        return c;
+    }
+
+    private static void println(String message) {
+        System.out.println(message);
+    }
+    
+    private static void print(String message) {
+        System.out.print(message);
+    }
+    
     private static void printCards(List<Card> cards) {
-        for (Card c : cards)
-            System.out.print(c + " ");
+        for (Card c : cards) {
+            print(c + " ");
+        }
         System.out.println();
     }
 }

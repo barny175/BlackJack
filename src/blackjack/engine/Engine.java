@@ -16,16 +16,20 @@ public class Engine {
     private CardSource cardSource;
     private int bet;
     private GameResult gameState = GameResult.Continuing;
-
+    private boolean isFirstDraw = true;
     private Move playerMove;
     private Move dealerMove;
 
     public GameResult getGameState() {
         return gameState;
     }
-    
+
     public Engine(CardSource cardSource) {
         this.cardSource = cardSource;
+    }
+
+    public List<Card> getDealerCards() {
+        return this.dealer.getCards();
     }
 
     public void addPlayer(Player player) {
@@ -33,21 +37,42 @@ public class Engine {
     }
 
     public void start() {
+        reset();
+        
         bets();
+
         firstDeal();
     }
 
-    public void continueGame() {
-        this.playerMove = player.move();
-        if (this.playerMove == Move.Hit) {
-            deal(player);
+    private void reset() {
+        cardSource.shuffle();
+        
+        resetPlayers();
+        
+        this.dealerMove = null;
+        this.playerMove = null;
+        this.gameState = GameResult.Continuing;
+        
+        isFirstDraw = true;
+    }
+
+    public void nextDraw() {
+        if (this.playerMove != Move.Stand) {
+            this.playerMove = player.move();
+            if (this.playerMove == Move.Hit) {
+                deal(player);
+            }
         }
         
+        if (isFirstDraw) {
+            revealDealer();
+        }
+
         this.dealerMove = dealer.move();
-        if (this.dealerMove== Move.Hit) {
+        if (this.dealerMove == Move.Hit) {
             deal(dealer);
         }
-        
+
         checkGameState();
     }
 
@@ -55,7 +80,10 @@ public class Engine {
         deal(player);
         deal(dealer);
 
-        dealAll();
+        deal(player);
+        deal(dealer);
+
+        checkGameState();
     }
 
     protected void deal(CardHolder cardHolder) {
@@ -85,15 +113,13 @@ public class Engine {
         }
     }
 
-    private void dealAll() {
-        deal(player);
-        deal(dealer);
-
-        checkGameState();
-    }
-
     private void checkGameState() {
         BlackJackSum.Sum sumPlayer = BlackJackSum.sum(player.getCards());
+
+        if (isFirstDraw && sumPlayer.isBlackJack) {
+            revealDealer();
+        }
+
         BlackJackSum.Sum sumDealer = BlackJackSum.sum(dealer.getCards());
 
         if (sumPlayer.sum > 21) {
@@ -113,16 +139,27 @@ public class Engine {
         }
 
         if (this.playerMove == Move.Stand && this.dealerMove == Move.Stand) {
-            if (sumPlayer.sum > sumDealer.sum)
+            if (sumPlayer.sum > sumDealer.sum) {
                 this.gameState = GameResult.PlayerWin;
-            else if (sumPlayer.sum == sumDealer.sum)
+            } else if (sumPlayer.sum == sumDealer.sum) {
                 this.gameState = GameResult.Push;
-            else
+            } else {
                 this.gameState = GameResult.DealerWin;
+            }
         }
-        
+
         payPrizes(gameState);
 
         player.result(this.gameState);
+    }
+
+    private void revealDealer() {
+        this.dealer.revealHoleCard();
+        isFirstDraw = false;
+    }
+
+    private void resetPlayers() {
+        dealer.resetCards();
+        player.resetCards();
     }
 }

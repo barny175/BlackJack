@@ -1,5 +1,3 @@
-hrac "busts"
-remiza - hrac i dealer maji stejny soucet
-hrac i dealer "bust"
+player nema karty, jen je vidi?
 splitting
 doubling

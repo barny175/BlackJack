@@ -13,4 +13,6 @@ public interface CardHolder {
     void addCard(Card card);
     
     List<Card> getCards();
+    
+    void resetCards();
 }

@@ -75,7 +75,7 @@ class EngineTest {
     
     @Test
     void playerBusts() {
-        def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TWO, Card.TEN, Card.TEN])
+        def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN, Card.TEN, Card.TEN])
         def engine = new Engine(cardSrc)
         
         def player = new StubPlayer(100)
@@ -83,7 +83,7 @@ class EngineTest {
         engine.addPlayer(player)
 
         engine.start()
-        engine.continueGame()
+        engine.nextDraw()
         
         player.res = GameResult.PlayerBusted
         assertEquals(90, player.getMoney())
@@ -99,7 +99,7 @@ class EngineTest {
         engine.addPlayer(player)
 
         engine.start()
-        engine.continueGame()
+        engine.nextDraw()
         
         player.res = GameResult.PlayerWin
         assertEquals(110, player.getMoney())
@@ -121,11 +121,11 @@ class EngineTest {
         engine.addPlayer(player)
 
         engine.start()
-        engine.continueGame()
+        engine.nextDraw()
         
         player.setMove(Move.Stand)
         
-        engine.continueGame()
+        engine.nextDraw()
         
         player.res = GameResult.PlayerWin
         assertEquals(110, player.getMoney())        
@@ -141,12 +141,83 @@ class EngineTest {
         engine.addPlayer(player)
 
         engine.start()
-        engine.continueGame()
+        engine.nextDraw()
         
         player.res = GameResult.DealerWin
         assertEquals(90, player.getMoney())
     }
 
+    @Test
+    void push() {
+        def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN])
+        def engine = new Engine(cardSrc)
+        
+        def player = new StubPlayer(100)
+        
+        engine.addPlayer(player)
+
+        engine.start()
+        
+        player.setMove(Move.Stand)
+        engine.nextDraw()
+        
+        player.res = GameResult.Push
+        assertEquals(100, player.getMoney())
+    }
+
+    @Test
+    void getDealerCards() {
+        def cardSrc = getCardSource([Card.TEN, Card.SIX, Card.TWO, Card.ACE])
+        def engine = new Engine(cardSrc)
+        
+        def player = mock(Player.class)
+        engine.addPlayer(player)
+        when(player.move()).thenReturn(Move.Stand)
+
+        engine.start()
+        
+        def cards = engine.getDealerCards()
+        assertEquals(1, cards.size())
+        assertEquals(Card.SIX, cards[0])
+
+        engine.nextDraw()
+        
+        assertEquals(2, cards.size())
+        assertNotNull(cards.find {it == Card.SIX})
+        assertNotNull(cards.find {it == Card.ACE})
+    }
+    
+    @Test
+    void dontAskStandingForMove() {
+        def cardSrc = getCardSource([Card.TEN, Card.SIX, Card.SIX, Card.THREE, Card.TEN])
+        def engine = new Engine(cardSrc)
+        
+        def player = mock(Player.class)
+        engine.addPlayer(player)
+        when(player.move()).thenReturn(Move.Stand)
+
+        engine.start()
+        
+        engine.nextDraw();
+        engine.nextDraw();
+        
+        verify(player, times(1)).move()        
+    }
+    
+    @Test
+    void shuffle() {
+        def cardSrc = mock(CardSource.class)
+        when(cardSrc.next()).thenReturn(Card.TWO)
+        
+        def engine = new Engine(cardSrc)
+        def player = mock(Player.class)
+        engine.addPlayer(player)
+        
+        engine.start()
+        
+        verify(cardSrc).shuffle()
+    }
+    
     private CardSource getCardSource(def cardsPlayer, def cardsDealer) {
         assert cardsPlayer.size() == cardsDealer.size()
         def mergedCards = []

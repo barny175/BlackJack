@@ -25,6 +25,11 @@ public class CardShuffler implements CardSource {
     }
     
     @Override
+    public void shuffle() {
+        used.clear();
+    }
+    
+    @Override
     public Card next() {
         final int allCards = 4 * CARDS_IN_DECK * decks;
         
@@ -43,20 +48,6 @@ public class CardShuffler implements CardSource {
     }
 
     private Card numToCard(int card) {
-        switch (card) {
-            case 0:
-                return Card.ACE;
-            case 10:
-                return Card.JACK;
-            case 11:
-                return Card.QUEEN;
-            case 12:
-                return Card.KING;
-            case 9:
-                return Card.TEN;
-            default:
-                return Card.values()[card];
-        }
-                
+        return Card.values()[card];
     }
 }

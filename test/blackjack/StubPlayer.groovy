@@ -53,4 +53,8 @@ class StubPlayer implements Player {
     int getMoney() {
         return money
     }
+    
+    void resetCards() {
+        cards = []
+    }
 }

@@ -10,5 +10,7 @@ package blackjack.engine;
 public interface CardSource {
 
     Card next();
+
+    public void shuffle();
     
 }
