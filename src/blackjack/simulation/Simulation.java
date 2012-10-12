@@ -21,6 +21,7 @@ public class Simulation {
 		new Simulation(new StandPlayer(10000)).run();
 		new Simulation(new HitPlayer(10000)).run();
 		new Simulation(new OneHitPlayer(10000)).run();
+		new Simulation(new BasicStrategyPlayer(10000)).run();
 	}
 
 	public Simulation(BlackJackPlayer player) {
