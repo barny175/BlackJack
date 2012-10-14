@@ -4,33 +4,44 @@
  */
 package blackjack.simulation.player;
 
-import blackjack.engine.BlackJackSum;
-import blackjack.engine.BlackJackSum.Sum;
 import blackjack.engine.Move;
-import blackjack.simulation.BlackJackPlayer;
 
 /**
  *
  * @author mbarnas
  */
-public class BasicStrategyPlayer extends BlackJackPlayer  {
+public class BasicStrategyPlayer extends BasePlayer {
 
-	public BasicStrategyPlayer(int money) {
-		super(money);
-	}
+    public BasicStrategyPlayer(int money) {
+        super(money);
+    }
 
-	@Override
-	public Move move() {
-		Sum sum = BlackJackSum.sum(cards);
-		if (sum.isBlackJack)
-			return Move.Stand;
-		
-		if (sum.sum <= 11)
-			return Move.Hit;
-		
-		if (sum.sum == 17) 
-			return Move.Stand;
-		
-		return Move.Stand;
-	}
+    @Override
+    public Move move() {
+        if (cards.isBlackJack()) {
+            return Move.Stand;
+        }
+
+        final int hardSum = cards.hardSum();
+
+        switch (this.currentGame.getDealerUpCard()) {
+            case TWO:
+            case THREE:
+                if (hardSum < 13) {
+                    return Move.Hit;
+                }
+                break;
+            case FOUR:
+            case FIVE:
+            case SIX:
+                if (hardSum < 12) {
+                    return Move.Hit;
+                }
+                break;
+            default:
+                return Move.Hit;
+        }
+
+        return Move.Stand;
+    }
 }

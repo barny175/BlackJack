@@ -3,6 +3,8 @@
  */
 package blackjack.engine;
 
+import java.util.List;
+
 /**
  *
  * @author mbarnas
@@ -14,5 +16,5 @@ public interface Player extends CardHolder {
     
     void result(GameResult result);
 
-    Move move();
+    void setGame(Game game);
 }

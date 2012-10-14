@@ -12,7 +12,9 @@ import java.util.List;
 public interface CardHolder {
     void addCard(Card card);
     
+    void reset();
+
+    Move move();
+
     List<Card> getCards();
-    
-    void resetCards();
 }

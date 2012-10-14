@@ -21,9 +21,7 @@ class KrupierTest {
         
         krupier.addCard(Card.TEN)
         assertEquals(Move.Hit, krupier.move())
-        
-        krupier.revealHoleCard()
-        
+
         krupier.addCard(Card.FOUR)
         assertEquals(Move.Hit, krupier.move())
         
@@ -39,8 +37,6 @@ class KrupierTest {
         
         krupier.addCard(Card.TWO)
         assertEquals(Move.Hit, krupier.move())
-
-        krupier.revealHoleCard()
         
         krupier.addCard(Card.FIVE)
         assertEquals(Move.Stand, krupier.move())
@@ -51,7 +47,7 @@ class KrupierTest {
         def krupier = new Dealer()
         krupier.addCard(Card.ACE)
         krupier.addCard(Card.ACE)
-        assertEquals(Move.Stand, krupier.move())
+        assertEquals(Move.Hit, krupier.move())
     }
 }
 

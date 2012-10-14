@@ -15,7 +15,7 @@ class StubPlayer implements Player {
     def cards = []
     GameResult res
     int money
-    Move move = Move.Hit
+    def move = [Move.Hit]
     
     StubPlayer(int startMoney) {
         money = startMoney
@@ -42,19 +42,23 @@ class StubPlayer implements Player {
         this.res = res
     }
 
-    void setMove(Move m) {
+    void setMoves(m) {
         move = m
     }
     
     Move move() {
-        return move
+        return move.remove(0)
     }
     
     int getMoney() {
         return money
     }
     
-    void resetCards() {
+    void reset() {
         cards = []
+    }
+    
+    void setGame(Game game) {
+        
     }
 }

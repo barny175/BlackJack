@@ -2,29 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package blackjack.simulation;
+package blackjack.simulation.player;
 
-import blackjack.engine.Card;
-import blackjack.engine.GameResult;
-import blackjack.engine.Player;
-import java.util.ArrayList;
+import blackjack.engine.*;
 import java.util.List;
 
 /**
  *
  * @author mbarnas
  */
-public abstract class BlackJackPlayer implements Player {
-	protected List<Card> cards = new ArrayList<Card>(10);
+public abstract class BasePlayer implements Player {
+	protected CardHand cards = new CardHand();
 	private int money;
+    protected Game currentGame;
 
-	public BlackJackPlayer(int money) {
+	public BasePlayer(int money) {
 		this.money = money;
 	}
 
 	@Override
 	public void addCard(Card card) {
-		this.cards.add(card);
+		this.cards.addCard(card);
 	}
 
 	@Override
@@ -32,14 +30,19 @@ public abstract class BlackJackPlayer implements Player {
 		this.money += amount;
 	}
 
+    @Override
+    public void setGame(Game game) {
+        this.currentGame = game;
+    }
+
 	@Override
 	public List<Card> getCards() {
-		return cards;
+		return cards.getCards();
 	}
 
 	@Override
-	public void resetCards() {
-		this.cards.clear();
+	public void reset() {
+		this.cards = new CardHand();
 	}
 
 	@Override

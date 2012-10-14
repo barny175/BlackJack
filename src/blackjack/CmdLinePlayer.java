@@ -3,10 +3,7 @@
  */
 package blackjack;
 
-import blackjack.engine.Card;
-import blackjack.engine.GameResult;
-import blackjack.engine.Move;
-import blackjack.engine.Player;
+import blackjack.engine.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +15,14 @@ import java.util.List;
 public class CmdLinePlayer implements Player{
     private int amount;
     private List<Card> cards = new ArrayList<Card>();
+    private Game currentGame;
 
     public CmdLinePlayer(int amount) {
         this.amount = amount;
     }
     
     @Override
-    public void resetCards() {
+    public void reset() {
         this.cards.clear();
     }
     
@@ -67,6 +65,8 @@ public class CmdLinePlayer implements Player{
 
     @Override
     public Move move() {
+        BlackJack.printCards(cards);
+        BlackJack.println("Dealer card: " + this.currentGame.getDealerUpCard());
         while (true) {
             try {
                 char c = BlackJack.getChoice("Move", "sh");
@@ -81,6 +81,11 @@ public class CmdLinePlayer implements Player{
 
     int getMoney() {
         return this.amount;
+    }
+
+    @Override
+    public void setGame(Game game) {
+        this.currentGame = game;
     }
     
 }

@@ -3,6 +3,7 @@
  */
 package blackjack.engine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +11,7 @@ import java.util.List;
  * @author mbarnas
  */
 public final class BlackJackSum {
+
     public static class Sum {
         public int sum;
         public boolean isBlackJack;

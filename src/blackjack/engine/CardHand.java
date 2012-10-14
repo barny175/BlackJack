@@ -12,6 +12,7 @@ import java.util.List;
  * @author mbarnas
  */
 public class CardHand {
+    public static final int BLACKJACK = 21;
 	private List<Card> cards = new ArrayList<Card>(6);
 	
 	public void addCard(Card card) {
@@ -42,4 +43,19 @@ public class CardHand {
 		
 		return sum;
 	}
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void reset() {
+        this.cards.clear();
+    }
+    
+    public boolean isBlackJack() {
+        if (softSum() == BLACKJACK && cards.size() == 2)
+            return true;
+        
+        return false;
+    }
 }

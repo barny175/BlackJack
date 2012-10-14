@@ -30,14 +30,10 @@ public class BlackJack {
         engine.addPlayer(cmdLinePlayer);
         char c = 'y';
         while (c == 'y') {
-            engine.start();
-            printCards(cmdLinePlayer);
+            engine.newGame();
             
-            while (engine.getGameState() == GameResult.Continuing) {
-                engine.nextDraw();
-                printCards(cmdLinePlayer);
-            }
-
+            engine.start();
+            
             printCards(cmdLinePlayer);
             println("Result: " + engine.getGameState());
             println("Player credit: " + cmdLinePlayer.getMoney());
@@ -49,8 +45,11 @@ public class BlackJack {
     private static void printCards(CmdLinePlayer cmdLinePlayer) {
         print("Player cards: ");
         printCards(cmdLinePlayer.getCards());
-        print("Dealer cards: ");
-        printCards(engine.getDealerCards());
+        printDealerCards();
+    }
+
+    private static void printDealerCards() {
+        println("Dealer cards: " + engine.getDealerCards());
     }
 
     public static char getChoice(String message, String choices) throws IOException {
@@ -72,7 +71,7 @@ public class BlackJack {
         return c;
     }
 
-    private static void println(String message) {
+    public static void println(String message) {
         System.out.println(message);
     }
     
@@ -80,7 +79,7 @@ public class BlackJack {
         System.out.print(message);
     }
     
-    private static void printCards(List<Card> cards) {
+    public static void printCards(List<Card> cards) {
         for (Card c : cards) {
             print(c + " ");
         }

@@ -5,13 +5,12 @@
 package blackjack.simulation.player;
 
 import blackjack.engine.Move;
-import blackjack.simulation.BlackJackPlayer;
 
 /**
  *
  * @author mbarnas
  */
-public class HitPlayer extends BlackJackPlayer {
+public class HitPlayer extends BasePlayer {
 
 	public HitPlayer(int money) {
 		super(money);

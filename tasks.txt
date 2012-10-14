@@ -1,3 +1,6 @@
-player nema karty, jen je vidi?
+simulace na zjisteni spravnych strategii
 splitting
 doubling
+test pro basicstrategyplayer
+cmdlineplayer kontroluje spravnost basic strategie
+insurance

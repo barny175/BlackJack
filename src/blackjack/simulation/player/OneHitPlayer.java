@@ -5,13 +5,12 @@
 package blackjack.simulation.player;
 
 import blackjack.engine.Move;
-import blackjack.simulation.BlackJackPlayer;
 
 /**
  *
  * @author mbarnas
  */
-public class OneHitPlayer extends BlackJackPlayer {
+public class OneHitPlayer extends BasePlayer {
 	private boolean first = true;
 
 	public OneHitPlayer(int money) {
