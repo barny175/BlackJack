@@ -32,4 +32,9 @@ public class SimplePlayer extends BasePlayer  {
 		
 		return Move.Stand;
 	}
+
+	@Override
+	public String getName() {
+		return "Simple";
+	}
 }

@@ -20,4 +20,9 @@ public class StandPlayer extends BasePlayer {
 	public Move move() {
 		return Move.Stand;
 	}
+
+	@Override
+	public String getName() {
+		return "Standing";
+	}
 }

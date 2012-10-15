@@ -10,6 +10,7 @@ import blackjack.engine.Move;
  *
  * @author mbarnas
  */
+
 public class HitPlayer extends BasePlayer {
 
 	public HitPlayer(int money) {
@@ -19,5 +20,10 @@ public class HitPlayer extends BasePlayer {
 	@Override
 	public Move move() {
 		return Move.Hit;
+	}
+
+	@Override
+	public String getName() {
+		return "Hitting";
 	}
 }

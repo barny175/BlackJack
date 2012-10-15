@@ -27,5 +27,10 @@ public class OneHitPlayer extends BasePlayer {
 		
 		return Move.Stand;
 	}
+
+	@Override
+	public String getName() {
+		return "One Hit";
+	}
 	
 }

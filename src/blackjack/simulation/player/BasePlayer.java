@@ -58,4 +58,6 @@ public abstract class BasePlayer implements Player {
 		this.money -= 10;
 		return 10;
 	}
+	
+	public abstract String getName();
 }

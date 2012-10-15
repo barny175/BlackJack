@@ -44,4 +44,9 @@ public class BasicStrategyPlayer extends BasePlayer {
 
         return Move.Stand;
     }
+
+	@Override
+	public String getName() {
+		return "Basic Strategy";
+	}
 }
