@@ -12,10 +12,10 @@ import java.util.Set;
  * @author mbarnas
  */
 public class CardShuffler implements CardSource {
-    private int decks;
+    protected int decks;
     private Random rand;
-    private final int CARDS_IN_DECK = 13;
-    private Set<Integer> used;
+    public final int CARDS_IN_DECK = 13;
+    protected Set<Integer> used;
     
     public CardShuffler(int decks) {
         this.decks = decks;
