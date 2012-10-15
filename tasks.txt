@@ -1,4 +1,6 @@
 simulace na zjisteni spravnych strategii
+test pro cardhand
+presun blackjacsum do cardhand
 splitting
 doubling
 test pro basicstrategyplayer
