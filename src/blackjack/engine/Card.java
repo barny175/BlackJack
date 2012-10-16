@@ -8,7 +8,7 @@ package blackjack.engine;
  * @author mbarnas
  */
 public enum Card {
-    ACE(1),
+    ACE(1, 11),
     TWO(2),
     THREE(3),
     FOUR(4), 
@@ -23,12 +23,23 @@ public enum Card {
     KING(10);
     
     private final int value;
+    private final int softValue;
 
     private Card(int value) {
         this.value = value;
+        this.softValue = value;
+    }
+    
+    private Card(int value, int softVal) {
+        this.value = value;
+        this.softValue = softVal;
     }
     
     public int getValue() {
         return this.value;
+    }
+
+    public int getSoftValue() {
+        return softValue;
     }
 }

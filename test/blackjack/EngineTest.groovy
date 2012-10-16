@@ -17,6 +17,7 @@ class EngineTest {
     void bets() {
         def player = mock(Player.class)
         when(player.getBet()).thenReturn(10)
+        when(player.getCards()).thenReturn(new CardHand())
         
         def cardSrc = getCardSource([Card.TWO, Card.TWO, Card.TWO, Card.TWO])
         def engine = new Engine(cardSrc)
@@ -33,6 +34,8 @@ class EngineTest {
         def engine = new Engine(cardSrc)
         
         Player player = mock(Player.class)
+        when(player.getCards()).thenReturn(new CardHand())
+        
         engine.addPlayer(player)
         
         engine.newGame()
@@ -48,7 +51,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.getBet()).thenReturn(10)
-        when(player.getCards()).thenReturn([Card.ACE, Card.TEN])
+        when(player.getCards()).thenReturn(getCardHand([Card.ACE, Card.TEN]))
         
         engine.addPlayer(player)
         engine.newGame()
@@ -65,7 +68,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.getBet()).thenReturn(10)
-        when(player.getCards()).thenReturn([Card.ACE, Card.TEN])
+        when(player.getCards()).thenReturn(getCardHand([Card.ACE, Card.TEN]))
         
         engine.addPlayer(player)
         engine.newGame()
@@ -81,7 +84,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.getBet()).thenReturn(10)
-        when(player.getCards()).thenReturn([Card.TWO, Card.TEN])
+        when(player.getCards()).thenReturn(getCardHand([Card.TWO, Card.TEN]))
         
         engine.addPlayer(player)
         engine.newGame()
@@ -115,6 +118,7 @@ class EngineTest {
         Player player = mock(Player.class)
         when(player.move()).thenReturn(Move.Hit).thenReturn(Move.Stand)
         when(player.getBet()).thenReturn(10)
+        when(player.getCards()).thenReturn(new CardHand())
         
         engine.addPlayer(player)
 
@@ -190,6 +194,7 @@ class EngineTest {
         def player = mock(Player.class)
         engine.addPlayer(player)
         when(player.move()).thenReturn(Move.Stand)
+        when(player.getCards()).thenReturn(new CardHand())
 
         engine.newGame()
         
@@ -203,6 +208,8 @@ class EngineTest {
         def engine = new Engine(cardSrc)
         
         def player = mock(Player.class)
+        when(player.getCards()).thenReturn(new CardHand())
+        
         engine.addPlayer(player)
         when(player.move()).thenReturn(Move.Stand)
 
@@ -220,6 +227,8 @@ class EngineTest {
         
         def engine = new Engine(cardSrc)
         def player = mock(Player.class)
+        when(player.getCards()).thenReturn(new CardHand())
+        
         engine.addPlayer(player)
         
         engine.newGame()
@@ -244,6 +253,12 @@ class EngineTest {
         cards.each { w = w.thenReturn(it) }
         w.thenReturn(null)
         return cardSrc
+    }
+    
+    private static CardHand getCardHand(def cards) {
+        def ch = new CardHand()
+        cards.each { ch.addCard(it) }
+        return ch
     }
 }
 

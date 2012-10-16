@@ -1,8 +1,7 @@
-simulace na zjisteni spravnych strategii
-test pro cardhand
-presun blackjacsum do cardhand
-splitting
+basic player A strategie
 doubling
+simulace na zjisteni spravnych strategii
+splitting
 test pro basicstrategyplayer
 cmdlineplayer kontroluje spravnost basic strategie
 insurance

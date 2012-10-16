@@ -39,8 +39,8 @@ public class Dealer implements CardHolder {
         return visibleCard;
     }
 
-    public List<Card> getCards() {
-        return this.cards.getCards();
+    public CardHand getCards() {
+        return this.cards;
     }
 
     @Override

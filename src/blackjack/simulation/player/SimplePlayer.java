@@ -4,8 +4,6 @@
  */
 package blackjack.simulation.player;
 
-import blackjack.engine.BlackJackSum;
-import blackjack.engine.BlackJackSum.Sum;
 import blackjack.engine.Move;
 
 /**
@@ -20,14 +18,13 @@ public class SimplePlayer extends BasePlayer  {
 
 	@Override
 	public Move move() {
-		Sum sum = BlackJackSum.sum(cards.getCards());
-		if (sum.isBlackJack)
+		if (cards.isBlackJack())
 			return Move.Stand;
 		
-		if (sum.sum <= 11)
+		if (cards.softSum() <= 11)
 			return Move.Hit;
 		
-		if (sum.sum == 17) 
+		if (cards.softSum() == 17) 
 			return Move.Stand;
 		
 		return Move.Stand;

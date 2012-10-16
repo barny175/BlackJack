@@ -5,7 +5,6 @@ package blackjack;
 
 import blackjack.engine.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public class CmdLinePlayer implements Player{
     private int amount;
-    private List<Card> cards = new ArrayList<Card>();
+    private CardHand cards = new CardHand();
     private Game currentGame;
 
     public CmdLinePlayer(int amount) {
@@ -23,7 +22,7 @@ public class CmdLinePlayer implements Player{
     
     @Override
     public void reset() {
-        this.cards.clear();
+        this.cards.reset();
     }
     
     @Override
@@ -51,12 +50,7 @@ public class CmdLinePlayer implements Player{
 
     @Override
     public void addCard(Card card) {
-        this.cards.add(card);
-    }
-
-    @Override
-    public List<Card> getCards() {
-        return this.cards;
+        this.cards.addCard(card);
     }
 
     @Override
@@ -65,7 +59,7 @@ public class CmdLinePlayer implements Player{
 
     @Override
     public Move move() {
-        BlackJack.printCards(cards);
+        BlackJack.printCards(getCards());
         BlackJack.println("Dealer card: " + this.currentGame.getDealerUpCard());
         while (true) {
             try {
@@ -87,5 +81,9 @@ public class CmdLinePlayer implements Player{
     public void setGame(Game game) {
         this.currentGame = game;
     }
-    
+
+    @Override
+    public CardHand getCards() {
+        return cards;
+    }    
 }

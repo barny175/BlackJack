@@ -4,6 +4,7 @@
  */
 package blackjack.simulation.player;
 
+import blackjack.engine.Card;
 import blackjack.engine.Move;
 
 /**
@@ -23,7 +24,24 @@ public class BasicStrategyPlayer extends BasePlayer {
         }
 
         final int hardSum = cards.hardSum();
+        
+        int aces = cards.aces();
+        if (aces == 0)
+            return noAceRules(hardSum);
+        
+        final int sumNoAces = hardSum - aces * Card.ACE.getValue();
+        if (sumNoAces < 7)
+            return Move.Hit;
+        else if (sumNoAces == 7) {
+            if (this.currentGame.getDealerUpCard().getSoftValue() > 8)
+                return Move.Stand;
+            else
+                return Move.Hit;
+        }
+        return Move.Stand;
+    }
 
+    private Move noAceRules(final int hardSum) {
         switch (this.currentGame.getDealerUpCard()) {
             case TWO:
             case THREE:
@@ -41,7 +59,6 @@ public class BasicStrategyPlayer extends BasePlayer {
             default:
                 return Move.Hit;
         }
-
         return Move.Stand;
     }
 

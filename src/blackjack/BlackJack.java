@@ -4,11 +4,10 @@
 package blackjack;
 
 import blackjack.engine.Card;
+import blackjack.engine.CardHand;
 import blackjack.engine.CardShuffler;
 import blackjack.engine.Engine;
-import blackjack.engine.GameResult;
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -79,8 +78,8 @@ public class BlackJack {
         System.out.print(message);
     }
     
-    public static void printCards(List<Card> cards) {
-        for (Card c : cards) {
+    public static void printCards(CardHand cards) {
+        for (Card c : cards.getCards()) {
             print(c + " ");
         }
         System.out.println();

@@ -12,7 +12,7 @@ import java.util.List
  * @author mbarnas
  */
 class StubPlayer implements Player {
-    def cards = []
+    def cards = new CardHand()
     GameResult res
     int money
     def move = [Move.Hit]
@@ -22,10 +22,10 @@ class StubPlayer implements Player {
     }
     
     void addCard(Card card) {
-        cards.add(card)
+        cards.addCard(card)
     }
     
-    List<Card> getCards() {
+    CardHand getCards() {
         return cards
     }
     
@@ -55,7 +55,7 @@ class StubPlayer implements Player {
     }
     
     void reset() {
-        cards = []
+        cards.reset()
     }
     
     void setGame(Game game) {

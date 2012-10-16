@@ -118,17 +118,17 @@ public class Engine {
     }
 
     private void checkBlackJack() {
-        BlackJackSum.Sum sumPlayer = BlackJackSum.sum(player.getCards());
-        BlackJackSum.Sum sumDealer = BlackJackSum.sum(dealer.getCards());
+        CardHand sumPlayer = player.getCards();
+        CardHand sumDealer = dealer.getCards();
 
-        if (sumPlayer.isBlackJack) {
-            if (sumDealer.isBlackJack) {
+        if (sumPlayer.isBlackJack()) {
+            if (sumDealer.isBlackJack()) {
                 this.gameState = GameResult.Push;
             } else {
                 this.gameState = GameResult.PlayerBlackJack;
             }
         } else {
-            if (sumDealer.isBlackJack) {
+            if (sumDealer.isBlackJack()) {
                 this.gameState = GameResult.DealerWin;
             }
         }
@@ -138,9 +138,8 @@ public class Engine {
         }
     }
 
-    private boolean checkBusted(List<Card> cards) {
-        BlackJackSum.Sum sum = BlackJackSum.sum(cards);
-        if (sum.sum > 21) {
+    private boolean checkBusted(CardHand cards) {
+        if (cards.softSum() > 21) {
             return true;
         }
 
@@ -148,23 +147,22 @@ public class Engine {
     }
 
     private void checkGameState() {
-        BlackJackSum.Sum sumPlayer = BlackJackSum.sum(player.getCards());
+        CardHand sumPlayer = player.getCards();
+        CardHand sumDealer = dealer.getCards();
 
-        BlackJackSum.Sum sumDealer = BlackJackSum.sum(dealer.getCards());
-
-        if (sumPlayer.sum > 21) {
+        if (sumPlayer.softSum() > 21) {
             gameState = GameResult.PlayerBusted;
             return;
         } 
         
-        if (sumDealer.sum > 21) {
+        if (sumDealer.softSum() > 21) {
             this.gameState = GameResult.PlayerWin;
             return;
         }
 
-        if (sumPlayer.sum > sumDealer.sum) {
+        if (sumPlayer.softSum() > sumDealer.softSum()) {
             this.gameState = GameResult.PlayerWin;
-        } else if (sumPlayer.sum == sumDealer.sum) {
+        } else if (sumPlayer.softSum() == sumDealer.softSum()) {
             this.gameState = GameResult.Push;
         } else {
             this.gameState = GameResult.DealerWin;
@@ -182,7 +180,7 @@ public class Engine {
         player.result(gameState);
     }
 
-    public List<Card> getDealerCards() {
+    public CardHand getDealerCards() {
         return dealer.getCards();
     }
     

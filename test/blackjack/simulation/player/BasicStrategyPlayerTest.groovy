@@ -87,5 +87,61 @@ class BasicStrategyPlayerTest {
             assertEquals("Failed for card " + c, expectedResult, player.move())
         }
     }
+    
+    @Test
+    void playerHasAce() {
+        for (Card dealerCard : Card.ACE..Card.KING) {
+            def game = mock(Game.class)
+            when(game.getDealerUpCard()).thenReturn(dealerCard)
+
+            def player = new BasicStrategyPlayer(10)
+            player.setGame(game)
+            
+            for (Card c : Card.TWO..Card.SIX) {
+                player.reset();
+                player.addCard(Card.ACE)
+                player.addCard(c)
+                def expectedResult = Move.Hit;
+                assertEquals("Failed for card " + c, expectedResult, player.move())
+            }
+        }
+    }
+    @Test
+    void playerHasAceAndSeven() {
+        def player = new BasicStrategyPlayer(10)
+            
+        player.reset();
+        player.addCard(Card.ACE)
+        player.addCard(Card.SEVEN)
+            
+        for (Card dealerCard : Card.ACE..Card.KING) {
+            def game = mock(Game.class)
+            when(game.getDealerUpCard()).thenReturn(dealerCard)
+            player.setGame(game)
+            
+            def expectedResult = dealerCard.getSoftValue() < 9 ? Move.Hit : Move.Stand;
+            assertEquals("Failed for dealers card " + dealerCard, expectedResult, player.move())
+        }
+    }
+    
+    @Test
+    void playerHasAceAndEightOrMore() {
+        def player = new BasicStrategyPlayer(10)
+            
+        for (Card c: Card.EIGHT..Card.KING) {
+            player.reset();
+            player.addCard(Card.ACE)
+            player.addCard(c)
+            
+            for (Card dealerCard : Card.ACE..Card.KING) {
+                def game = mock(Game.class)
+                when(game.getDealerUpCard()).thenReturn(dealerCard)
+                player.setGame(game)
+            
+                def expectedResult = Move.Stand;
+                assertEquals("Failed for card " + c + " and dealers card " + dealerCard, expectedResult, player.move())
+            }
+        }
+    }
 }
 

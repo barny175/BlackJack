@@ -5,7 +5,6 @@
 package blackjack.simulation.player;
 
 import blackjack.engine.*;
-import java.util.List;
 
 /**
  *
@@ -36,8 +35,8 @@ public abstract class BasePlayer implements Player {
     }
 
 	@Override
-	public List<Card> getCards() {
-		return cards.getCards();
+	public CardHand getCards() {
+		return cards;
 	}
 
 	@Override
