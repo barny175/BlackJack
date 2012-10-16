@@ -57,7 +57,10 @@ public class BasicStrategyPlayer extends BasePlayer {
                 }
                 break;
             default:
-                return Move.Hit;
+                if (hardSum < 17)
+                    return Move.Hit;
+                else
+                    return Move.Stand;
         }
         return Move.Stand;
     }

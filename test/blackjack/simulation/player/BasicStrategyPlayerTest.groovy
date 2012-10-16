@@ -62,11 +62,13 @@ class BasicStrategyPlayerTest {
             player.setGame(game)
 
             for (Card c : Card.values()[2..-1]) {
-                player.reset();
-                player.addCard(Card.TWO)
-                player.addCard(c)
-                def expectedResult = Move.Hit;
-                assertEquals("Failed for card " + c + " dealer card " + dealerCard, expectedResult, player.move())
+                for (Card c2 : Card.values()[2..-1]) {
+                    player.reset();
+                    player.addCard(c)
+                    player.addCard(c2)
+                    def expectedResult = player.getCards().hardSum() < 17 ? Move.Hit : Move.Stand;
+                    assertEquals("Failed for card " + c + " dealer card " + dealerCard, expectedResult, player.move())
+                }
             }
         }
     }
@@ -141,6 +143,22 @@ class BasicStrategyPlayerTest {
                 def expectedResult = Move.Stand;
                 assertEquals("Failed for card " + c + " and dealers card " + dealerCard, expectedResult, player.move())
             }
+        }
+    }
+    
+    @Test
+    void playerHasSeventeen() {
+        def player = new BasicStrategyPlayer(10)
+        player.addCard(Card.SEVEN)
+        player.addCard(Card.TEN)
+
+        for (Card dealerCard : [Card.ACE, Card.KING]) {
+            def game = mock(Game.class)
+            when(game.getDealerUpCard()).thenReturn(dealerCard)
+            player.setGame(game)
+            
+            def expectedResult = Move.Stand;
+            assertEquals("Failed for dealer card " + dealerCard, expectedResult, player.move())
         }
     }
 }
