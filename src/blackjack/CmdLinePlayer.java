@@ -55,6 +55,7 @@ public class CmdLinePlayer implements Player{
 
     @Override
     public void result(GameResult result) {
+        BlackJack.println("Player credit: " + getMoney());
     }
 
     @Override

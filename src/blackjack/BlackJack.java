@@ -3,14 +3,10 @@
  */
 package blackjack;
 
-import blackjack.engine.Card;
-import blackjack.engine.CardHand;
-import blackjack.engine.CardShuffler;
-import blackjack.engine.Engine;
+import blackjack.engine.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 
 /**
  *
@@ -25,30 +21,30 @@ public class BlackJack {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        CmdLinePlayer cmdLinePlayer = new CmdLinePlayer(100);
-        engine.addPlayer(cmdLinePlayer);
+        Player player = new TrainingPlayer(100);
+        engine.addPlayer(player);
         char c = 'y';
         while (c == 'y') {
             engine.newGame();
             
             engine.start();
             
-            printCards(cmdLinePlayer);
+            printCards(player);
             println("Result: " + engine.getGameState());
-            println("Player credit: " + cmdLinePlayer.getMoney());
             
             c = getChoice("Another round", "yn");
         }
     }
 
-    private static void printCards(CmdLinePlayer cmdLinePlayer) {
+    private static void printCards(Player cmdLinePlayer) {
         print("Player cards: ");
         printCards(cmdLinePlayer.getCards());
         printDealerCards();
     }
 
     private static void printDealerCards() {
-        println("Dealer cards: " + engine.getDealerCards());
+        print("Dealer cards: ");
+        printCards(engine.getDealerCards());
     }
 
     public static char getChoice(String message, String choices) throws IOException {

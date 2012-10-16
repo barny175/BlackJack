@@ -5,7 +5,6 @@
 package blackjack.simulation;
 
 import blackjack.engine.Card;
-import blackjack.engine.CardShuffler;
 import blackjack.engine.Engine;
 import blackjack.engine.GameResult;
 import blackjack.simulation.player.BasePlayer;
