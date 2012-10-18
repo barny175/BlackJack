@@ -121,7 +121,7 @@ class BasicStrategyPlayerTest {
             when(game.getDealerUpCard()).thenReturn(dealerCard)
             player.setGame(game)
             
-            def expectedResult = dealerCard.getSoftValue() < 9 ? Move.Hit : Move.Stand;
+            def expectedResult = dealerCard.getSoftValue() < 9 ? Move.Stand : Move.Hit;
             assertEquals("Failed for dealers card " + dealerCard, expectedResult, player.move())
         }
     }

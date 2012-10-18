@@ -25,14 +25,14 @@ class BasicStrategyTest {
         [15, "S", "S", "S", "S", "S", "H", "H", "H", "H", "H"],
         [16, "S", "S", "S", "S", "S", "H", "H", "H", "H", "H"],
         [17, "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-        [A,2, "H", "H", "H", "D", "D", "H", "H", "H", "H", "H"],
-        [A,3, "H", "H", "H", "D", "D", "H", "H", "H", "H", "H"],
-        [A,4, "H", "H", "D", "D", "D", "H", "H", "H", "H", "H"],
-        [A,5, "H", "H", "D", "D", "D", "H", "H", "H", "H", "H"],
-        [A,6, "H", "D", "D", "D", "D", "H", "H", "H", "H", "H"],
-        [A,7, "S", "DS", "DS", "DS", "DS", "S", "S", "H", "H", "H"],
-        [A,8, "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-        [A,9, "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+        ["A2", "H", "H", "H", "D", "D", "H", "H", "H", "H", "H"],
+        ["A3", "H", "H", "H", "D", "D", "H", "H", "H", "H", "H"],
+        ["A4", "H", "H", "D", "D", "D", "H", "H", "H", "H", "H"],
+        ["A5", "H", "H", "D", "D", "D", "H", "H", "H", "H", "H"],
+        ["A6", "H", "D", "D", "D", "D", "H", "H", "H", "H", "H"],
+        ["A7", "S", "DS", "DS", "DS", "DS", "S", "S", "H", "H", "H"],
+        ["A8", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+        ["A9", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
 //        [2,2, "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
 //        [3,3, "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
 //        [4,4, "H", "H", "H", "P", "P", "H", "H", "H", "H", "H"],
@@ -42,25 +42,27 @@ class BasicStrategyTest {
 //        [8,8, "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"],
 //        [9,9, "P", "P", "P", "P", "P", "S", "P", "P", "S", "S"],
 //        [T,T, "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-//        [A,A, "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"]
+        ["AA", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"]
     ]
     
     @Test
     void basicStrategyTest() {
         for (Card c : Card.ACE..Card.KING) {
-            for (Card c2: Card.ACE..Card.KING) {
-                player = new BasicStrategyPlayer(1000)
-                player.addCard()
+            for (Card c2: Card.TWO..Card.NINE) {
+                def player = new BasicStrategyPlayer(100)
+                player.addCard(c)
+                player.addCard(c2)
                 
                 for (Card dealerCard : Card.ACE..Card.KING) {
                     def game = mock(Game.class)
                     when(game.getDealerUpCard()).thenReturn(dealerCard)
                     
-                    def player = new BasicStrategyPlayer(10)
                     player.setGame(game)
                     
+                    println "Player's cards: ${c}, ${c2}, dealers card ${dealerCard}"
                     def move = player.move()
-                    assertEquals("", getBasicStrategyMove(player.getCards, dealerCard), move) // todo
+                    def expected = getBasicStrategyMove(player.getCards(), dealerCard)
+                    assertEquals(expected, move)
                 }
             }
         }
@@ -68,8 +70,44 @@ class BasicStrategyTest {
     
     private Move getBasicStrategyMove(playerCards, dealerCard) {
         int hardSum = playerCards.hardSum()
-        def row = strategy.find {it[0] == hardSum}
-        row[(dealerCard.ordinal() - 1) % Card.values[].length]
+        
+        Closure cl
+        if (playerCards.aces() == 0) {
+        
+            if (hardSum < 7)
+                return Move.Hit
+                
+            if (hardSum > 17)
+                return Move.Stand
+                
+            cl = { it[0] == hardSum }
+        } else {
+            cl = { 
+                def sum = hardSum - Card.ACE.getValue()
+                if (sum == 1)
+                    sum = "A"
+                it[0] == "A${sum}"
+            }
+        }
+        
+        def row = strategy.find(cl)
+        
+        def movePos = dealerCard.getValue() - 1
+        letterToMove(row[movePos == 0 ? -1 : movePos])
+    }
+    
+    private Move letterToMove(String letter) {
+        switch (letter) {
+            case "H":
+            case "D":
+                return Move.Hit
+            case "S":
+            case "DS":
+                return Move.Stand
+            case "P":
+//                return Move.Split
+                return Move.Hit
+        }
     }
 }
 
