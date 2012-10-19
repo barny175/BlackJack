@@ -4,6 +4,7 @@
 package blackjack;
 
 import blackjack.engine.*;
+import blackjack.simulation.SimulationCardShuffler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,7 +16,7 @@ import java.io.InputStreamReader;
 public class BlackJack {
     public static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     
-    private static Engine engine = new Engine(new CardShuffler(1));
+    private static Engine engine = new Engine(new SimulationCardShuffler(1, Card.ACE, Card.ACE, Card.TEN, Card.JACK));
 
     /**
      * @param args the command line arguments
@@ -50,13 +51,15 @@ public class BlackJack {
     public static char getChoice(String message, String choices) throws IOException {
         print(message);
         print(" ");
-        print(choices);
+		for (int i = 0; i < choices.length(); i++) {
+			print(choices.charAt(i) + "/");
+		}
         print(": ");
         
         char c = 0;
         do {
             String line = reader.readLine();
-            c = (char) line.charAt(0);
+            c = line.isEmpty() ? choices.charAt(0) : (char) line.charAt(0);
             for (char x : choices.toCharArray()) {
                 if (x == c)
                     return c;

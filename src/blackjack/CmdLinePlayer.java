@@ -32,7 +32,7 @@ public class CmdLinePlayer implements Player{
             try {
                 System.out.print("Bet:");
                 String s = BlackJack.reader.readLine();
-                bet = Integer.parseInt(s);
+                bet = s.isEmpty() ? 10 : Integer.parseInt(s);
             } catch (IOException ex) {
             } catch (NumberFormatException ex) {
                 
