@@ -4,7 +4,6 @@
 package blackjack;
 
 import blackjack.engine.*;
-import blackjack.simulation.SimulationCardShuffler;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +15,8 @@ import java.io.InputStreamReader;
 public class BlackJack {
     public static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     
-    private static Engine engine = new Engine(new SimulationCardShuffler(1, Card.ACE, Card.ACE, Card.TEN, Card.JACK));
+    private static Engine engine = new Engine(new CardShuffler(1));
+//	private static Engine engine = new Engine(new SimulationCardShuffler(1, Card.ACE, Card.TEN, Card.TEN));
 
     /**
      * @param args the command line arguments

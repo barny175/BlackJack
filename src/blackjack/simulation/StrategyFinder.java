@@ -31,14 +31,14 @@ public class StrategyFinder {
 	}
 
 	public StrategyFinder(BasePlayer player) {
-		this.engine = new Engine(new SimulationCardShuffler(1, Card.TWO, Card.TWO, Card.TWO));
+		this.engine = new Engine(new SimulationCardShuffler(6, Card.TWO, Card.TWO, Card.TWO));
 		this.player = player;
 		this.engine.addPlayer(player);
 
 	}
 
 	public void run() {
-		for (int i = 0; i < 5000; i++) {
+		for (int i = 0; i < 10000; i++) {
 			this.engine.newGame();
 
 			while (this.engine.getGameState() == GameResult.Continuing) {
@@ -46,7 +46,7 @@ public class StrategyFinder {
 			}
 
 			if (this.player.getMoney() < 10) {
-				System.out.println("Short of money after " + i + " rounds.");
+				System.out.print("Short of money after " + i + " rounds. ");
 				break;
 			}
 		}

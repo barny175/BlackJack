@@ -136,10 +136,6 @@ public class Engine {
 				this.gameState = GameResult.DealerWin;
 			}
 		}
-
-		if (this.gameState != GameResult.Continuing) {
-			endGame();
-		}
 	}
 
 	private boolean checkBusted(CardHand cards) {
