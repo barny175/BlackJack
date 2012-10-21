@@ -53,8 +53,7 @@ public abstract class BasePlayer implements Player {
 	}
 
 	@Override
-	public int getBet() {
-		this.money -= 10;
+	public int bet() {
 		return 10;
 	}
 	

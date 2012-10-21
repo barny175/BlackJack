@@ -29,8 +29,7 @@ class StubPlayer implements Player {
         return cards
     }
     
-    int getBet() {
-        money -= 10
+    int bet() {
         return 10
     }
     

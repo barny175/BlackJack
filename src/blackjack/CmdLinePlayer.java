@@ -5,7 +5,6 @@ package blackjack;
 
 import blackjack.engine.*;
 import java.io.IOException;
-import java.util.List;
 
 /**
  *
@@ -26,7 +25,7 @@ public class CmdLinePlayer implements Player{
     }
     
     @Override
-    public int getBet() {
+    public int bet() {
         int bet = 0;
         while (bet <= 0  || bet > amount) {
             try {
@@ -39,7 +38,6 @@ public class CmdLinePlayer implements Player{
             }
         }
     
-        this.amount -= bet;
         return bet;
     }
 
@@ -86,5 +84,5 @@ public class CmdLinePlayer implements Player{
     @Override
     public CardHand getCards() {
         return cards;
-    }    
+    }
 }

@@ -99,8 +99,9 @@ class BasicStrategyTest {
     private Move letterToMove(String letter) {
         switch (letter) {
             case "H":
-            case "D":
                 return Move.Hit
+            case "D":
+                return Move.Double
             case "S":
             case "DS":
                 return Move.Stand

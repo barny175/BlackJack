@@ -34,9 +34,9 @@ public class BasicStrategyPlayer extends BasePlayer {
             return Move.Hit;
         else if (sumNoAces == 7) {
             if (this.currentGame.getDealerUpCard().getSoftValue() > 8)
-                return Move.Stand;
-            else
                 return Move.Hit;
+            else
+                return Move.Stand;
         }
         return Move.Stand;
     }

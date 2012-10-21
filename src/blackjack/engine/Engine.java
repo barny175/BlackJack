@@ -11,184 +11,194 @@ import java.util.List;
  */
 public class Engine {
 
-	private Player player;
-	private Dealer dealer = new Dealer();
-	private CardSource cardSource;
-	private int bet;
-	private GameResult gameState = GameResult.Continuing;
+    private Player player;
+    private Dealer dealer = new Dealer();
+    private CardSource cardSource;
+    private int bet;
+    private GameResult gameState = GameResult.Continuing;
 
-	public GameResult getGameState() {
-		return gameState;
-	}
+    public GameResult getGameState() {
+        return gameState;
+    }
 
-	public Engine(CardSource cardSource) {
-		this.cardSource = cardSource;
-	}
+    public Engine(CardSource cardSource) {
+        this.cardSource = cardSource;
+    }
 
-	public Card getDealerUpCard() {
-		return this.dealer.getVisibleCard();
-	}
+    public Card getDealerUpCard() {
+        return this.dealer.getVisibleCard();
+    }
 
-	public void addPlayer(Player player) {
-		this.player = player;
-	}
+    public void addPlayer(Player player) {
+        this.player = player;
+    }
 
-	public void newGame() {
-		reset();
+    public void newGame() {
+        reset();
 
-		bets();
+        bets();
 
-		firstDeal();
-	}
+        firstDeal();
+    }
 
-	private void reset() {
-		cardSource.shuffle();
+    private void reset() {
+        cardSource.shuffle();
 
-		resetPlayers();
+        resetPlayers();
 
-		this.gameState = GameResult.Continuing;
+        this.gameState = GameResult.Continuing;
 
-		this.player.setGame(new CurrentGame());
-	}
+        this.player.setGame(new CurrentGame());
+    }
 
-	public void start() {
-		checkBlackJack();
+    public void start() {
+        checkBlackJack();
+        boolean busted = false;
 
-		if (this.gameState == GameResult.Continuing) {
-			boolean busted = moveAndCheckBust(player);
-			if (!busted) {
-				moveAndCheckBust(dealer);
-			}
+        if (this.gameState == GameResult.Continuing) {
+            Move move;
+            do {
+                move = player.move();
+                if (move == Move.Hit || move == Move.Double) {
+                    deal(player);
 
-			checkGameState();
-		}
+                    if (move == Move.Double) {
+                        this.bet *= 2;
+                    }
+                    busted = checkBusted(player);
+                }
+            } while (move == Move.Hit && !busted);
 
-		endGame();
-	}
+            if (!busted) {
+                Move dealerMove;
+                do {
+                    dealerMove = dealer.move();
+                    if (dealerMove == Move.Hit) {
+                        deal(dealer);
 
-	/**
-	 *
-	 * @param cardHolder
-	 */
-	private boolean moveAndCheckBust(CardHolder cardHolder) {
-		Move move;
-		do {
-			move = cardHolder.move();
-			if (move == Move.Hit) {
-				deal(cardHolder);
+                        if (checkBusted(dealer)) {
+                            break;
+                        }
+                    }
+                } while (dealerMove != Move.Stand);
+            }
+            
+            checkGameState();
+        }
+        
+        endGame();
+    }
 
-				if (checkBusted(cardHolder.getCards())) {
-					return true;
-				}
-			}
-		} while (move != Move.Stand);
+    protected void firstDeal() {
+        deal(player);
+        deal(dealer);
 
-		return false;
-	}
+        deal(player);
+        deal(dealer);
+    }
 
-	protected void firstDeal() {
-		deal(player);
-		deal(dealer);
+    protected void deal(CardHolder cardHolder) {
+        Card card = cardSource.next();
+        if (card == null) {
+            throw new LastCardException();
+        }
 
-		deal(player);
-		deal(dealer);
-	}
+        cardHolder.addCard(card);
+    }
 
-	protected void deal(CardHolder cardHolder) {
-		Card card = cardSource.next();
-		if (card == null) {
-			throw new LastCardException();
-		}
+    private void bets() {
+        bet = player.bet();
+    }
 
-		cardHolder.addCard(card);
-	}
+    private void payPrizes() {
+        switch (this.gameState) {
+            case PlayerBlackJack:
+                this.player.addMoney(bet * 3 / 2);
+                break;
+            case Push:
+                break;
+            case PlayerWin:
+                this.player.addMoney(bet);
+                break;
+            case PlayerBusted:
+            case DealerWin:
+                this.player.addMoney(-1 * bet);
+                break;
+        }
+    }
 
-	private void bets() {
-		bet = player.getBet();
-	}
+    private void checkBlackJack() {
+        CardHand sumPlayer = player.getCards();
+        CardHand sumDealer = dealer.getCards();
 
-	private void payPrizes() {
-		switch (this.gameState) {
-			case PlayerBlackJack:
-				this.player.addMoney(bet + bet * 3 / 2);
-				break;
-			case Push:
-				this.player.addMoney(bet);
-				break;
-			case PlayerWin:
-				this.player.addMoney(2 * bet);
-				break;
-		}
-	}
+        if (sumPlayer.isBlackJack()) {
+            if (sumDealer.isBlackJack()) {
+                this.gameState = GameResult.Push;
+            } else {
+                this.gameState = GameResult.PlayerBlackJack;
+            }
+        } else {
+            if (sumDealer.isBlackJack()) {
+                this.gameState = GameResult.DealerWin;
+            }
+        }
+    }
 
-	private void checkBlackJack() {
-		CardHand sumPlayer = player.getCards();
-		CardHand sumDealer = dealer.getCards();
+    private boolean checkBusted(CardHolder player) {
+        if (player.getCards().softSum() > 21) {
+            return true;
+        }
 
-		if (sumPlayer.isBlackJack()) {
-			if (sumDealer.isBlackJack()) {
-				this.gameState = GameResult.Push;
-			} else {
-				this.gameState = GameResult.PlayerBlackJack;
-			}
-		} else {
-			if (sumDealer.isBlackJack()) {
-				this.gameState = GameResult.DealerWin;
-			}
-		}
-	}
+        return false;
+    }
 
-	private boolean checkBusted(CardHand cards) {
-		if (cards.softSum() > 21) {
-			return true;
-		}
+    private void checkGameState() {
+        CardHand sumPlayer = player.getCards();
+        CardHand sumDealer = dealer.getCards();
 
-		return false;
-	}
+        if (sumPlayer.softSum() > 21) {
+            gameState = GameResult.PlayerBusted;
+            return;
+        }
 
-	private void checkGameState() {
-		CardHand sumPlayer = player.getCards();
-		CardHand sumDealer = dealer.getCards();
+        if (sumDealer.softSum() > 21) {
+            this.gameState = GameResult.PlayerWin;
+            return;
+        }
 
-		if (sumPlayer.softSum() > 21) {
-			gameState = GameResult.PlayerBusted;
-			return;
-		}
+        if (sumPlayer.softSum() > sumDealer.softSum()) {
+            this.gameState = GameResult.PlayerWin;
+        } else if (sumPlayer.softSum() == sumDealer.softSum()) {
+            this.gameState = GameResult.Push;
+        } else {
+            this.gameState = GameResult.DealerWin;
+        }
+    }
 
-		if (sumDealer.softSum() > 21) {
-			this.gameState = GameResult.PlayerWin;
-			return;
-		}
+    private void resetPlayers() {
+        dealer.reset();
+        player.reset();
+    }
 
-		if (sumPlayer.softSum() > sumDealer.softSum()) {
-			this.gameState = GameResult.PlayerWin;
-		} else if (sumPlayer.softSum() == sumDealer.softSum()) {
-			this.gameState = GameResult.Push;
-		} else {
-			this.gameState = GameResult.DealerWin;
-		}
-	}
+    private void endGame() {
+        payPrizes();
 
-	private void resetPlayers() {
-		dealer.reset();
-		player.reset();
-	}
+        player.result(gameState);
+    }
 
-	private void endGame() {
-		payPrizes();
+    public CardHand getDealerCards() {
+        return dealer.getCards();
 
-		player.result(gameState);
-	}
 
-	public CardHand getDealerCards() {
-		return dealer.getCards();
-	}
 
-	private class CurrentGame implements Game {
 
-		@Override
-		public Card getDealerUpCard() {
-			return dealer.getVisibleCard();
-		}
-	}
+    }
+
+    private class CurrentGame implements Game {
+
+        @Override
+        public Card getDealerUpCard() {
+            return dealer.getVisibleCard();
+        }
+    }
 }

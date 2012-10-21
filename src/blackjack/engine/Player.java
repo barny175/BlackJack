@@ -3,15 +3,13 @@
  */
 package blackjack.engine;
 
-import java.util.List;
-
 /**
  *
  * @author mbarnas
  */
 public interface Player extends CardHolder {
-    int getBet();
-    
+    int bet();
+
     void addMoney(int amount);
     
     void result(GameResult result);

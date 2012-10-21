@@ -9,5 +9,7 @@ package blackjack.engine;
  */
 public enum Move {
     Hit,
-    Stand;
+    Stand,
+    Double,
+    Split;
 }

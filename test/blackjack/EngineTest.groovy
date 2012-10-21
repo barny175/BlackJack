@@ -16,7 +16,7 @@ class EngineTest {
     @Test
     void bets() {
         def player = mock(Player.class)
-        when(player.getBet()).thenReturn(10)
+        when(player.bet()).thenReturn(10)
         when(player.getCards()).thenReturn(new CardHand())
         
         def cardSrc = getCardSource([Card.TWO, Card.TWO, Card.TWO, Card.TWO])
@@ -24,7 +24,7 @@ class EngineTest {
         engine.addPlayer(player)
         engine.newGame()
         
-        verify(player).getBet()        
+        verify(player).bet()        
     }
     
 	@Test
@@ -50,15 +50,16 @@ class EngineTest {
         def engine = new Engine(cardSrc)
         
         def player = mock(Player.class)
-        when(player.getBet()).thenReturn(10)
+        when(player.bet()).thenReturn(10)
         when(player.getCards()).thenReturn(getCardHand([Card.ACE, Card.TEN]))
         
         engine.addPlayer(player)
         engine.newGame()
+        engine.start()
         
         verify(player).addCard(Card.ACE)
         verify(player).addCard(Card.TEN)
-        verify(player).addMoney(25)
+        verify(player).addMoney(15)
     }
         
     @Test
@@ -67,13 +68,14 @@ class EngineTest {
         def engine = new Engine(cardSrc)
         
         def player = mock(Player.class)
-        when(player.getBet()).thenReturn(10)
+        when(player.bet()).thenReturn(10)
         when(player.getCards()).thenReturn(getCardHand([Card.ACE, Card.TEN]))
         
         engine.addPlayer(player)
         engine.newGame()
+        engine.start()
         
-        verify(player).addMoney(10)
+        verify(player, never()).addMoney(0)
         assertEquals(GameResult.Push, engine.getGameState())
     }
     
@@ -83,11 +85,12 @@ class EngineTest {
         def engine = new Engine(cardSrc)
         
         def player = mock(Player.class)
-        when(player.getBet()).thenReturn(10)
+        when(player.bet()).thenReturn(10)
         when(player.getCards()).thenReturn(getCardHand([Card.TWO, Card.TEN]))
         
         engine.addPlayer(player)
         engine.newGame()
+        engine.start()
         
         verify(player).result(GameResult.DealerWin)
         assertEquals(GameResult.DealerWin, engine.getGameState())    
@@ -117,7 +120,7 @@ class EngineTest {
         
         Player player = mock(Player.class)
         when(player.move()).thenReturn(Move.Hit).thenReturn(Move.Stand)
-        when(player.getBet()).thenReturn(10)
+        when(player.bet()).thenReturn(10)
         when(player.getCards()).thenReturn(new CardHand())
         
         engine.addPlayer(player)
@@ -126,7 +129,7 @@ class EngineTest {
         engine.start()
         
         verify(player).result(GameResult.PlayerWin)
-        verify(player).addMoney(20)
+        verify(player).addMoney(10)
     }
     
     @Test
@@ -234,6 +237,27 @@ class EngineTest {
         engine.newGame()
         
         verify(cardSrc).shuffle()
+    }
+    
+    @Test
+    void doubleDown() {
+        def cardSrc = getCardSource([Card.NINE, Card.FIVE, Card.SEVEN, Card.TEN, Card.TWO, Card.TWO])
+        def engine = new Engine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move()).thenReturn(Move.Double)
+        when(player.getCards()).thenReturn(getCardHand([Card.NINE, Card.SEVEN]))
+        when(player.getCards()).thenReturn(getCardHand([Card.NINE, Card.SEVEN, Card.TWO]))
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player, never()).addMoney(10)
+        verify(player).result(GameResult.PlayerWin)
+        verify(player, times(1)).move()
     }
     
     private CardSource getCardSource(def cardsPlayer, def cardsDealer) {

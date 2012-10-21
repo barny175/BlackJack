@@ -21,8 +21,8 @@ public class TrainingPlayer implements Player {
 
     
     @Override
-    public int getBet() {
-        return cmdLinePlayer.getBet();
+    public int bet() {
+        return cmdLinePlayer.bet();
     }
 
     @Override
