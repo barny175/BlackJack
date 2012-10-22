@@ -103,8 +103,9 @@ class BasicStrategyTest {
             case "D":
                 return Move.Double
             case "S":
-            case "DS":
                 return Move.Stand
+            case "DS":
+                return Move.Double
             case "P":
 //                return Move.Split
                 return Move.Hit

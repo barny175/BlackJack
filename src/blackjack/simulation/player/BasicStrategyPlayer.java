@@ -13,6 +13,36 @@ import blackjack.engine.Move;
  */
 public class BasicStrategyPlayer extends BasePlayer {
 
+    private final Object[][] strategy = new Object[][]{{7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {8, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {9, "Hit", "Double", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {10, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
+        {11, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit"},
+        {12, "Hit", "Hit", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {13, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {14, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {15, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {16, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {17, "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+        {"A2", "Hit", "Hit", "Hit", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {"A3", "Hit", "Hit", "Hit", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {"A4", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {"A5", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {"A6", "Hit", "Double", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {"A7", "Stand", "Double", "Double", "Double", "Double", "Stand", "Stand", "Hit", "Hit", "Hit"},
+        {"A8", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+        {"A9", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+        //        {2,2, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+        //        {3,3, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+        //        {4,4, "Hit", "Hit", "Hit", "Split", "Split", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        //        {5,5, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
+        //        {6,6, "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        //        {7,7, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+        //        {8,8, "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"},
+        //        {9,9, "Split", "Split", "Split", "Split", "Split", "Stand", "Split", "Split", "Stand", "Stand"},
+        //        {T,T, "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+        {"AA", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"}};
+
     public BasicStrategyPlayer(int money) {
         super(money);
     }
@@ -23,50 +53,60 @@ public class BasicStrategyPlayer extends BasePlayer {
             return Move.Stand;
         }
 
-        final int hardSum = cards.hardSum();
-        
         int aces = cards.aces();
-        if (aces == 0)
-            return noAceRules(hardSum);
-        
-        final int sumNoAces = hardSum - aces * Card.ACE.getValue();
-        if (sumNoAces < 7)
+        if (aces == 0) {
+            return noAceRules();
+        } else {
+            return aceRules();
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "Basic Strategy";
+    }
+
+    private Move noAceRules() {
+        Integer hardSum = this.cards.hardSum();
+
+        if (hardSum < 7) {
             return Move.Hit;
-        else if (sumNoAces == 7) {
-            if (this.currentGame.getDealerUpCard().getSoftValue() > 8)
-                return Move.Hit;
-            else
-                return Move.Stand;
         }
-        return Move.Stand;
+        if (hardSum > 17) {
+            return Move.Stand;
+        }
+
+        return findMove(hardSum);
     }
 
-    private Move noAceRules(final int hardSum) {
-        switch (this.currentGame.getDealerUpCard()) {
-            case TWO:
-            case THREE:
-                if (hardSum < 13) {
-                    return Move.Hit;
-                }
-                break;
-            case FOUR:
-            case FIVE:
-            case SIX:
-                if (hardSum < 12) {
-                    return Move.Hit;
-                }
-                break;
-            default:
-                if (hardSum < 17)
-                    return Move.Hit;
-                else
-                    return Move.Stand;
+    private Move aceRules() {
+        Integer sum = this.cards.hardSum() - Card.ACE.getValue();
+
+        String toFind;
+        if (sum == 1) {
+            toFind = "AA";
+        } else {
+            toFind = "A" + sum;
         }
-        return Move.Stand;
+
+        return findMove(toFind);
     }
 
-	@Override
-	public String getName() {
-		return "Basic Strategy";
-	}
+    private Move findMove(Object toFind) {
+        int movePos = this.currentGame.getDealerUpCard().getValue() - 1;
+        int row = getRowPos(toFind);
+
+        return Move.valueOf((String) strategy[row][movePos == 0 ? (strategy[row].length - 1) : movePos]);
+
+    }
+    
+    private int getRowPos(Object firstCol) {
+        int row = -1;
+        for (int i = 0; i < strategy.length; i++) {
+            if (strategy[i][0].equals(firstCol)) {
+                row = i;
+            }
+        }
+        return row;
+    }
 }
