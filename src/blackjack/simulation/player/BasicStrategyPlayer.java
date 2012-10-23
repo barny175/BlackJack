@@ -13,7 +13,8 @@ import blackjack.engine.Move;
  */
 public class BasicStrategyPlayer extends BasePlayer {
 
-    private final Object[][] strategy = new Object[][]{{7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
+    private final Object[][] strategy = new Object[][]{
+		{7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {8, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {9, "Hit", "Double", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {10, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
@@ -80,7 +81,10 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     private Move aceRules() {
-        Integer sum = this.cards.hardSum() - Card.ACE.getValue();
+        Integer sum = this.cards.softSum() - Card.ACE.getValue();
+		
+		if (sum > 18)
+			return noAceRules();
 
         String toFind;
         if (sum == 1) {

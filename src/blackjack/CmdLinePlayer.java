@@ -62,11 +62,13 @@ public class CmdLinePlayer implements Player{
         BlackJack.println("Dealer card: " + this.currentGame.getDealerUpCard());
         while (true) {
             try {
-                char c = BlackJack.getChoice("Move", "sh");
+                char c = BlackJack.getChoice("Move", "hsd");
                 if (c == 's')
                     return Move.Stand;
                 if (c == 'h')
                     return Move.Hit;
+				if (c == 'd')
+                    return Move.Double;
             } catch (IOException ex) {
             }
         }
