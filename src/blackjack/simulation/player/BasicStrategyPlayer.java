@@ -81,9 +81,9 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     private Move aceRules() {
-        Integer sum = this.cards.softSum() - Card.ACE.getValue();
+        Integer sum = this.cards.softSum() - Card.ACE.getSoftValue();
 		
-		if (sum > 18)
+		if (sum > 9)
 			return noAceRules();
 
         String toFind;

@@ -83,7 +83,7 @@ class BasicStrategyTest {
             cl = { it[0] == hardSum }
         } else {
             cl = { 
-                def sum = hardSum
+                def sum = hardSum - Card.ACE.getValue()
                 if (sum == 1)
                     sum = "A"
                 it[0] == "A${sum}"
