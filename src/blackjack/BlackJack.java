@@ -26,20 +26,20 @@ public class BlackJack {
         engine.addPlayer(player);
         char c = 'y';
         while (c == 'y') {
-            engine.newGame();
+            Game game = engine.newGame();
             
             engine.start();
             
-            printCards(player);
+            printCards(game);
             println("Result: " + engine.getGameState());
             
             c = getChoice("Another round", "yn");
         }
     }
 
-    private static void printCards(Player cmdLinePlayer) {
+    private static void printCards(Game game) {
         print("Player cards: ");
-        printCards(cmdLinePlayer.getCards());
+        printCards(game.playerCards());
         printDealerCards();
     }
 
@@ -81,6 +81,7 @@ public class BlackJack {
         for (Card c : cards.getCards()) {
             print(c + " ");
         }
+		print(" [" + cards.softSum() + "]");
         System.out.println();
     }
 }

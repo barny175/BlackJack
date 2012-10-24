@@ -7,7 +7,7 @@ package blackjack.engine;
  *
  * @author mbarnas
  */
-public enum GameResult {
+public enum GameState {
     Continuing,
     PlayerBusted,
     PlayerWin,

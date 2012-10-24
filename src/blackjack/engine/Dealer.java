@@ -3,29 +3,15 @@
  */
 package blackjack.engine;
 
-import java.util.List;
-
 /**
  *
  * @author mbarnas
  */
-public class Dealer implements CardHolder {
+public class Dealer implements GameParticipant {
 
-    private CardHand cards = new CardHand();
-    private Card visibleCard;
-    private boolean first = true;
 
     @Override
-    public void addCard(Card card) {
-        if (first) {
-            visibleCard = card;
-            first = false;
-        } 
-        this.cards.addCard(card);
-    }
-
-    @Override
-    public Move move() {
+    public Move move(CardHand cards) {
         final int sum = cards.softSum();
 
         if (sum >= 17) {
@@ -33,20 +19,5 @@ public class Dealer implements CardHolder {
         }
 
         return Move.Hit;
-    }
-
-    public Card getVisibleCard() {
-        return visibleCard;
-    }
-
-    public CardHand getCards() {
-        return this.cards;
-    }
-
-    @Override
-    public void reset() {
-        cards.reset();
-        first = true;
-        visibleCard = null;
     }
 }

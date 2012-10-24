@@ -4,6 +4,7 @@
  */
 package blackjack.simulation.player;
 
+import blackjack.engine.CardHand;
 import blackjack.engine.Move;
 
 /**
@@ -22,7 +23,7 @@ public class DealersStrategyPlayer extends BasePlayer {
 	}
 
 	@Override
-	public Move move() {
+	public Move move(CardHand cards) {
 		final int sum = cards.softSum();
 
         if (sum >= 17) {

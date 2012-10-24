@@ -57,7 +57,7 @@ class StubPlayer implements Player {
         cards.reset()
     }
     
-    void setGame(Game game) {
+    void addGame(Game game) {
         
     }
 }

@@ -1,6 +1,4 @@
-basic player strategie test pres tabulku
-doubling
 simulace na zjisteni spravnych strategii
+nemichat po kazdem kole
 splitting
-test pro basicstrategyplayer
 insurance

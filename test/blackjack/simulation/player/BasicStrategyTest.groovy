@@ -57,7 +57,7 @@ class BasicStrategyTest {
                     def game = mock(Game.class)
                     when(game.getDealerUpCard()).thenReturn(dealerCard)
                     
-                    player.setGame(game)
+                    player.addGame(game)
                     
                     println "Player's cards: ${c}, ${c2}, dealers card ${dealerCard}"
                     def move = player.move()

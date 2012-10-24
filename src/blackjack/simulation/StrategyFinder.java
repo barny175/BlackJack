@@ -6,7 +6,7 @@ package blackjack.simulation;
 
 import blackjack.engine.Card;
 import blackjack.engine.Engine;
-import blackjack.engine.GameResult;
+import blackjack.engine.GameState;
 import blackjack.simulation.player.BasePlayer;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import blackjack.simulation.player.HitPlayer;
@@ -41,7 +41,7 @@ public class StrategyFinder {
 		for (int i = 0; i < 10000; i++) {
 			this.engine.newGame();
 
-			while (this.engine.getGameState() == GameResult.Continuing) {
+			while (this.engine.getGameState() == GameState.Continuing) {
 				this.engine.start();
 			}
 

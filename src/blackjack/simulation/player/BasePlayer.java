@@ -11,7 +11,6 @@ import blackjack.engine.*;
  * @author mbarnas
  */
 public abstract class BasePlayer implements Player {
-	protected CardHand cards = new CardHand();
 	private int money;
     protected Game currentGame;
 
@@ -20,32 +19,17 @@ public abstract class BasePlayer implements Player {
 	}
 
 	@Override
-	public void addCard(Card card) {
-		this.cards.addCard(card);
-	}
-
-	@Override
 	public void addMoney(int amount) {
 		this.money += amount;
 	}
 
     @Override
-    public void setGame(Game game) {
+    public void addGame(Game game) {
         this.currentGame = game;
     }
 
 	@Override
-	public CardHand getCards() {
-		return cards;
-	}
-
-	@Override
-	public void reset() {
-		this.cards = new CardHand();
-	}
-
-	@Override
-	public void result(GameResult result) {
+	public void result(GameState result) {
 	}
 	
 	public int getMoney() {

@@ -3,8 +3,6 @@
  */
 package blackjack.engine;
 
-import java.util.List;
-
 /**
  *
  * @author mbarnas
@@ -15,190 +13,210 @@ public class Engine {
     private Dealer dealer = new Dealer();
     private CardSource cardSource;
     private int bet;
-    private GameResult gameState = GameResult.Continuing;
-
-    public GameResult getGameState() {
-        return gameState;
-    }
+	private Card dealerUpCard;
+	private CurrentGame game;
+	private CardHand dealerCards;
 
     public Engine(CardSource cardSource) {
         this.cardSource = cardSource;
     }
 
     public Card getDealerUpCard() {
-        return this.dealer.getVisibleCard();
+        return this.dealerUpCard;
     }
 
     public void addPlayer(Player player) {
         this.player = player;
     }
 
-    public void newGame() {
-        reset();
+    public CurrentGame newGame() {
+		cardSource.shuffle();
+
+        this.game = new CurrentGame(player);
+
+        this.player.addGame(game);
+		
+		dealerCards = new CardHand();
 
         bets();
 
         firstDeal();
+		
+		return this.game;
     }
-
-    private void reset() {
-        cardSource.shuffle();
-
-        resetPlayers();
-
-        this.gameState = GameResult.Continuing;
-
-        this.player.setGame(new CurrentGame());
-    }
-
+	
     public void start() {
-        checkBlackJack();
+        checkBlackJack(this.game);
         boolean busted = false;
 
-        if (this.gameState == GameResult.Continuing) {
+        if (game.gameState() == GameState.Continuing) {
             Move move;
             do {
-                move = player.move();
+                move = player.move(game.playerCards());
                 if (move == Move.Hit || move == Move.Double) {
-                    deal(player);
+                    deal(game.playerCards());
 
                     if (move == Move.Double) {
                         this.bet *= 2;
                     }
-                    busted = checkBusted(player);
+                    busted = checkBusted(game.playerCards());
                 }
             } while (move == Move.Hit && !busted);
 
             if (!busted) {
                 Move dealerMove;
                 do {
-                    dealerMove = dealer.move();
+                    dealerMove = dealer.move(this.getDealerCards());
                     if (dealerMove == Move.Hit) {
-                        deal(dealer);
+                        deal(getDealerCards());
 
-                        if (checkBusted(dealer)) {
+                        if (checkBusted(getDealerCards())) {
                             break;
                         }
                     }
                 } while (dealerMove != Move.Stand);
             }
             
-            checkGameState();
+            checkGameState(game);
         }
         
         endGame();
     }
 
     protected void firstDeal() {
-        deal(player);
-        deal(dealer);
+        deal(game.playerCards());
+        deal(dealerCards);
 
-        deal(player);
-        deal(dealer);
+        deal(game.playerCards());
+        dealerUpCard = deal(dealerCards);
     }
 
-    protected void deal(CardHolder cardHolder) {
+    protected Card deal(CardHand cards) {
         Card card = cardSource.next();
         if (card == null) {
             throw new LastCardException();
         }
 
-        cardHolder.addCard(card);
+        cards.addCard(card);
+		
+		return card;
     }
 
     private void bets() {
         bet = player.bet();
     }
 
-    private void payPrizes() {
-        switch (this.gameState) {
+    private void payPrizes(Game game) {
+        switch (game.gameState()) {
             case PlayerBlackJack:
-                this.player.addMoney(bet * 3 / 2);
+                game.getPlayer().addMoney(bet * 3 / 2);
                 break;
             case Push:
                 break;
             case PlayerWin:
-                this.player.addMoney(bet);
+                game.getPlayer().addMoney(bet);
                 break;
             case PlayerBusted:
             case DealerWin:
-                this.player.addMoney(-1 * bet);
+                game.getPlayer().addMoney(-1 * bet);
                 break;
         }
     }
 
-    private void checkBlackJack() {
-        CardHand sumPlayer = player.getCards();
-        CardHand sumDealer = dealer.getCards();
+    private void checkBlackJack(Game game) {
+        CardHand sumPlayer = game.playerCards();
+        CardHand sumDealer = dealerCards;
 
         if (sumPlayer.isBlackJack()) {
             if (sumDealer.isBlackJack()) {
-                this.gameState = GameResult.Push;
+                game.setGameState(GameState.Push);
             } else {
-                this.gameState = GameResult.PlayerBlackJack;
+                game.setGameState(GameState.PlayerBlackJack);
             }
         } else {
             if (sumDealer.isBlackJack()) {
-                this.gameState = GameResult.DealerWin;
+                game.setGameState(GameState.DealerWin);
             }
         }
     }
 
-    private boolean checkBusted(CardHolder player) {
-        if (player.getCards().softSum() > 21) {
+    private boolean checkBusted(CardHand cards) {
+        if (cards.softSum() > 21) {
             return true;
         }
 
         return false;
     }
 
-    private void checkGameState() {
-        CardHand sumPlayer = player.getCards();
-        CardHand sumDealer = dealer.getCards();
+    private void checkGameState(Game game) {
+        CardHand sumPlayer = game.playerCards();
+        CardHand sumDealer = dealerCards;
 
         if (sumPlayer.softSum() > 21) {
-            gameState = GameResult.PlayerBusted;
+            game.setGameState(GameState.PlayerBusted);
             return;
         }
 
         if (sumDealer.softSum() > 21) {
-            this.gameState = GameResult.PlayerWin;
+            game.setGameState(GameState.PlayerWin);
             return;
         }
 
         if (sumPlayer.softSum() > sumDealer.softSum()) {
-            this.gameState = GameResult.PlayerWin;
+            game.setGameState(GameState.PlayerWin);
         } else if (sumPlayer.softSum() == sumDealer.softSum()) {
-            this.gameState = GameResult.Push;
+            game.setGameState(GameState.Push);
         } else {
-            this.gameState = GameResult.DealerWin;
+            game.setGameState(GameState.DealerWin);
         }
-    }
-
-    private void resetPlayers() {
-        dealer.reset();
-        player.reset();
     }
 
     private void endGame() {
-        payPrizes();
+        payPrizes(this.game);
 
-        player.result(gameState);
+        player.result(game.gameState());
     }
 
     public CardHand getDealerCards() {
-        return dealer.getCards();
-
-
-
-
+        return dealerCards;
     }
 
+	public GameState getGameState() {
+		return this.game.gameState();
+	}
+
     private class CurrentGame implements Game {
+		private Player player;
+		private CardHand playerCards = new CardHand();
+		private GameState gameState = GameState.Continuing;
+
+		public CurrentGame(Player player) {
+			this.player = player;
+		}
 
         @Override
-        public Card getDealerUpCard() {
-            return dealer.getVisibleCard();
+        public Card dealerUpCard() {
+            return dealerUpCard;
         }
+
+		@Override
+		public CardHand playerCards() {
+			return playerCards;
+		}
+
+		@Override
+		public GameState gameState() {
+			return gameState;
+		}
+
+		@Override
+		public Player getPlayer() {
+			return player;
+		}
+
+		@Override
+		public void setGameState(GameState gameState) {
+			this.gameState = gameState;
+		}
     }
 }

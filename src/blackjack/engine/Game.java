@@ -8,5 +8,13 @@ package blackjack.engine;
  * @author mbarnas
  */
 public interface Game {
-    Card getDealerUpCard();
+    Card dealerUpCard();
+	
+	CardHand playerCards();
+	
+	GameState gameState();
+	
+	void setGameState(GameState gameState);
+
+	Player getPlayer();
 }

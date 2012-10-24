@@ -16,10 +16,12 @@ public class CardShuffler implements CardSource {
     private Random rand;
     public final int CARDS_IN_DECK = 13;
     protected Set<Integer> used;
+	protected final int allCards;
     
     public CardShuffler(int decks) {
         this.decks = decks;
-        
+		this.allCards = 4 * CARDS_IN_DECK * decks;
+		
         this.rand = new Random(System.currentTimeMillis());
         this.used = new HashSet<Integer>(decks * CARDS_IN_DECK);
     }
@@ -31,8 +33,6 @@ public class CardShuffler implements CardSource {
     
     @Override
     public Card next() {
-        final int allCards = 4 * CARDS_IN_DECK * decks;
-        
         if (used.size() == allCards)
             return null;
         

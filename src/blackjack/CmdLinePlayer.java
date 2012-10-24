@@ -12,7 +12,6 @@ import java.io.IOException;
  */
 public class CmdLinePlayer implements Player{
     private int amount;
-    private CardHand cards = new CardHand();
     private Game currentGame;
 
     public CmdLinePlayer(int amount) {
@@ -20,23 +19,18 @@ public class CmdLinePlayer implements Player{
     }
     
     @Override
-    public void reset() {
-        this.cards.reset();
-    }
-    
-    @Override
     public int bet() {
-        int bet = 0;
-        while (bet <= 0  || bet > amount) {
-            try {
-                System.out.print("Bet:");
-                String s = BlackJack.reader.readLine();
-                bet = s.isEmpty() ? 10 : Integer.parseInt(s);
-            } catch (IOException ex) {
-            } catch (NumberFormatException ex) {
-                
-            }
-        }
+        int bet = 10;
+//        while (bet <= 0  || bet > amount) {
+//            try {
+//                System.out.print("Bet:");
+//                String s = BlackJack.reader.readLine();
+//                bet = s.isEmpty() ? 10 : Integer.parseInt(s);
+//            } catch (IOException ex) {
+//            } catch (NumberFormatException ex) {
+//                
+//            }
+//        }
     
         return bet;
     }
@@ -47,19 +41,14 @@ public class CmdLinePlayer implements Player{
     }
 
     @Override
-    public void addCard(Card card) {
-        this.cards.addCard(card);
-    }
-
-    @Override
-    public void result(GameResult result) {
+    public void result(GameState result) {
         BlackJack.println("Player credit: " + getMoney());
     }
 
     @Override
-    public Move move() {
-        BlackJack.printCards(getCards());
-        BlackJack.println("Dealer card: " + this.currentGame.getDealerUpCard());
+    public Move move(CardHand cards) {
+        BlackJack.printCards(cards);
+        BlackJack.println("Dealer card: " + this.currentGame.dealerUpCard());
         while (true) {
             try {
                 char c = BlackJack.getChoice("Move", "hsd");
@@ -79,12 +68,7 @@ public class CmdLinePlayer implements Player{
     }
 
     @Override
-    public void setGame(Game game) {
+    public void addGame(Game game) {
         this.currentGame = game;
-    }
-
-    @Override
-    public CardHand getCards() {
-        return cards;
     }
 }

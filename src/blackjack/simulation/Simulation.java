@@ -4,8 +4,8 @@
  */
 package blackjack.simulation;
 
-import blackjack.engine.CardShuffler;
 import blackjack.engine.Engine;
+import blackjack.engine.shufflers.TwoThirdsShuffler;
 import blackjack.simulation.player.*;
 
 /**
@@ -13,7 +13,7 @@ import blackjack.simulation.player.*;
  * @author mbarnas
  */
 public class Simulation {
-    public static final int initialMoney = 20000;
+    public static final int initialMoney = 200000;
 	private Engine engine;
 	private BasePlayer player;
 	
@@ -27,24 +27,25 @@ public class Simulation {
 	}
 
 	public Simulation(BasePlayer player) {
-		this.engine = new Engine(new CardShuffler(6));
+		this.engine = new Engine(new TwoThirdsShuffler(6));
 		this.player = player;
 		this.engine.addPlayer(player);
 	}
 	
 	public void run() {
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100000; i++) {
 			this.engine.newGame();
 
 			this.engine.start();
 			
 			if (this.player.getMoney() < 10) {
-                System.out.print("Short of money after " + i + " rounds. ");
+                System.out.println(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
 				break;
             }
 		}
         
         final int result = this.player.getMoney();
-		System.out.println("Final result for " + player.getName() + ": " + result + " (" + result * 100 / initialMoney + "%)");
+		if (result > 10)
+			System.out.println(String.format("%-20s: %d (%d%%)", player.getName(), result, result * 100 / initialMoney));
 	}
 }

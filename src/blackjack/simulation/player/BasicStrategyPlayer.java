@@ -5,6 +5,7 @@
 package blackjack.simulation.player;
 
 import blackjack.engine.Card;
+import blackjack.engine.CardHand;
 import blackjack.engine.Move;
 
 /**
@@ -49,16 +50,16 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     @Override
-    public Move move() {
+    public Move move(CardHand cards) {
         if (cards.isBlackJack()) {
             return Move.Stand;
         }
 
         int aces = cards.aces();
         if (aces == 0) {
-            return noAceRules();
+            return noAceRules(cards);
         } else {
-            return aceRules();
+            return aceRules(cards);
         }
     }
 
@@ -67,8 +68,8 @@ public class BasicStrategyPlayer extends BasePlayer {
         return "Basic Strategy";
     }
 
-    private Move noAceRules() {
-        Integer hardSum = this.cards.hardSum();
+    private Move noAceRules(CardHand cards) {
+        Integer hardSum = cards.hardSum();
 
         if (hardSum < 7) {
             return Move.Hit;
@@ -80,11 +81,11 @@ public class BasicStrategyPlayer extends BasePlayer {
         return findMove(hardSum);
     }
 
-    private Move aceRules() {
-        Integer sum = this.cards.softSum() - Card.ACE.getSoftValue();
+    private Move aceRules(CardHand cards) {
+        Integer sum = cards.softSum() - Card.ACE.getSoftValue();
 		
 		if (sum > 9)
-			return noAceRules();
+			return noAceRules(cards);
 
         String toFind;
         if (sum == 1) {
@@ -97,7 +98,7 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     private Move findMove(Object toFind) {
-        int movePos = this.currentGame.getDealerUpCard().getValue() - 1;
+        int movePos = this.currentGame.dealerUpCard().getValue() - 1;
         int row = getRowPos(toFind);
 
         return Move.valueOf((String) strategy[row][movePos == 0 ? (strategy[row].length - 1) : movePos]);

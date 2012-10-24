@@ -18,7 +18,6 @@ public class TrainingPlayer implements Player {
         cmdLinePlayer = new CmdLinePlayer(amount);
         basicStrategyPlayer = new BasicStrategyPlayer(amount);
     }
-
     
     @Override
     public int bet() {
@@ -31,40 +30,23 @@ public class TrainingPlayer implements Player {
     }
 
     @Override
-    public void result(GameResult result) {
+    public void result(GameState result) {
         cmdLinePlayer.result(result);
     }
 
     @Override
-    public void setGame(Game game) {
-        basicStrategyPlayer.setGame(game);
-        cmdLinePlayer.setGame(game);
+    public void addGame(Game game) {
+        basicStrategyPlayer.addGame(game);
+        cmdLinePlayer.addGame(game);
     }
 
     @Override
-    public void addCard(Card card) {
-        cmdLinePlayer.addCard(card);
-        basicStrategyPlayer.addCard(card);
-    }
-
-    @Override
-    public void reset() {
-        cmdLinePlayer.reset();
-        basicStrategyPlayer.reset();
-    }
-
-    @Override
-    public Move move() {
-        Move move = cmdLinePlayer.move();
-        Move basicStrMove = basicStrategyPlayer.move();
+    public Move move(CardHand cards) {
+        Move move = cmdLinePlayer.move(cards);
+        Move basicStrMove = basicStrategyPlayer.move(cards);
         if (basicStrMove != move) {
             BlackJack.println("Basic strategy suggests " + basicStrMove + "!!!");
         }
         return move;
-    }
-
-    @Override
-    public CardHand getCards() {
-        return cmdLinePlayer.getCards();
     }
 }
