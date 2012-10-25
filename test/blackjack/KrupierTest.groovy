@@ -16,38 +16,29 @@ class KrupierTest {
 	@Test
     void move() {
         def krupier = new Dealer()
-        krupier.addCard(Card.TWO)
-        assertEquals(Move.Hit, krupier.move())
+        assertEquals(Move.Hit, krupier.move(Utils.getCardHand([Card.TWO])))
         
-        krupier.addCard(Card.TEN)
-        assertEquals(Move.Hit, krupier.move())
+        assertEquals(Move.Hit, krupier.move(Utils.getCardHand([Card.TWO, Card.TEN])))
 
-        krupier.addCard(Card.FOUR)
-        assertEquals(Move.Hit, krupier.move())
+        assertEquals(Move.Hit, krupier.move(Utils.getCardHand([Card.TWO, Card.TEN, Card.FOUR])))
         
-        krupier.addCard(Card.ACE)
-        assertEquals(Move.Stand, krupier.move())
+        assertEquals(Move.Stand, krupier.move(Utils.getCardHand([Card.TWO, Card.TEN, Card.FOUR, Card.ACE])))
     }
     
     @Test
     void ace() {
         def krupier = new Dealer()
-        krupier.addCard(Card.ACE)
-        assertEquals(Move.Hit, krupier.move())
+        assertEquals(Move.Hit, krupier.move(Utils.getCardHand([Card.ACE])))
         
-        krupier.addCard(Card.TWO)
-        assertEquals(Move.Hit, krupier.move())
+        assertEquals(Move.Hit, krupier.move(Utils.getCardHand([Card.ACE, Card.TWO])))
         
-        krupier.addCard(Card.FIVE)
-        assertEquals(Move.Stand, krupier.move())
+        assertEquals(Move.Stand, krupier.move(Utils.getCardHand([Card.ACE, Card.TWO, Card.FIVE])))
     }
     
     @Test
     void twoAces() {
         def krupier = new Dealer()
-        krupier.addCard(Card.ACE)
-        krupier.addCard(Card.ACE)
-        assertEquals(Move.Hit, krupier.move())
+        assertEquals(Move.Hit, krupier.move(Utils.getCardHand([Card.ACE,Card.ACE])))
     }
 }
 

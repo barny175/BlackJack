@@ -50,18 +50,20 @@ class BasicStrategyTest {
         for (Card c : Card.ACE..Card.KING) {
             for (Card c2: Card.TWO..Card.NINE) {
                 def player = new BasicStrategyPlayer(100)
-                player.addCard(c)
-                player.addCard(c2)
+                
+                CardHand cards = new CardHand()
+                cards.addCard(c)
+                cards.addCard(c2)
                 
                 for (Card dealerCard : Card.ACE..Card.KING) {
                     def game = mock(Game.class)
-                    when(game.getDealerUpCard()).thenReturn(dealerCard)
+                    when(game.dealerUpCard()).thenReturn(dealerCard)
                     
                     player.addGame(game)
                     
                     println "Player's cards: ${c}, ${c2}, dealers card ${dealerCard}"
-                    def move = player.move()
-                    def expected = getBasicStrategyMove(player.getCards(), dealerCard)
+                    def move = player.move(cards)
+                    def expected = getBasicStrategyMove(cards, dealerCard)
                     assertEquals(expected, move)
                 }
             }

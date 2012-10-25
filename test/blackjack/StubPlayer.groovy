@@ -13,9 +13,10 @@ import java.util.List
  */
 class StubPlayer implements Player {
     def cards = new CardHand()
-    GameResult res
+    GameState res
     int money
     def move = [Move.Hit]
+    Game game
     
     StubPlayer(int startMoney) {
         money = startMoney
@@ -37,7 +38,7 @@ class StubPlayer implements Player {
         money += amount
     }
     
-    void result(GameResult res) {
+    void result(GameState res) {
         this.res = res
     }
 
@@ -45,7 +46,7 @@ class StubPlayer implements Player {
         move = m
     }
     
-    Move move() {
+    Move move(CardHand cards) {
         return move.remove(0)
     }
     
@@ -58,6 +59,6 @@ class StubPlayer implements Player {
     }
     
     void addGame(Game game) {
-        
+        this.game = game
     }
 }

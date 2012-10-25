@@ -85,10 +85,10 @@ public class Engine {
 
     protected void firstDeal() {
         deal(game.playerCards());
-        deal(dealerCards);
+        dealerUpCard = deal(dealerCards);
 
         deal(game.playerCards());
-        dealerUpCard = deal(dealerCards);
+        deal(dealerCards);
     }
 
     protected Card deal(CardHand cards) {
