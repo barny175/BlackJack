@@ -34,15 +34,15 @@ public class BasicStrategyPlayer extends BasePlayer {
         {"A7", "Stand", "Double", "Double", "Double", "Double", "Stand", "Stand", "Hit", "Hit", "Hit"},
         {"A8", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
         {"A9", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
-        //        {2,2, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
-        //        {3,3, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
-        //        {4,4, "Hit", "Hit", "Hit", "Split", "Split", "Hit", "Hit", "Hit", "Hit", "Hit"},
-        //        {5,5, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
-        //        {6,6, "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit", "Hit"},
-        //        {7,7, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
-        //        {8,8, "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"},
-        //        {9,9, "Split", "Split", "Split", "Split", "Split", "Stand", "Split", "Split", "Stand", "Stand"},
-        //        {T,T, "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+        {22, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+        {33, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+        {44, "Hit", "Hit", "Hit", "Split", "Split", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {55, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
+        {66, "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {77, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+        {88, "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"},
+        {99, "Split", "Split", "Split", "Split", "Split", "Stand", "Split", "Split", "Stand", "Stand"},
+        {"TT", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
         {"AA", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"}};
 
     public BasicStrategyPlayer(int money) {
@@ -69,6 +69,9 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     private Move noAceRules(CardHand cards) {
+        if (cards.count() == 2 && cards.get(0).getValue() == cards.get(1).getValue())
+            return sameCards(cards.get(0));
+        
         Integer hardSum = cards.hardSum();
 
         if (hardSum < 7) {
@@ -113,5 +116,14 @@ public class BasicStrategyPlayer extends BasePlayer {
             }
         }
         return row;
+    }
+
+    private Move sameCards(Card card) {
+        if (card.getValue() == Card.TEN.getValue())
+            return findMove("TT");
+        else {
+            final int twoSameDigits = card.getValue() * 10 + card.getValue();
+            return findMove(twoSameDigits);
+        }
     }
 }

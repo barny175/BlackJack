@@ -77,4 +77,12 @@ public class CardHand {
     public int aces() {
         return aceCount; 
     }
+
+    public int count() {
+        return cards.size();
+    }
+    
+    public Card get(int index) {
+        return cards.get(index);
+    }
 }

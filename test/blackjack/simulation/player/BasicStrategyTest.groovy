@@ -33,15 +33,15 @@ class BasicStrategyTest {
         ["A7", "S", "DS", "DS", "DS", "DS", "S", "S", "H", "H", "H"],
         ["A8", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
         ["A9", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
-//        [2,2, "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
-//        [3,3, "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
-//        [4,4, "H", "H", "H", "P", "P", "H", "H", "H", "H", "H"],
-//        [5,5, "D", "D", "D", "D", "D", "D", "D", "D", "H", "H"],
-//        [6,6, "P", "P", "P", "P", "P", "H", "H", "H", "H", "H"],
-//        [7,7, "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
-//        [8,8, "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"],
-//        [9,9, "P", "P", "P", "P", "P", "S", "P", "P", "S", "S"],
-//        [T,T, "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
+        ["22", "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
+        ["33", "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
+        ["44", "H", "H", "H", "P", "P", "H", "H", "H", "H", "H"],
+        ["55", "D", "D", "D", "D", "D", "D", "D", "D", "H", "H"],
+        ["66", "P", "P", "P", "P", "P", "H", "H", "H", "H", "H"],
+        ["77", "P", "P", "P", "P", "P", "P", "H", "H", "H", "H"],
+        ["88", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"],
+        ["99", "P", "P", "P", "P", "P", "S", "P", "P", "S", "S"],
+        ["TT", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S"],
         ["AA", "P", "P", "P", "P", "P", "P", "P", "P", "P", "P"]
     ]
     
@@ -75,14 +75,22 @@ class BasicStrategyTest {
         
         Closure cl
         if (playerCards.aces() == 0) {
-        
-            if (hardSum < 7)
-                return Move.Hit
+            if (playerCards.count() == 2 && playerCards.get(0).getValue() == playerCards.get(1).getValue()) {
+                def card = playerCards.get(0).getValue()
+                cl = {
+                    def toSearch = card == Card.TEN.getValue() ? "TT": "${card}${card}"
+                    it[0] == toSearch
+                }
+            } else {            
+            
+                if (hardSum < 7)
+                    return Move.Hit
                 
-            if (hardSum > 17)
-                return Move.Stand
+                if (hardSum > 17)
+                    return Move.Stand
                 
-            cl = { it[0] == hardSum }
+                cl = { it[0] == hardSum }
+            }
         } else {
             cl = { 
                 def sum = hardSum - Card.ACE.getValue()
@@ -109,8 +117,7 @@ class BasicStrategyTest {
             case "DS":
                 return Move.Double
             case "P":
-//                return Move.Split
-                return Move.Hit
+                return Move.Split
         }
     }
 }
