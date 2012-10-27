@@ -64,38 +64,74 @@ class BasicStrategyTest {
             }
         }
     }
+
+    @Test
+    void threeCardTest() {
+        for (Card c : Card.ACE..Card.KING) {
+            for (Card c2: Card.TWO..Card.NINE) {
+                for (Card c3: Card.TWO..Card.NINE) {
+                    def player = new BasicStrategyPlayer(100)
+                
+                    CardHand cards = new CardHand()
+                    cards.addCard(c)
+                    cards.addCard(c2)
+                    cards.addCard(c3)
+                
+                    for (Card dealerCard : Card.ACE..Card.KING) {
+                        println "Player's cards: ${c}, ${c2}, ${c3}, dealers card ${dealerCard}"
+                        def move = player.move(cards, dealerCard)
+                        def expected = getBasicStrategyMove(cards, dealerCard)
+                        assertEquals(expected, move)
+                    }
+                }
+            }
+        }
+    }
     
     private Move getBasicStrategyMove(playerCards, dealerCard) {
         int hardSum = playerCards.hardSum()
         
-        Closure cl
+        def toSearch
+        
         if (playerCards.aces() == 0) {
-            if (playerCards.count() == 2 && playerCards.get(0).getValue() == playerCards.get(1).getValue()) {
-                def card = playerCards.get(0).getValue()
-                cl = {
-                    def toSearch = card == Card.TEN.getValue() ? "TT": "${card}${card}"
-                    it[0] == toSearch
-                }
-            } else {            
-            
-                if (hardSum < 7)
-                    return Move.Hit
-                
-                if (hardSum > 17)
-                    return Move.Stand
-                
-                cl = { it[0] == hardSum }
-            }
+            return noAce(playerCards, dealerCard)
         } else {
-            cl = { 
-                def sum = hardSum - Card.ACE.getValue()
+            def sum = hardSum - Card.ACE.getValue()
+            if (sum >= 10)
+                return noAce(playerCards, dealerCard)
+            else { 
                 if (sum == 1)
-                    sum = "A"
-                it[0] == "A${sum}"
+                sum = "A"
+            
+                toSearch = "A${sum}"
             }
         }
         
-        def row = strategy.find(cl)
+        def row = strategy.find { it[0] == toSearch }
+        
+        def movePos = dealerCard.getValue() - 1
+        letterToMove(row[movePos == 0 ? -1 : movePos])
+    }
+    
+    private Move noAce(playerCards, dealerCard) {
+        int hardSum = playerCards.hardSum()
+        
+        def toSearch
+        
+        if (playerCards.count() == 2 && playerCards.get(0).getValue() == playerCards.get(1).getValue()) {
+            def card = playerCards.get(0).getValue()
+            toSearch = card == Card.TEN.getValue() ? "TT": "${card}${card}"
+        } else {            
+            
+            if (hardSum < 7)
+            return Move.Hit
+                
+            if (hardSum > 17)
+            return Move.Stand
+                
+            toSearch = hardSum
+        }
+        def row = strategy.find { it[0] == toSearch }
         
         def movePos = dealerCard.getValue() - 1
         letterToMove(row[movePos == 0 ? -1 : movePos])
@@ -104,15 +140,15 @@ class BasicStrategyTest {
     private Move letterToMove(String letter) {
         switch (letter) {
             case "H":
-                return Move.Hit
+            return Move.Hit
             case "D":
-                return Move.Double
+            return Move.Double
             case "S":
-                return Move.Stand
+            return Move.Stand
             case "DS":
-                return Move.Double
+            return Move.Double
             case "P":
-                return Move.Split
+            return Move.Split
         }
     }
 }

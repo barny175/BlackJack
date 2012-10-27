@@ -85,7 +85,7 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     private Move aceRules(CardHand cards, Card dealerUpCard) {
-        Integer sum = cards.softSum() - Card.ACE.getSoftValue();
+        Integer sum = cards.hardSum() - Card.ACE.getValue();
 		
 		if (sum > 9)
 			return noAceRules(cards, dealerUpCard);
