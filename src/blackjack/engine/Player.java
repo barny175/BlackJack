@@ -7,12 +7,12 @@ package blackjack.engine;
  *
  * @author mbarnas
  */
-public interface Player extends GameParticipant {
+public interface Player {
     int bet();
 
     void addMoney(int amount);
     
     void result(GameState result);
 
-    void addGame(Game game);
+    Move move(CardHand cards, Card dealerUpCard);
 }

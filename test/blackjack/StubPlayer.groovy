@@ -16,7 +16,6 @@ class StubPlayer implements Player {
     GameState res
     int money
     def move = [Move.Hit]
-    Game game
     
     StubPlayer(int startMoney) {
         money = startMoney
@@ -46,7 +45,7 @@ class StubPlayer implements Player {
         move = m
     }
     
-    Move move(CardHand cards) {
+    Move move(CardHand cards, Card dealersUpCard) {
         return move.remove(0)
     }
     
@@ -56,9 +55,5 @@ class StubPlayer implements Player {
     
     void reset() {
         cards.reset()
-    }
-    
-    void addGame(Game game) {
-        this.game = game
     }
 }

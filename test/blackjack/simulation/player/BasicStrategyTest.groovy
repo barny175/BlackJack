@@ -56,13 +56,8 @@ class BasicStrategyTest {
                 cards.addCard(c2)
                 
                 for (Card dealerCard : Card.ACE..Card.KING) {
-                    def game = mock(Game.class)
-                    when(game.dealerUpCard()).thenReturn(dealerCard)
-                    
-                    player.addGame(game)
-                    
                     println "Player's cards: ${c}, ${c2}, dealers card ${dealerCard}"
-                    def move = player.move(cards)
+                    def move = player.move(cards, dealerCard)
                     def expected = getBasicStrategyMove(cards, dealerCard)
                     assertEquals(expected, move)
                 }

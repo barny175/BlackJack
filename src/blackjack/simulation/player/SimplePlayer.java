@@ -4,6 +4,7 @@
  */
 package blackjack.simulation.player;
 
+import blackjack.engine.Card;
 import blackjack.engine.CardHand;
 import blackjack.engine.Move;
 
@@ -18,7 +19,7 @@ public class SimplePlayer extends BasePlayer  {
 	}
 
 	@Override
-	public Move move(CardHand cards) {
+	public Move move(CardHand cards, Card dealerUpCard) {
 		if (cards.isBlackJack())
 			return Move.Stand;
 		

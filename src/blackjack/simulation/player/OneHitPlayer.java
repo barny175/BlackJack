@@ -4,6 +4,7 @@
  */
 package blackjack.simulation.player;
 
+import blackjack.engine.Card;
 import blackjack.engine.CardHand;
 import blackjack.engine.Move;
 
@@ -20,7 +21,7 @@ public class OneHitPlayer extends BasePlayer {
 
 	
 	@Override
-	public Move move(CardHand cards) {
+	public Move move(CardHand cards, Card dealerUpCard) {
 		if (first) {
 			first = false;
 			return Move.Hit;

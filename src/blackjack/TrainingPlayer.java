@@ -35,15 +35,9 @@ public class TrainingPlayer implements Player {
     }
 
     @Override
-    public void addGame(Game game) {
-        basicStrategyPlayer.addGame(game);
-        cmdLinePlayer.addGame(game);
-    }
-
-    @Override
-    public Move move(CardHand cards) {
-        Move move = cmdLinePlayer.move(cards);
-        Move basicStrMove = basicStrategyPlayer.move(cards);
+    public Move move(CardHand cards, Card dealerUpCard) {
+        Move move = cmdLinePlayer.move(cards, dealerUpCard);
+        Move basicStrMove = basicStrategyPlayer.move(cards, dealerUpCard);
         if (basicStrMove != move) {
             BlackJack.println("Basic strategy suggests " + basicStrMove + "!!!");
         }

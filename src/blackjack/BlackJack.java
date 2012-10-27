@@ -31,7 +31,7 @@ public class BlackJack {
             engine.start();
             
             printCards(game);
-            println("Result: " + engine.getGameState());
+            println("Result: " + game.gameState());
             
             c = getChoice("Another round", "yn");
         }

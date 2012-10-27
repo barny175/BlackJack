@@ -9,9 +9,10 @@ package blackjack.engine;
  */
 public enum GameState {
     Continuing,
+    Split,
     PlayerBusted,
     PlayerWin,
     DealerWin,
     PlayerBlackJack,
-    Push;    
+    Push;
 }

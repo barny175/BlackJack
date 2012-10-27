@@ -12,7 +12,6 @@ import java.io.IOException;
  */
 public class CmdLinePlayer implements Player{
     private int amount;
-    private Game currentGame;
 
     public CmdLinePlayer(int amount) {
         this.amount = amount;
@@ -46,9 +45,9 @@ public class CmdLinePlayer implements Player{
     }
 
     @Override
-    public Move move(CardHand cards) {
+    public Move move(CardHand cards, Card dealerUpCard) {
         BlackJack.printCards(cards);
-        BlackJack.println("Dealer card: " + this.currentGame.dealerUpCard());
+        BlackJack.println("Dealer card: " + dealerUpCard);
         while (true) {
             try {
                 char c = BlackJack.getChoice("Move", "hsd");
@@ -65,10 +64,5 @@ public class CmdLinePlayer implements Player{
 
     int getMoney() {
         return this.amount;
-    }
-
-    @Override
-    public void addGame(Game game) {
-        this.currentGame = game;
     }
 }

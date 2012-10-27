@@ -8,6 +8,8 @@ import org.junit.Test
 import static org.junit.Assert.*
 import blackjack.engine.*
 import static org.mockito.Mockito.*
+import static blackjack.Utils.*
+
 /**
  *
  * @author mbarnas
@@ -50,11 +52,11 @@ class EngineTest {
         when(player.bet()).thenReturn(10)
         
         engine.addPlayer(player)
-        engine.newGame()
+        Game game = engine.newGame()
         engine.start()
         
         verify(player, never()).addMoney(0)
-        assertEquals(GameState.Push, engine.getGameState())
+        assertEquals(GameState.Push, game.gameState())
     }
     
     @Test
@@ -66,11 +68,11 @@ class EngineTest {
         when(player.bet()).thenReturn(10)
         
         engine.addPlayer(player)
-        engine.newGame()
+        Game game = engine.newGame()
         engine.start()
         
         verify(player).result(GameState.DealerWin)
-        assertEquals(GameState.DealerWin, engine.getGameState())    
+        assertEquals(GameState.DealerWin, game.gameState())    
     }
     
     
@@ -96,7 +98,7 @@ class EngineTest {
         def engine = new Engine(cardSrc)
         
         Player player = mock(Player.class)
-        when(player.move(any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
+        when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
         when(player.bet()).thenReturn(10)
         
         engine.addPlayer(player)
@@ -172,7 +174,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         engine.addPlayer(player)
-        when(player.move(any())).thenReturn(Move.Stand)
+        when(player.move(any(), any())).thenReturn(Move.Stand)
 
         engine.newGame()
         
@@ -188,13 +190,13 @@ class EngineTest {
         def player = mock(Player.class)
         
         engine.addPlayer(player)
-        when(player.move(any())).thenReturn(Move.Stand)
+        when(player.move(any(), any())).thenReturn(Move.Stand)
 
         engine.newGame()
         
         engine.start();
         
-        verify(player, times(1)).move(any())        
+        verify(player, times(1)).move(any(), any())        
     }
     
     @Test
@@ -219,7 +221,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
-        when(player.move(any())).thenReturn(Move.Double)
+        when(player.move(any(), any())).thenReturn(Move.Double)
         
         engine.addPlayer(player)
 
@@ -228,26 +230,7 @@ class EngineTest {
         
         verify(player, never()).addMoney(10)
         verify(player).result(GameState.PlayerWin)
-        verify(player, times(1)).move(any())
-    }
-    
-    private CardSource getCardSource(def cardsPlayer, def cardsDealer) {
-        assert cardsPlayer.size() == cardsDealer.size()
-        def mergedCards = []
-        cardsPlayer.size().times {
-            mergedCards[it * 2] = cardsPlayer[it]
-            mergedCards[it * 2 + 1] = cardsDealer[it]
-        }
-        
-        return getCardSource(mergedCards)
-    }
-    
-    private CardSource getCardSource(def cards) {
-        def cardSrc = mock(CardSource.class)
-        def w = when(cardSrc.next())
-        cards.each { w = w.thenReturn(it) }
-        w.thenReturn(null)
-        return cardSrc
+        verify(player, times(1)).move(any(), any())
     }
 }
 

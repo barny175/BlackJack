@@ -12,7 +12,6 @@ import blackjack.engine.*;
  */
 public abstract class BasePlayer implements Player {
 	private int money;
-    protected Game currentGame;
 
 	public BasePlayer(int money) {
 		this.money = money;
@@ -22,11 +21,6 @@ public abstract class BasePlayer implements Player {
 	public void addMoney(int amount) {
 		this.money += amount;
 	}
-
-    @Override
-    public void addGame(Game game) {
-        this.currentGame = game;
-    }
 
 	@Override
 	public void result(GameState result) {

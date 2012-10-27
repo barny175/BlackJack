@@ -50,16 +50,16 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     @Override
-    public Move move(CardHand cards) {
+    public Move move(CardHand cards, Card dealerUpCard) {
         if (cards.isBlackJack()) {
             return Move.Stand;
         }
 
         int aces = cards.aces();
         if (aces == 0) {
-            return noAceRules(cards);
+            return noAceRules(cards, dealerUpCard);
         } else {
-            return aceRules(cards);
+            return aceRules(cards, dealerUpCard);
         }
     }
 
@@ -68,9 +68,9 @@ public class BasicStrategyPlayer extends BasePlayer {
         return "Basic Strategy";
     }
 
-    private Move noAceRules(CardHand cards) {
+    private Move noAceRules(CardHand cards, Card dealerUpCard) {
         if (cards.count() == 2 && cards.get(0).getValue() == cards.get(1).getValue())
-            return sameCards(cards.get(0));
+            return sameCards(cards.get(0), dealerUpCard);
         
         Integer hardSum = cards.hardSum();
 
@@ -81,14 +81,14 @@ public class BasicStrategyPlayer extends BasePlayer {
             return Move.Stand;
         }
 
-        return findMove(hardSum);
+        return findMove(hardSum, dealerUpCard);
     }
 
-    private Move aceRules(CardHand cards) {
+    private Move aceRules(CardHand cards, Card dealerUpCard) {
         Integer sum = cards.softSum() - Card.ACE.getSoftValue();
 		
 		if (sum > 9)
-			return noAceRules(cards);
+			return noAceRules(cards, dealerUpCard);
 
         String toFind;
         if (sum == 1) {
@@ -97,11 +97,11 @@ public class BasicStrategyPlayer extends BasePlayer {
             toFind = "A" + sum;
         }
 
-        return findMove(toFind);
+        return findMove(toFind, dealerUpCard);
     }
 
-    private Move findMove(Object toFind) {
-        int movePos = this.currentGame.dealerUpCard().getValue() - 1;
+    private Move findMove(Object toFind, Card dealerUpCard) {
+        int movePos = dealerUpCard.getValue() - 1;
         int row = getRowPos(toFind);
 
         return Move.valueOf((String) strategy[row][movePos == 0 ? (strategy[row].length - 1) : movePos]);
@@ -118,12 +118,12 @@ public class BasicStrategyPlayer extends BasePlayer {
         return row;
     }
 
-    private Move sameCards(Card card) {
+    private Move sameCards(Card card, Card dealerUpCard) {
         if (card.getValue() == Card.TEN.getValue())
-            return findMove("TT");
+            return findMove("TT", dealerUpCard);
         else {
             final int twoSameDigits = card.getValue() * 10 + card.getValue();
-            return findMove(twoSameDigits);
+            return findMove(twoSameDigits, dealerUpCard);
         }
     }
 }

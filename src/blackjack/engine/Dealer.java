@@ -7,10 +7,8 @@ package blackjack.engine;
  *
  * @author mbarnas
  */
-public class Dealer implements GameParticipant {
+public class Dealer {
 
-
-    @Override
     public Move move(CardHand cards) {
         final int sum = cards.softSum();
 
