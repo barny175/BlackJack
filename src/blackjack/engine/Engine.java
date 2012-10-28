@@ -19,7 +19,7 @@ public class Engine {
     private Card dealerUpCard;
     private LinkedList<Game> games;
     private CardHand dealerCards;
-    private List<Game> endedGames = new LinkedList<Game>();
+    private List<Game> endedGames;
 
     public Engine(CardSource cardSource) {
         this.cardSource = cardSource;
@@ -43,6 +43,8 @@ public class Engine {
 
         dealerCards = new CardHand();
 
+        this.endedGames = new LinkedList<Game>();
+        
         bet(game);
 
         firstDeal(game);
