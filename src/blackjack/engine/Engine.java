@@ -3,7 +3,7 @@
  */
 package blackjack.engine;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -17,8 +17,9 @@ public class Engine {
     private Dealer dealer = new Dealer();
     private CardSource cardSource;
     private Card dealerUpCard;
-    private List<Game> games;
+    private LinkedList<Game> games;
     private CardHand dealerCards;
+    private List<Game> endedGames = new LinkedList<Game>();
 
     public Engine(CardSource cardSource) {
         this.cardSource = cardSource;
@@ -37,7 +38,7 @@ public class Engine {
 
         final Game game = new Game(this, player);
 
-        this.games = new ArrayList<Game>(2);
+        this.games = new LinkedList<Game>();
         this.games.add(game);
 
         dealerCards = new CardHand();
@@ -51,36 +52,31 @@ public class Engine {
 
     public void start() {
         int continuingGames = 0;
-
-        ListIterator<Game> it = this.games.listIterator();
-        while (it.hasNext()) {
-            Game game = it.next();
-
+        Game game = this.games.poll();
+        while (game != null) {
             checkBlackJack(game);
 
             if (game.gameState() == GameState.Continuing) {
                 playersGame(game);
 
-                if (game.gameState() == GameState.Split) {
-                    List<Game> split = game.split();
-                    replace(it, split);
-                    for (Game g : split) {
-                        dealToPlayer(g);
-                    }
-                }
                 if (game.gameState() == GameState.Continuing) {
                     continuingGames++;
                 }
             }
+            
+            if (!game.isSplitted())
+                this.endedGames.add(game);
+                    
+            game = this.games.poll();
         }
 
         if (continuingGames > 0) {
             dealersGame();
         }
 
-        for (Game game : this.games) {
-            checkGameState(game);
-            endGame(game);
+        for (Game g : this.endedGames) {
+            checkGameState(g);
+            endGame(g);
         }
     }
 
@@ -116,7 +112,11 @@ public class Engine {
                     }
                     break;
                 case Split:
-                    game.setGameState(GameState.Split);
+                    List<Game> split = game.split();
+                    for (Game g : split) {
+                        dealToPlayer(g);
+                        this.games.addFirst(g);
+                    }
                     break;
             }
         } while (move == Move.Hit);
