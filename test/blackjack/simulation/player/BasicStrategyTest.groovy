@@ -110,7 +110,7 @@ class BasicStrategyTest {
         def row = strategy.find { it[0] == toSearch }
         
         def movePos = dealerCard.getValue() - 1
-        letterToMove(row[movePos == 0 ? -1 : movePos])
+        letterToMove(playerCards, row[movePos == 0 ? -1 : movePos])
     }
     
     private Move noAce(playerCards, dealerCard) {
@@ -134,19 +134,25 @@ class BasicStrategyTest {
         def row = strategy.find { it[0] == toSearch }
         
         def movePos = dealerCard.getValue() - 1
-        letterToMove(row[movePos == 0 ? -1 : movePos])
+        letterToMove(playerCards, row[movePos == 0 ? -1 : movePos])
     }
     
-    private Move letterToMove(String letter) {
+    private Move letterToMove(CardHand playerCards, String letter) {
         switch (letter) {
             case "H":
             return Move.Hit
             case "D":
-            return Move.Double
+                if (playerCards.count() == 2)
+                    return Move.Double
+                else
+                    return Move.Hit
             case "S":
             return Move.Stand
             case "DS":
-            return Move.Double
+                if (playerCards.count() == 2)
+                    return Move.Double
+                else
+                    return Move.Stand
             case "P":
             return Move.Split
         }

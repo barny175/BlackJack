@@ -15,7 +15,7 @@ import blackjack.engine.Move;
 public class BasicStrategyPlayer extends BasePlayer {
 
     private final Object[][] strategy = new Object[][]{
-		{7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
+        {7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {8, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {9, "Hit", "Double", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {10, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
@@ -31,7 +31,7 @@ public class BasicStrategyPlayer extends BasePlayer {
         {"A4", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {"A5", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
         {"A6", "Hit", "Double", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
-        {"A7", "Stand", "Double", "Double", "Double", "Double", "Stand", "Stand", "Hit", "Hit", "Hit"},
+        {"A7", "Stand", "DoubleStand", "DoubleStand", "DoubleStand", "DoubleStand", "Stand", "Stand", "Hit", "Hit", "Hit"},
         {"A8", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
         {"A9", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
         {22, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
@@ -56,11 +56,26 @@ public class BasicStrategyPlayer extends BasePlayer {
         }
 
         int aces = cards.aces();
+        String move;
         if (aces == 0) {
-            return noAceRules(cards, dealerUpCard);
+            move = noAceRules(cards, dealerUpCard);
+
         } else {
-            return aceRules(cards, dealerUpCard);
+            move = aceRules(cards, dealerUpCard);
         }
+
+        if (move.equals("DoubleStand")) {
+            if (cards.count() != 2) {
+                return Move.Stand;
+            } else {
+                return Move.Double;
+            }
+        }
+        if (move.equals("Double") && cards.count() != 2) {
+            return Move.Hit;
+        }
+
+        return Move.valueOf(move);
     }
 
     @Override
@@ -68,27 +83,29 @@ public class BasicStrategyPlayer extends BasePlayer {
         return "Basic Strategy";
     }
 
-    private Move noAceRules(CardHand cards, Card dealerUpCard) {
-        if (cards.count() == 2 && cards.get(0).getValue() == cards.get(1).getValue())
+    private String noAceRules(CardHand cards, Card dealerUpCard) {
+        if (cards.count() == 2 && cards.get(0).getValue() == cards.get(1).getValue()) {
             return sameCards(cards.get(0), dealerUpCard);
-        
+        }
+
         Integer hardSum = cards.hardSum();
 
         if (hardSum < 7) {
-            return Move.Hit;
+            return Move.Hit.toString();
         }
         if (hardSum > 17) {
-            return Move.Stand;
+            return Move.Stand.toString();
         }
 
         return findMove(hardSum, dealerUpCard);
     }
 
-    private Move aceRules(CardHand cards, Card dealerUpCard) {
+    private String aceRules(CardHand cards, Card dealerUpCard) {
         Integer sum = cards.hardSum() - Card.ACE.getValue();
-		
-		if (sum > 9)
-			return noAceRules(cards, dealerUpCard);
+
+        if (sum > 9) {
+            return noAceRules(cards, dealerUpCard);
+        }
 
         String toFind;
         if (sum == 1) {
@@ -100,14 +117,14 @@ public class BasicStrategyPlayer extends BasePlayer {
         return findMove(toFind, dealerUpCard);
     }
 
-    private Move findMove(Object toFind, Card dealerUpCard) {
+    private String findMove(Object toFind, Card dealerUpCard) {
         int movePos = dealerUpCard.getValue() - 1;
         int row = getRowPos(toFind);
 
-        return Move.valueOf((String) strategy[row][movePos == 0 ? (strategy[row].length - 1) : movePos]);
+        return (String) strategy[row][movePos == 0 ? (strategy[row].length - 1) : movePos];
 
     }
-    
+
     private int getRowPos(Object firstCol) {
         int row = -1;
         for (int i = 0; i < strategy.length; i++) {
@@ -118,10 +135,10 @@ public class BasicStrategyPlayer extends BasePlayer {
         return row;
     }
 
-    private Move sameCards(Card card, Card dealerUpCard) {
-        if (card.getValue() == Card.TEN.getValue())
+    private String sameCards(Card card, Card dealerUpCard) {
+        if (card.getValue() == Card.TEN.getValue()) {
             return findMove("TT", dealerUpCard);
-        else {
+        } else {
             final int twoSameDigits = card.getValue() * 10 + card.getValue();
             return findMove(twoSameDigits, dealerUpCard);
         }
