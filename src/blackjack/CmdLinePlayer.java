@@ -37,11 +37,11 @@ public class CmdLinePlayer implements Player{
     @Override
     public void addMoney(int amount) {
         this.amount += amount;
+        BlackJack.println("Player won: " + amount);
     }
 
     @Override
     public void result(GameState result) {
-        BlackJack.println("Player credit: " + getMoney());
     }
 
     @Override
@@ -50,11 +50,13 @@ public class CmdLinePlayer implements Player{
         BlackJack.println("Dealer card: " + dealerUpCard);
         while (true) {
             try {
-                char c = BlackJack.getChoice("Move", "hsd");
+                char c = BlackJack.getChoice("Move", "hsdp");
                 if (c == 's')
                     return Move.Stand;
                 if (c == 'h')
                     return Move.Hit;
+                if (c == 'p')
+                    return Move.Split;
 				if (c == 'd')
                     return Move.Double;
             } catch (IOException ex) {

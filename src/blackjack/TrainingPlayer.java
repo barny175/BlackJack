@@ -43,4 +43,8 @@ public class TrainingPlayer implements Player {
         }
         return move;
     }
+    
+    int getMoney() {
+        return this.cmdLinePlayer.getMoney();
+    }
 }
