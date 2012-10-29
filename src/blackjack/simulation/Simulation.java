@@ -13,13 +13,14 @@ import blackjack.simulation.player.*;
  * @author mbarnas
  */
 public class Simulation {
-    public static final int initialMoney = 200000;
+    public static final int GAMES = 10000;
+    public static final int initialMoney = 500000;
 	private Engine engine;
 	private BasePlayer player;
 	
 	public static void main(String[] args) {
 		new Simulation(new StandPlayer(initialMoney)).run();
-		new Simulation(new HitPlayer(initialMoney)).run();
+//		new Simulation(new HitPlayer(initialMoney)).run();
 		new Simulation(new DealersStrategyPlayer(initialMoney)).run();
 		new Simulation(new OneHitPlayer(initialMoney)).run();
         new Simulation(new SimplePlayer(initialMoney)).run();
@@ -33,7 +34,7 @@ public class Simulation {
 	}
 	
 	public void run() {
-		for (int i = 0; i < 100000; i++) {
+		for (int i = 0; i < GAMES; i++) {
 			this.engine.newGame();
 
 			this.engine.start();

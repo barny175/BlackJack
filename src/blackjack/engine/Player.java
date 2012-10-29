@@ -12,7 +12,7 @@ public interface Player {
 
     void addMoney(int amount);
     
-    void result(GameState result);
+    void gameEnded(Game game);
 
     Move move(CardHand cards, Card dealerUpCard);
 }

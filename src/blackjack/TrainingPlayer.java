@@ -30,8 +30,8 @@ public class TrainingPlayer implements Player {
     }
 
     @Override
-    public void result(GameState result) {
-        cmdLinePlayer.result(result);
+    public void gameEnded(Game game) {
+        cmdLinePlayer.gameEnded(game);
     }
 
     @Override
@@ -42,5 +42,9 @@ public class TrainingPlayer implements Player {
             BlackJack.println("Basic strategy suggests " + basicStrMove + "!!!");
         }
         return move;
+    }
+    
+    int getMoney() {
+        return this.cmdLinePlayer.getMoney();
     }
 }

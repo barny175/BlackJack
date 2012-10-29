@@ -10,13 +10,14 @@ import java.io.IOException;
  *
  * @author mbarnas
  */
-public class CmdLinePlayer implements Player{
+public class CmdLinePlayer implements Player {
+
     private int amount;
 
     public CmdLinePlayer(int amount) {
         this.amount = amount;
     }
-    
+
     @Override
     public int bet() {
         int bet = 10;
@@ -30,18 +31,22 @@ public class CmdLinePlayer implements Player{
 //                
 //            }
 //        }
-    
+
         return bet;
     }
 
     @Override
     public void addMoney(int amount) {
         this.amount += amount;
+        BlackJack.println("Player won: " + amount);
     }
 
     @Override
-    public void result(GameState result) {
-        BlackJack.println("Player credit: " + getMoney());
+    public void gameEnded(Game game) {
+        BlackJack.println("Result: " + game.gameState());
+        BlackJack.printCards(game);
+        BlackJack.println("Player's credit: " + this.getMoney());
+        BlackJack.println("-----------------------------");
     }
 
     @Override
@@ -50,13 +55,19 @@ public class CmdLinePlayer implements Player{
         BlackJack.println("Dealer card: " + dealerUpCard);
         while (true) {
             try {
-                char c = BlackJack.getChoice("Move", "hsd");
-                if (c == 's')
+                char c = BlackJack.getChoice("Move", "hsdp");
+                if (c == 's') {
                     return Move.Stand;
-                if (c == 'h')
+                }
+                if (c == 'h') {
                     return Move.Hit;
-				if (c == 'd')
+                }
+                if (c == 'p') {
+                    return Move.Split;
+                }
+                if (c == 'd') {
                     return Move.Double;
+                }
             } catch (IOException ex) {
             }
         }

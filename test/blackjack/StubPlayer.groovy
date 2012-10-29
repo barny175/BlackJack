@@ -36,10 +36,6 @@ class StubPlayer implements Player {
     void addMoney(int amount) {
         money += amount
     }
-    
-    void result(GameState res) {
-        this.res = res
-    }
 
     void setMoves(m) {
         move = m
@@ -55,5 +51,9 @@ class StubPlayer implements Player {
     
     void reset() {
         cards.reset()
+    }
+    
+    void gameEnded(Game game) {
+        this.res = game.gameState()
     }
 }

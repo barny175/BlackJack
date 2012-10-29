@@ -8,6 +8,7 @@ import org.junit.Test
 import static org.junit.Assert.*
 import blackjack.engine.*
 import static org.mockito.Mockito.*
+import org.mockito.*
 import static blackjack.Utils.*
 
 /**
@@ -71,7 +72,6 @@ class EngineTest {
         Game game = engine.newGame()
         engine.start()
         
-        verify(player).result(GameState.DealerWin)
         assertEquals(GameState.DealerWin, game.gameState())    
     }
     
@@ -101,12 +101,16 @@ class EngineTest {
         when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
         when(player.bet()).thenReturn(10)
         
+        ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
+
         engine.addPlayer(player)
 
         engine.newGame()
         engine.start()
         
-        verify(player).result(GameState.PlayerWin)
+        verify(player).gameEnded(gameCaptor.capture())
+        Game game = gameCaptor.getValue()
+        assertEquals(GameState.PlayerWin, game.gameState())
         verify(player).addMoney(10)
     }
     
@@ -228,9 +232,12 @@ class EngineTest {
         engine.newGame()
         engine.start()
         
+        ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
+        verify(player).gameEnded(gameCaptor.capture())
+        Game game = gameCaptor.getValue()
+        assertEquals(GameState.PlayerWin, game.gameState())
+
         verify(player, never()).addMoney(10)
-        verify(player).result(GameState.PlayerWin)
         verify(player, times(1)).move(any(), any())
     }
 }
-

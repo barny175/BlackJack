@@ -23,7 +23,7 @@ public abstract class BasePlayer implements Player {
 	}
 
 	@Override
-	public void result(GameState result) {
+	public void gameEnded(Game result) {
 	}
 	
 	public int getMoney() {

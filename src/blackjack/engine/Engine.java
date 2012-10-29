@@ -231,7 +231,7 @@ public class Engine {
     private void endGame(Game game) {
         payPrizes(game);
 
-        player.result(game.gameState());
+        player.gameEnded(game);
     }
 
     public CardHand getDealerCards() {
