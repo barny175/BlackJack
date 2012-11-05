@@ -7,6 +7,7 @@ package blackjack
 import org.junit.Test
 import static org.junit.Assert.*
 import blackjack.engine.*
+import blackjack.engine.rules.BasicRules
 import static org.mockito.Mockito.*
 import org.mockito.*
 import static blackjack.Utils.*
@@ -21,8 +22,7 @@ class EngineTest {
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
         
-        def cardSrc = getCardSource([Card.TWO, Card.TWO, Card.TWO, Card.TWO])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine([Card.TWO, Card.TWO, Card.TWO, Card.TWO])
         engine.addPlayer(player)
         engine.newGame()
         
@@ -32,7 +32,7 @@ class EngineTest {
     @Test
     void blackJackOnlyPlayer() {
         def cardSrc = getCardSource([Card.ACE, Card.FIVE, Card.TEN, Card.ACE])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
@@ -46,8 +46,7 @@ class EngineTest {
         
     @Test
     void blackJackPlayerAndKrupier() {
-        def cardSrc = getCardSource([Card.ACE, Card.ACE, Card.TEN, Card.TEN])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine([Card.ACE, Card.ACE, Card.TEN, Card.TEN])
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
@@ -63,7 +62,7 @@ class EngineTest {
     @Test
     void dealerBlackJack() {
         def cardSrc = getCardSource([Card.TWO, Card.ACE, Card.TEN, Card.TEN])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
@@ -79,7 +78,7 @@ class EngineTest {
     @Test
     void playerBusts() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN, Card.TEN, Card.TEN])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = new StubPlayer(100)
         
@@ -95,7 +94,7 @@ class EngineTest {
     @Test
     void dealerBusts() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.TWO, Card.EIGHT, Card.TWO, Card.TEN])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         Player player = mock(Player.class)
         when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
@@ -123,7 +122,7 @@ class EngineTest {
 
     void testPlayerWin(def cardsPlayer, def cardsDealer) {
         def cardSrc = getCardSource(cardsPlayer, cardsDealer)
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = new StubPlayer(100)
         player.setMoves([Move.Hit, Move.Stand])
@@ -140,7 +139,7 @@ class EngineTest {
     @Test
     void dealerWins() {
         def cardSrc = getCardSource([Card.TEN, Card.SIX, Card.TWO, Card.TEN, Card.SEVEN, Card.FOUR])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = new StubPlayer(100)
         player.setMoves([Move.Hit, Move.Stand])
@@ -156,7 +155,7 @@ class EngineTest {
     @Test
     void push() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = new StubPlayer(100)
         
@@ -174,7 +173,7 @@ class EngineTest {
     @Test
     void getDealerCards() {
         def cardSrc = getCardSource([Card.TEN, Card.SIX, Card.TWO, Card.ACE])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = mock(Player.class)
         engine.addPlayer(player)
@@ -189,7 +188,7 @@ class EngineTest {
     @Test
     void dontAskStandingForMove() {
         def cardSrc = getCardSource([Card.TEN, Card.SIX, Card.SIX, Card.THREE, Card.TEN])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = mock(Player.class)
         
@@ -208,7 +207,7 @@ class EngineTest {
         def cardSrc = mock(CardSource.class)
         when(cardSrc.next()).thenReturn(Card.TWO)
         
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         def player = mock(Player.class)
         
         engine.addPlayer(player)
@@ -221,7 +220,7 @@ class EngineTest {
     @Test
     void doubleDown() {
         def cardSrc = getCardSource([Card.NINE, Card.FIVE, Card.SEVEN, Card.TEN, Card.TWO, Card.TWO])
-        def engine = new Engine(cardSrc)
+        def engine = getEngine(cardSrc)
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
@@ -239,5 +238,61 @@ class EngineTest {
 
         verify(player, never()).addMoney(10)
         verify(player, times(1)).move(any(), any())
+    }
+    
+    @Test(expected=IllegalMoveException.class)
+    void disallowedDouble() {
+        def cardSrc = getCardSource([Card.TWO, Card.FIVE, Card.SEVEN, Card.TEN, Card.TWO, Card.TWO])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Double)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+    }
+    
+    @Test(expected=IllegalMoveException.class)
+    void disallowedSplit() {
+        def cardSrc = getCardSource([Card.TWO, Card.FIVE, Card.SEVEN, Card.TEN, Card.TWO, Card.TWO])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Split)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+    }
+
+    @Test
+    void splitGame() {
+        def cardSrc = getCardSource([Card.TWO, Card.SEVEN, Card.TWO, Card.TEN, Card.TEN, Card.TEN])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any())).thenReturn(Move.Split).thenReturn(Move.Stand).thenReturn(Move.Stand)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player, times(3)).move(any(), any())
+        verify(player, times(2)).addMoney(-10)
+    }
+    
+    Engine getEngine(def cards) {
+        getEngine(getCardSource(cards))
+    }
+    
+    Engine getEngine(CardSource cardsrc) {
+        new Engine(new BasicRules(), cardsrc)
     }
 }

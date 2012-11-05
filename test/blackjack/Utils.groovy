@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*
  *
  * @author mbarnas
  */
-class Utils {
+public class Utils {
 	public static CardHand getCardHand(def cards) {
         def ch = new CardHand()
         cards.each { ch.addCard(it) }

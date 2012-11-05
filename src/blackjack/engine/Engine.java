@@ -3,9 +3,11 @@
  */
 package blackjack.engine;
 
+import blackjack.engine.rules.BasicRules;
+import com.google.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Set;
 
 /**
  *
@@ -20,9 +22,12 @@ public class Engine {
     private LinkedList<Game> games;
     private CardHand dealerCards;
     private List<Game> endedGames;
+    private Rules rules;
 
-    public Engine(CardSource cardSource) {
+    @Inject
+    public Engine(Rules rules, CardSource cardSource) {
         this.cardSource = cardSource;
+        this.rules = rules;
     }
 
     public Card getDealerUpCard() {
@@ -52,13 +57,13 @@ public class Engine {
         return game;
     }
 
-    public void start() {
+    public void start() throws IllegalMoveException {
         int continuingGames = 0;
         Game game = this.games.poll();
         while (game != null) {
             checkBlackJack(game);
 
-            if (game.gameState() == GameState.Continuing) {
+            if (game.gameState() == GameState.FirstDeal) {
                 playersGame(game);
 
                 if (game.gameState() == GameState.Continuing) {
@@ -82,6 +87,12 @@ public class Engine {
         }
     }
 
+    private void checkIfMoveIsAllowed(Game game, Move move) throws IllegalMoveException {
+        Set<Move> allowedMoves = rules.getAllowedMoves(game);
+        if (!allowedMoves.contains(move))
+            throw new IllegalMoveException();
+    }
+
     private void dealersGame() {
         Move dealerMove;
         do {
@@ -96,13 +107,16 @@ public class Engine {
         } while (dealerMove != Move.Stand);
     }
 
-    private void playersGame(Game game) {
+    private void playersGame(Game game) throws IllegalMoveException {
         Move move;
         do {
             move = player.move(game.playerCards(), this.getDealerUpCard());
+            
+            checkIfMoveIsAllowed(game, move);
+            
             switch (move) {
-                case Hit:
                 case Double:
+                case Hit:                
                     dealToPlayer(game);
 
                     if (move == Move.Double) {
@@ -121,6 +135,7 @@ public class Engine {
                     }
                     break;
             }
+            game.setGameState(GameState.Continuing);
         } while (move == Move.Hit);
     }
 
@@ -236,18 +251,5 @@ public class Engine {
 
     public CardHand getDealerCards() {
         return dealerCards;
-    }
-
-    private void splitGame(Game game) {
-        List<Game> splitGame = game.split();
-    }
-
-    private void replace(ListIterator<Game> it, List<Game> split) {
-        it.add(split.get(0));
-        it.previous();
-        it.add(split.get(1));
-        it.previous();
-        it.previous();
-        it.remove();
     }
 }

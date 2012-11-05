@@ -4,6 +4,8 @@
 package blackjack;
 
 import blackjack.engine.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,20 +17,26 @@ import java.io.InputStreamReader;
 public class BlackJack {
 
     public static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private static Engine engine = new Engine(new CardShuffler(1));
+    private static Engine engine;
 //	private static Engine engine = new Engine(new SimulationCardShuffler(1, Card.ACE, Card.TEN, Card.TEN));
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
+        Injector injector = Guice.createInjector(new BasicModule());
+        engine = injector.getInstance(Engine.class);
+        
         TrainingPlayer player = new TrainingPlayer(100);
         engine.addPlayer(player);
         char c = 'y';
         while (c == 'y') {
             engine.newGame();
-
-            engine.start();
+            try {
+                engine.start();
+            } catch (IllegalMoveException ex) {
+                println("Illegal move.");
+            }
 
             c = getChoice("Another round", "yn");
         }

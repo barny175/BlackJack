@@ -17,11 +17,14 @@ public class CardShuffler implements CardSource {
     public final int CARDS_IN_DECK = 13;
     protected Set<Integer> used;
 	protected final int allCards;
+
+    public CardShuffler() {
+        this(1);
+    }
     
     public CardShuffler(int decks) {
         this.decks = decks;
 		this.allCards = 4 * CARDS_IN_DECK * decks;
-		
         this.rand = new Random(System.currentTimeMillis());
         this.used = new HashSet<Integer>(decks * CARDS_IN_DECK);
     }

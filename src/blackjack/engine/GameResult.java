@@ -7,12 +7,9 @@ package blackjack.engine;
  *
  * @author mbarnas
  */
-public enum GameState {
-    FirstDeal,
-    Continuing,
-    PlayerBusted,
-    PlayerWin,
-    DealerWin,
+public enum GameResult {
+    Push,
+    DealerWon,
     PlayerBlackJack,
-    Push;
+    PlayerWon;
 }

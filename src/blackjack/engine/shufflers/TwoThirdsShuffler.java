@@ -5,6 +5,7 @@
 package blackjack.engine.shufflers;
 
 import blackjack.engine.CardShuffler;
+import com.google.inject.Inject;
 
 /**
  *
@@ -12,6 +13,7 @@ import blackjack.engine.CardShuffler;
  */
 public class TwoThirdsShuffler extends CardShuffler {
 
+    @Inject
 	public TwoThirdsShuffler(int decks) {
 		super(decks);
 	}

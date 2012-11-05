@@ -5,8 +5,11 @@
 package blackjack.simulation;
 
 import blackjack.engine.Engine;
+import blackjack.engine.IllegalMoveException;
 import blackjack.engine.shufflers.TwoThirdsShuffler;
 import blackjack.simulation.player.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  *
@@ -17,10 +20,11 @@ public class Simulation {
     public static final int initialMoney = 500000;
 	private Engine engine;
 	private BasePlayer player;
-	
+	private static Injector injector;
+    
 	public static void main(String[] args) {
+        injector = Guice.createInjector(new SimulationModule());
 		new Simulation(new StandPlayer(initialMoney)).run();
-//		new Simulation(new HitPlayer(initialMoney)).run();
 		new Simulation(new DealersStrategyPlayer(initialMoney)).run();
 		new Simulation(new OneHitPlayer(initialMoney)).run();
         new Simulation(new SimplePlayer(initialMoney)).run();
@@ -28,7 +32,7 @@ public class Simulation {
 	}
 
 	public Simulation(BasePlayer player) {
-		this.engine = new Engine(new TwoThirdsShuffler(6));
+		this.engine = injector.getInstance(Engine.class);
 		this.player = player;
 		this.engine.addPlayer(player);
 	}
@@ -36,8 +40,11 @@ public class Simulation {
 	public void run() {
 		for (int i = 0; i < GAMES; i++) {
 			this.engine.newGame();
-
-			this.engine.start();
+            try {
+                this.engine.start();
+            } catch (IllegalMoveException ex) {
+                System.out.print("Illegal move.");
+            }
 			
 			if (this.player.getMoney() < 10) {
                 System.out.println(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));

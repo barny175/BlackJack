@@ -3,10 +3,13 @@
  */
 package blackjack.engine;
 
+import com.google.inject.ImplementedBy;
+
 /**
  *
  * @author mbarnas
  */
+@ImplementedBy(CardShuffler.class)
 public interface CardSource {
 
     Card next();

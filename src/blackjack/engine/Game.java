@@ -15,9 +15,18 @@ public class Game {
     private int bet;
     private final Player player;
     private final CardHand playerCards = new CardHand();
-    private GameState gameState = GameState.Continuing;
+    private GameState gameState = GameState.FirstDeal;
     private final Engine engine;
     private boolean splitted = false;
+    private GameResult result;
+
+    public GameResult getGameResult() {
+        return result;
+    }
+
+    public void setGameResult(GameResult result) {
+        this.result = result;
+    }
 
     public Game (Engine engine, Player player) {
         this.player = player;

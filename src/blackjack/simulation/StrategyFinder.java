@@ -4,15 +4,15 @@
  */
 package blackjack.simulation;
 
-import blackjack.engine.Card;
-import blackjack.engine.Engine;
-import blackjack.engine.Game;
-import blackjack.engine.GameState;
+import blackjack.engine.*;
+import blackjack.engine.rules.BasicRules;
 import blackjack.simulation.player.BasePlayer;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import blackjack.simulation.player.HitPlayer;
 import blackjack.simulation.player.OneHitPlayer;
 import blackjack.simulation.player.StandPlayer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -32,7 +32,7 @@ public class StrategyFinder {
 	}
 
 	public StrategyFinder(BasePlayer player) {
-		this.engine = new Engine(new SimulationCardShuffler(6, Card.TWO, Card.TWO, Card.TWO));
+		this.engine = new Engine(new BasicRules(), new SimulationCardShuffler(6, Card.TWO, Card.TWO, Card.TWO));
 		this.player = player;
 		this.engine.addPlayer(player);
 
@@ -42,8 +42,12 @@ public class StrategyFinder {
 		for (int i = 0; i < 10000; i++) {
 			Game game = this.engine.newGame();
 
-			while (game.gameState() == GameState.Continuing) {
-				this.engine.start();
+			if (game.gameState() == GameState.Continuing) {
+                try {
+                    this.engine.start();
+                } catch (IllegalMoveException ex) {
+                    System.out.print("Illegal move.");
+                }
 			}
 
 			if (this.player.getMoney() < 10) {
