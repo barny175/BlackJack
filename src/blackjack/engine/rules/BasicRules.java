@@ -25,6 +25,10 @@ public class BasicRules implements Rules {
         }        
                     
         return allowedMoves;
-    }
-    
+    }    
+
+	@Override
+	public boolean isBlackJack(CardHand cards) {
+		return cards.count() == 2 && cards.softSum() == Rules.BLACKJACK;
+	}
 }

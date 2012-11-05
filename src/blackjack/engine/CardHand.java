@@ -13,10 +13,14 @@ import java.util.List;
  */
 public class CardHand {
 
-    public static final int BLACKJACK = 21;
     private List<Card> cards = new ArrayList<Card>(6);
     private int aceCount;
     private int hardSum;
+	private boolean splitted = false;
+
+	public boolean isSplitted() {
+		return splitted;
+	}
 
     public void addCard(Card card) {
         this.cards.add(card);
@@ -61,12 +65,8 @@ public class CardHand {
         hardSum = 0;
     }
 
-    public boolean isBlackJack() {
-        if (softSum() == BLACKJACK && cards.size() == 2) {
-            return true;
-        }
-
-        return false;
+    private boolean isBlackJack() {
+        return (softSum() == Rules.BLACKJACK && cards.size() == 2);
     }
 
     @Override
@@ -81,8 +81,26 @@ public class CardHand {
     public int count() {
         return cards.size();
     }
-    
-    public Card get(int index) {
-        return cards.get(index);
-    }
+	
+	CardHand[] split() {
+		if (this.cards.size() != 2)
+			throw new RuntimeException("Illegal split.");
+		
+		CardHand[] splitted = new CardHand[2];
+		final CardHand ch = new CardHand();
+		ch.addCard(this.cards.get(0));
+		ch.splitted = true;
+		splitted[0] = ch;
+		
+		final CardHand ch2 = new CardHand();
+		ch2.addCard(this.cards.get(1));
+		ch2.splitted = true;
+		splitted[1] = ch2;
+		
+		return splitted;
+	}
+
+	void setSplitted(boolean b) {
+		this.splitted = b;
+	}
 }

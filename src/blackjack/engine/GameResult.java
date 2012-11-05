@@ -9,7 +9,8 @@ package blackjack.engine;
  */
 public enum GameResult {
     Push,
-    DealerWon,
+    DealerWin,
     PlayerBlackJack,
-    PlayerWon;
+    PlayerWin,
+	PlayerBusted;
 }

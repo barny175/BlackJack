@@ -7,12 +7,17 @@ package blackjack.simulation.player;
 import blackjack.engine.Card;
 import blackjack.engine.CardHand;
 import blackjack.engine.Move;
+import blackjack.engine.Rules;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  *
  * @author mbarnas
  */
 public class BasicStrategyPlayer extends BasePlayer {
+
+	private Rules rules;
 
     private final Object[][] strategy = new Object[][]{
         {7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
@@ -45,13 +50,19 @@ public class BasicStrategyPlayer extends BasePlayer {
         {"TT", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
         {"AA", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"}};
 
-    public BasicStrategyPlayer(int money) {
+	@Inject
+	public void setRules(Rules rules) {
+		this.rules = rules;
+	}
+	
+	@Inject
+    public BasicStrategyPlayer(@Named("deposit")int money) {
         super(money);
     }
 
     @Override
     public Move move(CardHand cards, Card dealerUpCard) {
-        if (cards.isBlackJack()) {
+        if (rules.isBlackJack(cards)) {
             return Move.Stand;
         }
 
@@ -84,8 +95,8 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     private String noAceRules(CardHand cards, Card dealerUpCard) {
-        if (cards.count() == 2 && cards.get(0).getValue() == cards.get(1).getValue()) {
-            return sameCards(cards.get(0), dealerUpCard);
+        if (cards.count() == 2 && cards.getCards().get(0).getValue() == cards.getCards().get(1).getValue()) {
+            return sameCards(cards.getCards().get(0), dealerUpCard);
         }
 
         Integer hardSum = cards.hardSum();

@@ -8,11 +8,10 @@ package blackjack.engine;
  * @author mbarnas
  */
 public enum GameState {
+	Started,
     FirstDeal,
     Continuing,
-    PlayerBusted,
-    PlayerWin,
-    DealerWin,
-    PlayerBlackJack,
-    Push;
+    PlayerFinished,
+	DealerFinished,
+	End;
 }

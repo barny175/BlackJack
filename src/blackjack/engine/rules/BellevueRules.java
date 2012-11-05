@@ -3,6 +3,7 @@
  */
 package blackjack.engine.rules;
 
+import blackjack.engine.CardHand;
 import blackjack.engine.Game;
 import blackjack.engine.Move;
 import java.util.Set;
@@ -23,5 +24,9 @@ public class BellevueRules extends BasicRules {
         
         return allowedMoves;
     }
-    
+
+	@Override
+	public boolean isBlackJack(CardHand cards) {
+		return !cards.isSplitted() && super.isBlackJack(cards);
+	}
 }

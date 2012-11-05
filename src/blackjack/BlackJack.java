@@ -27,7 +27,7 @@ public class BlackJack {
         Injector injector = Guice.createInjector(new BasicModule());
         engine = injector.getInstance(Engine.class);
         
-        TrainingPlayer player = new TrainingPlayer(100);
+        Player player = injector.getInstance(TrainingPlayer.class);
         engine.addPlayer(player);
         char c = 'y';
         while (c == 'y') {

@@ -1,7 +1,12 @@
+rozdelit GameState na GameState a GameResult - dokoncit v enginu, zezelenit testy
+
 presun vypoctu z CardHand do Rules?
+
+Casino bellevue pravidla - splitnuta esa - eso + deset neni blackjack, jen normalni 21
+
+
 kontrola jestli kdyz uzivatel chce udelat akci kterou v danem okamziku nemuze, tak engine zarve
 Casino bellevue pravidla - splitnuta esa - pouze jedna dalsi karta je mozna
-Casino bellevue pravidla - splitnuta esa - eso + deset neni blackjack, jen normalni 21
 simulace na zjisteni spravnych strategii
 nemichat po kazdem kole
 insurance

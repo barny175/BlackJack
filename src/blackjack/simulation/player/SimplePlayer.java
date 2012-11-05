@@ -20,9 +20,6 @@ public class SimplePlayer extends BasePlayer  {
 
 	@Override
 	public Move move(CardHand cards, Card dealerUpCard) {
-		if (cards.isBlackJack())
-			return Move.Stand;
-		
 		if (cards.softSum() <= 11)
 			return Move.Hit;
 		

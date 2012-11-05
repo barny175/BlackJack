@@ -5,6 +5,8 @@ package blackjack;
 
 import blackjack.engine.*;
 import blackjack.simulation.player.BasicStrategyPlayer;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  *
@@ -12,9 +14,11 @@ import blackjack.simulation.player.BasicStrategyPlayer;
  */
 public class TrainingPlayer implements Player {
     private CmdLinePlayer cmdLinePlayer;
+	@Inject
     private BasicStrategyPlayer basicStrategyPlayer;
 
-    public TrainingPlayer(int amount) {
+	@Inject
+    public TrainingPlayer(Player player, @Named("deposit") int amount) {
         cmdLinePlayer = new CmdLinePlayer(amount);
         basicStrategyPlayer = new BasicStrategyPlayer(amount);
     }
