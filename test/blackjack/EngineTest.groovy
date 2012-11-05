@@ -287,6 +287,33 @@ class EngineTest {
         verify(player, times(3)).move(any(), any())
         verify(player, times(2)).addMoney(-10)
     }
+
+    @Test
+    void twoGames() {
+        def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN, Card.TEN, Card.EIGHT, Card.SEVEN, Card.NINE])
+        def engine = getEngine(cardSrc)
+        
+        def player = new StubPlayer(100)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        
+        player.setMoves([Move.Stand])
+        engine.start()
+        
+        assertEquals(Card.SEVEN, engine.dealerUpCard)
+        
+        player.res = GameState.Push
+        assertEquals(100, player.getMoney())
+        
+        player.setMoves([Move.Stand])
+        engine.newGame()
+        engine.start()
+        
+        assertEquals(Card.EIGHT, engine.dealerUpCard)
+        player.res = GameState.Push
+    }
     
     Engine getEngine(def cards) {
         getEngine(getCardSource(cards))

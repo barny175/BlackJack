@@ -142,7 +142,7 @@ public class Engine {
     protected void firstDeal(Game game) {
         dealToPlayer(game);
 
-        dealToDealer();
+        dealerUpCard = dealToDealer();
 
         dealToPlayer(game);
 
@@ -153,13 +153,10 @@ public class Engine {
         game.addPlayerCard(getNextCard());
     }
 
-    private void dealToDealer() {
+    private Card dealToDealer() {
         Card card = getNextCard();
-        if (dealerUpCard == null) {
-            dealerUpCard = card;
-        }
-
         dealerCards.addCard(card);
+        return card;
     }
 
     protected Card getNextCard() {
