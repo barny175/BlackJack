@@ -42,7 +42,7 @@ public class StrategyFinder {
 		for (int i = 0; i < 10000; i++) {
 			Game game = this.engine.newGame();
 
-			if (game.gameState() == GameState.Continuing) {
+			if (game.gameState() == GameState.PlayersGame) {
                 try {
                     this.engine.start();
                 } catch (IllegalMoveException ex) {

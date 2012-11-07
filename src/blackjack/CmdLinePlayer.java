@@ -43,7 +43,7 @@ public class CmdLinePlayer implements Player {
 
     @Override
     public void gameEnded(Game game) {
-        BlackJack.println("Result: " + game.gameState());
+        BlackJack.println("Result: " + game.gameResult());
         BlackJack.printCards(game);
         BlackJack.println("Player's credit: " + this.getMoney());
         BlackJack.println("-----------------------------");

@@ -3,6 +3,7 @@
  */
 package blackjack.engine;
 
+import blackjack.engine.Rules.Action;
 import blackjack.engine.rules.BasicRules;
 import com.google.inject.Inject;
 import java.util.LinkedList;
@@ -61,12 +62,17 @@ public class Engine {
         int continuingGames = 0;
         Game game = this.games.poll();
         while (game != null) {
+            if (game.gameState() == GameState.AfterSplit) {
+                dealToPlayer(game);
+                game.setGameState(GameState.FirstDeal);
+            }
+                
             checkBlackJack(game);
-
+            
             if (game.gameState() == GameState.FirstDeal) {
                 playersGame(game);
 
-                if (game.gameState() == GameState.Continuing && !game.isSplitted()) {
+                if (game.gameState() == GameState.PlayersGame && !game.isSplitted()) {
                     continuingGames++;
                 }
             }
@@ -130,12 +136,11 @@ public class Engine {
                 case Split:
                     List<Game> split = game.split();
                     for (Game g : split) {
-                        dealToPlayer(g);
                         this.games.addFirst(g);
                     }
                     break;
             }
-            game.setGameState(GameState.Continuing);
+            game.setGameState(GameState.PlayersGame);
         } while (move == Move.Hit);
     }
 
@@ -177,7 +182,7 @@ public class Engine {
     }
 
     private void payPrizes(Game game) {
-        switch (game.getGameResult()) {
+        switch (game.gameResult()) {
             case PlayerBlackJack:
                 game.getPlayer().addMoney(game.getBet() * 3 / 2);
                 break;
@@ -201,15 +206,20 @@ public class Engine {
 
         if (rules.isBlackJack(sumPlayer)) {
             if (rules.isBlackJack(sumDealer)) {
-                game.setGameResult(GameResult.Push);
+                setGameResult(game, GameResult.Push);
             } else {
-                game.setGameResult(GameResult.PlayerBlackJack);
+                setGameResult(game, GameResult.PlayerBlackJack);
             }
         } else {
             if (rules.isBlackJack(sumDealer)) {
-                game.setGameResult(GameResult.DealerWin);
+                setGameResult(game, GameResult.DealerWin);
             }
         }
+    }
+
+    private void setGameResult(blackjack.engine.Game game, GameResult result) {
+        game.setGameResult(result);
+        game.setGameState(GameState.End);
     }
 
     private boolean checkBusted(CardHand cards) {
@@ -223,26 +233,26 @@ public class Engine {
     private void checkGameState(Game game) {
         CardHand playerCards = game.playerCards();
 
-        if (game.gameState() != GameState.Continuing) {
+        if (game.gameState() != GameState.PlayersGame) {
             return;
         }
 
         if (checkBusted(playerCards)) {
-            game.setGameResult(GameResult.PlayerBusted);
+            setGameResult(game, GameResult.PlayerBusted);
             return;
         }
 
         if (checkBusted(dealerCards)) {
-            game.setGameResult(GameResult.PlayerWin);
+            setGameResult(game, GameResult.PlayerWin);
             return;
         }
 
         if (playerCards.softSum() > dealerCards.softSum()) {
-            game.setGameResult(GameResult.PlayerWin);
+            setGameResult(game, GameResult.PlayerWin);
         } else if (playerCards.softSum() == dealerCards.softSum()) {
-            game.setGameResult(GameResult.Push);
+            setGameResult(game, GameResult.Push);
         } else {
-            game.setGameResult(GameResult.DealerWin);
+            setGameResult(game, GameResult.DealerWin);
         }
     }
 

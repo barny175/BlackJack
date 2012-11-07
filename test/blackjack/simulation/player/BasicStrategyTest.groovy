@@ -9,6 +9,8 @@ import org.junit.Test
 import static org.junit.Assert.*
 import blackjack.engine.*
 import static org.mockito.Mockito.*
+import blackjack.engine.rules.BasicRules
+
 /**
  *
  * @author mbarnas
@@ -50,6 +52,7 @@ class BasicStrategyTest {
         for (Card c : Card.ACE..Card.KING) {
             for (Card c2: Card.TWO..Card.NINE) {
                 def player = new BasicStrategyPlayer(100)
+                player.setRules(new BasicRules())
                 
                 CardHand cards = new CardHand()
                 cards.addCard(c)
@@ -71,6 +74,7 @@ class BasicStrategyTest {
             for (Card c2: Card.TWO..Card.NINE) {
                 for (Card c3: Card.TWO..Card.NINE) {
                     def player = new BasicStrategyPlayer(100)
+                    player.setRules(new BasicRules())
                 
                     CardHand cards = new CardHand()
                     cards.addCard(c)
@@ -118,8 +122,8 @@ class BasicStrategyTest {
         
         def toSearch
         
-        if (playerCards.count() == 2 && playerCards.get(0).getValue() == playerCards.get(1).getValue()) {
-            def card = playerCards.get(0).getValue()
+        if (playerCards.count() == 2 && playerCards.getCards().get(0).getValue() == playerCards.getCards().get(1).getValue()) {
+            def card = playerCards.getCards().get(0).getValue()
             toSearch = card == Card.TEN.getValue() ? "TT": "${card}${card}"
         } else {            
             

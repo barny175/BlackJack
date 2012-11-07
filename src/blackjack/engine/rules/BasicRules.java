@@ -13,22 +13,23 @@ import java.util.Set;
  * @author mbarnas
  */
 public class BasicRules implements Rules {
+
     private Set<Move> allMoves = Sets.newEnumSet(EnumSet.allOf(Move.class), Move.class);
-    
+
     @Override
     public Set<Move> getAllowedMoves(Game game) {
         Set<Move> allowedMoves = EnumSet.copyOf(allMoves);
-        
+
         if (game.gameState() != GameState.FirstDeal) {
             allowedMoves.remove(Move.Double);
             allowedMoves.remove(Move.Split);
-        }        
-                    
-        return allowedMoves;
-    }    
+        }
 
-	@Override
-	public boolean isBlackJack(CardHand cards) {
-		return cards.count() == 2 && cards.softSum() == Rules.BLACKJACK;
-	}
+        return allowedMoves;
+    }
+
+    @Override
+    public boolean isBlackJack(CardHand cards) {
+        return cards.count() == 2 && cards.softSum() == Rules.BLACKJACK;
+    }
 }

@@ -10,8 +10,9 @@ package blackjack.engine;
 public enum GameState {
 	Started,
     FirstDeal,
-    Continuing,
+    PlayersGame,
     PlayerFinished,
 	DealerFinished,
-	End;
+	End,
+    AfterSplit;
 }

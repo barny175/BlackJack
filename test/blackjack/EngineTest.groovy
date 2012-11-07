@@ -56,7 +56,7 @@ class EngineTest {
         engine.start()
         
         verify(player, never()).addMoney(0)
-        assertEquals(GameState.Push, game.gameState())
+        assertEquals(GameResult.Push, game.gameResult())
     }
     
     @Test
@@ -71,7 +71,7 @@ class EngineTest {
         Game game = engine.newGame()
         engine.start()
         
-        assertEquals(GameState.DealerWin, game.gameState())    
+        assertEquals(GameResult.DealerWin, game.gameResult())    
     }
     
     
@@ -87,7 +87,7 @@ class EngineTest {
         engine.newGame()
         engine.start()
         
-        assertEquals(GameState.PlayerBusted, player.res)
+        assertEquals(GameResult.PlayerBusted, player.res)
         assertEquals(90, player.getMoney())
     }
     
@@ -109,7 +109,7 @@ class EngineTest {
         
         verify(player).gameEnded(gameCaptor.capture())
         Game game = gameCaptor.getValue()
-        assertEquals(GameState.PlayerWin, game.gameState())
+        assertEquals(GameResult.PlayerWin, game.gameResult())
         verify(player).addMoney(10)
     }
     
@@ -132,7 +132,7 @@ class EngineTest {
         
         engine.start()
         
-        player.res = GameState.PlayerWin
+        player.res = GameResult.PlayerWin
         assertEquals(110, player.getMoney())        
     }
     
@@ -148,7 +148,7 @@ class EngineTest {
         engine.newGame()
         engine.start()
         
-        player.res = GameState.DealerWin
+        player.res = GameResult.DealerWin
         assertEquals(90, player.getMoney())
     }
 
@@ -166,7 +166,7 @@ class EngineTest {
         player.setMoves([Move.Stand])
         engine.start()
         
-        player.res = GameState.Push
+        player.res = GameResult.Push
         assertEquals(100, player.getMoney())
     }
 
@@ -234,7 +234,7 @@ class EngineTest {
         ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
         verify(player).gameEnded(gameCaptor.capture())
         Game game = gameCaptor.getValue()
-        assertEquals(GameState.PlayerWin, game.gameState())
+        assertEquals(GameResult.PlayerWin, game.gameResult())
 
         verify(player, never()).addMoney(10)
         verify(player, times(1)).move(any(), any())
@@ -304,7 +304,7 @@ class EngineTest {
         
         assertEquals(Card.SEVEN, engine.dealerUpCard)
         
-        player.res = GameState.Push
+        player.res = GameResult.Push
         assertEquals(100, player.getMoney())
         
         player.setMoves([Move.Stand])
@@ -312,7 +312,7 @@ class EngineTest {
         engine.start()
         
         assertEquals(Card.EIGHT, engine.dealerUpCard)
-        player.res = GameState.Push
+        player.res = GameResult.Push
     }
     
     Engine getEngine(def cards) {

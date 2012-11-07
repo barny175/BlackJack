@@ -25,7 +25,7 @@ public class Game {
         this.engine = engine;
     }
 
-    public GameResult getGameResult() {
+    public GameResult gameResult() {
         return result;
     }
 
@@ -74,12 +74,14 @@ public class Game {
         game1.setBet(bet);
         game1.addPlayerCard(this.playerCards().getCards().get(0));
 		game1.playerCards().setSplitted(true);
+        game1.setGameState(GameState.AfterSplit);
         games.add(game1);
         
         Game game2 = new Game(engine, player);
         game2.setBet(bet);
         game2.addPlayerCard(this.playerCards().getCards().get(1));
 		game2.playerCards().setSplitted(true);
+        game2.setGameState(GameState.AfterSplit);
         games.add(game2);
 
         this.splitted = true;
