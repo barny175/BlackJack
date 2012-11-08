@@ -22,8 +22,8 @@ import com.google.inject.name.Names;
  */
 public class BellevueSimulation {
 
-	public static final int GAMES = 20000;
-	public static final int initialMoney = 500000;
+	public static final int GAMES = 100000;
+	public static final int initialMoney = 100000;
 	private Engine engine;
 	private BasePlayer player;
 	private static Injector injector;
@@ -35,17 +35,15 @@ public class BellevueSimulation {
 			bind(Rules.class).to(BellevueRules.class);
 			bind(CardSource.class).to(TwoThirdsShuffler.class);
 			bind(Integer.class).toInstance(6);
+            bind(Long.class).toInstance(6211L);
 			bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
+            bind(BasePlayer.class).to(BellevuePlayer.class);
 		}
 	}
 
 	public static void main(String[] args) {
 		injector = Guice.createInjector(new BellevueSimulationModule());
-		new BellevueSimulation(new StandPlayer(initialMoney)).run();
-		new BellevueSimulation(new DealersStrategyPlayer(initialMoney)).run();
-		new BellevueSimulation(new OneHitPlayer(initialMoney)).run();
-		new BellevueSimulation(new SimplePlayer(initialMoney)).run();
-		new BellevueSimulation(injector.getInstance(BasicStrategyPlayer.class)).run();
+		new BellevueSimulation(injector.getInstance(BasePlayer.class)).run();
 	}
 
 	public BellevueSimulation(BasePlayer player) {

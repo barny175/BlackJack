@@ -14,8 +14,8 @@ import com.google.inject.Inject;
 public class TwoThirdsShuffler extends CardShuffler {
 
     @Inject
-	public TwoThirdsShuffler(int decks) {
-		super(decks);
+	public TwoThirdsShuffler(int decks, long randSeed) {
+		super(decks, randSeed);
 	}
 
 	@Override

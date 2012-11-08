@@ -23,9 +23,13 @@ public class CardShuffler implements CardSource {
     }
     
     public CardShuffler(int decks) {
+        this(decks, System.currentTimeMillis());
+    }
+
+    public CardShuffler(int decks, long randSeed) {
         this.decks = decks;
-		this.allCards = 4 * CARDS_IN_DECK * decks;
-        this.rand = new Random(System.currentTimeMillis());
+        this.allCards = 4 * CARDS_IN_DECK * decks;
+        this.rand = new Random(randSeed);
         this.used = new HashSet<Integer>(decks * CARDS_IN_DECK);
     }
     
