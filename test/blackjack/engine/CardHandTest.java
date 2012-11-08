@@ -16,7 +16,6 @@ public class CardHandTest {
 
 	@Test
 	public void testHardSum() {
-		System.out.println("hardSum");
 		CardHand cardHand = new CardHand();
 		cardHand.addCard(Card.ACE);
 		cardHand.addCard(Card.TWO);
@@ -30,7 +29,6 @@ public class CardHandTest {
 	 */
 	@Test
 	public void testSoftSum() {
-		System.out.println("softSum");
 		CardHand cardHand = new CardHand();
 		cardHand.addCard(Card.ACE);
 		cardHand.addCard(Card.TWO);

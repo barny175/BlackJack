@@ -3,8 +3,6 @@
  */
 package blackjack.engine;
 
-import blackjack.engine.Rules.Action;
-import blackjack.engine.rules.BasicRules;
 import com.google.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
@@ -93,12 +91,6 @@ public class Engine {
         }
     }
 
-    private void checkIfMoveIsAllowed(Game game, Move move) throws IllegalMoveException {
-        Set<Move> allowedMoves = rules.getAllowedMoves(game);
-        if (!allowedMoves.contains(move))
-            throw new IllegalMoveException();
-    }
-
     private void dealersGame() {
         Move dealerMove;
         do {
@@ -116,9 +108,11 @@ public class Engine {
     private void playersGame(Game game) throws IllegalMoveException {
         Move move;
         do {
-            move = player.move(game.playerCards(), this.getDealerUpCard());
+			Set<Move> allowedMoves = rules.getAllowedMoves(game);
+            move = player.move(game.playerCards(), this.getDealerUpCard(), allowedMoves);
             
-            checkIfMoveIsAllowed(game, move);
+			if (!allowedMoves.contains(move))
+				throw new IllegalMoveException();
             
             switch (move) {
                 case Double:

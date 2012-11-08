@@ -41,7 +41,7 @@ class StubPlayer implements Player {
         move = m
     }
     
-    Move move(CardHand cards, Card dealersUpCard) {
+    Move move(CardHand cards, Card dealersUpCard, Set<Move> allowedMoves) {
         return move.remove(0)
     }
     

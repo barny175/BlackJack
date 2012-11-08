@@ -16,78 +16,76 @@ import java.io.InputStreamReader;
  */
 public class BlackJack {
 
-    public static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private static Engine engine;
+	public static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	private static Engine engine;
 //	private static Engine engine = new Engine(new SimulationCardShuffler(1, Card.ACE, Card.TEN, Card.TEN));
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-        Injector injector = Guice.createInjector(new BasicModule());
-        engine = injector.getInstance(Engine.class);
-        
-        Player player = injector.getInstance(TrainingPlayer.class);
-        engine.addPlayer(player);
-        char c = 'y';
-        while (c == 'y') {
-            engine.newGame();
-            try {
-                engine.start();
-            } catch (IllegalMoveException ex) {
-                println("Illegal move.");
-            }
+	/**
+	 * @param args the command line arguments
+	 */
+	public static void main(String[] args) throws IOException {
+		Injector injector = Guice.createInjector(new BasicModule());
+		engine = injector.getInstance(Engine.class);
 
-            c = getChoice("Another round", "yn");
-        }
-    }
+		Player player = injector.getInstance(TrainingPlayer.class);
+		engine.addPlayer(player);
+		char c = 'y';
+		while (c == 'y') {
+			engine.newGame();
+			try {
+				engine.start();
+			} catch (IllegalMoveException ex) {
+				println("Illegal move.");
+			}
 
-    public static void printCards(Game game) {
-        print("Player cards: ");
-        printCards(game.playerCards());
-        printDealerCards();
-    }
+			c = getChoice("Another round", "yn");
+		}
+	}
 
-    private static void printDealerCards() {
-        print("Dealer cards: ");
-        printCards(engine.getDealerCards());
-    }
+	public static void printCards(Game game) {
+		print("Player cards: ");
+		printCards(game.playerCards());
+		printDealerCards();
+	}
 
-    public static char getChoice(String message, String choices) throws IOException {
-        print(message);
-        print(" ");
-        for (int i = 0; i < choices.length(); i++) {
-            print(choices.charAt(i) + "/");
-        }
-        print(": ");
+	private static void printDealerCards() {
+		print("Dealer cards: ");
+		printCards(engine.getDealerCards());
+	}
 
-        char c = 0;
-        do {
-            String line = reader.readLine();
-            c = line.isEmpty() ? choices.charAt(0) : (char) line.charAt(0);
-            for (char x : choices.toCharArray()) {
-                if (x == c) {
-                    return c;
-                }
-            }
-        } while (c == 0);
+	public static char getChoice(String message, String choices) throws IOException {
+		do {
+			print(message);
+			print(" ");
+			for (int i = 0; i < choices.length(); i++) {
+				print(choices.charAt(i) + "/");
+			}
+			print(": ");
 
-        return c;
-    }
+			String line = reader.readLine();
+			char c = line.isEmpty() ? choices.charAt(0) : (char) line.charAt(0);
+			for (char x : choices.toCharArray()) {
+				if (x == c) {
+					return c;
+				}
+			}
+			println("Wrong choice!");
+		} while (true);
+	}
 
-    public static void println(String message) {
-        System.out.println(message);
-    }
+	public static void println(String message) {
+		System.out.println(message);
+	}
 
-    public static void print(String message) {
-        System.out.print(message);
-    }
+	public static void print(String message) {
+		System.out.print(message);
+	}
 
-    public static void printCards(CardHand cards) {
-        for (Card c : cards.getCards()) {
-            print(c + " ");
-        }
-        print(" [" + cards.softSum() + "]");
-        System.out.println();
-    }
+	public static void printCards(CardHand cards) {
+		for (Card c : cards.getCards()) {
+			print(c + " ");
+		}
+		print(" [" + cards.softSum() + "]");
+		System.out.println();
+	}
 }

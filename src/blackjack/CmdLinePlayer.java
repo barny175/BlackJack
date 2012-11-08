@@ -4,7 +4,10 @@
 package blackjack;
 
 import blackjack.engine.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  *
@@ -12,6 +15,13 @@ import java.io.IOException;
  */
 public class CmdLinePlayer implements Player {
 
+	private BiMap<Move, Character> possibleMoves = new ImmutableBiMap.Builder<Move, Character>()
+			.put(Move.Stand, 's')
+			.put(Move.Hit, 'h')
+			.put(Move.Split, 'p')
+			.put(Move.Double, 'd')
+			.build();
+	
     private int amount;
 
     public CmdLinePlayer(int amount) {
@@ -50,12 +60,12 @@ public class CmdLinePlayer implements Player {
     }
 
     @Override
-    public Move move(CardHand cards, Card dealerUpCard) {
+    public Move move(CardHand cards, Card dealerUpCard, Set<Move> allowedMoves) {
         BlackJack.printCards(cards);
         BlackJack.println("Dealer card: " + dealerUpCard);
         while (true) {
             try {
-                char c = BlackJack.getChoice("Move", "hsdp");
+                char c = BlackJack.getChoice("Move", getAllovedMoves(allowedMoves));
                 if (c == 's') {
                     return Move.Stand;
                 }
@@ -76,4 +86,12 @@ public class CmdLinePlayer implements Player {
     int getMoney() {
         return this.amount;
     }
+
+	private String getAllovedMoves(Set<Move> allowedMoves) {
+		StringBuilder sb = new StringBuilder();
+		for (Move m : allowedMoves) {
+			sb.append(possibleMoves.get(m));
+		}
+		return sb.toString();
+	}
 }

@@ -7,6 +7,7 @@ package blackjack.simulation.player;
 import blackjack.engine.Card;
 import blackjack.engine.CardHand;
 import blackjack.engine.Move;
+import java.util.Set;
 
 /**
  *
@@ -19,7 +20,7 @@ public class StandPlayer extends BasePlayer {
 	}
 
 	@Override
-	public Move move(CardHand cards, Card dealerUpCard) {
+	public Move move(CardHand cards, Card dealerUpCard, Set<Move> allowedMoves) {
 		return Move.Stand;
 	}
 

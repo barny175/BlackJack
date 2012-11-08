@@ -7,6 +7,7 @@ import blackjack.engine.*;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import java.util.Set;
 
 /**
  *
@@ -39,9 +40,9 @@ public class TrainingPlayer implements Player {
     }
 
     @Override
-    public Move move(CardHand cards, Card dealerUpCard) {
-        Move move = cmdLinePlayer.move(cards, dealerUpCard);
-        Move basicStrMove = basicStrategyPlayer.move(cards, dealerUpCard);
+    public Move move(CardHand cards, Card dealerUpCard, Set<Move> allowedMoves) {
+        Move move = cmdLinePlayer.move(cards, dealerUpCard, allowedMoves);
+        Move basicStrMove = basicStrategyPlayer.move(cards, dealerUpCard, allowedMoves);
         if (basicStrMove != move) {
             BlackJack.println("Basic strategy suggests " + basicStrMove + "!!!");
         }

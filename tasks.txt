@@ -1,4 +1,3 @@
-rozdelit GameState na GameState a GameResult - dokoncit v enginu, zezelenit testy
 
 Casino bellevue pravidla - splitnuta esa - pouze jedna dalsi karta je mozna
 
@@ -8,3 +7,4 @@ nemichat po kazdem kole
 insurance
 pocitani - simple
 basic strategie pro bellevue pravidla
+dealera presunout do rules

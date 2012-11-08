@@ -10,13 +10,15 @@ import blackjack.engine.Move;
 import blackjack.engine.Rules;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import java.util.Set;
 
 /**
  *
  * @author mbarnas
  */
 public class BasicStrategyPlayer extends BasePlayer {
-
+	public static final String DEPOSIT = "deposit";
+	
 	private Rules rules;
 
     private final Object[][] strategy = new Object[][]{
@@ -56,12 +58,12 @@ public class BasicStrategyPlayer extends BasePlayer {
 	}
 	
 	@Inject
-    public BasicStrategyPlayer(@Named("deposit")int money) {
+    public BasicStrategyPlayer(@Named(BasicStrategyPlayer.DEPOSIT)int money) {
         super(money);
     }
 
     @Override
-    public Move move(CardHand cards, Card dealerUpCard) {
+    public Move move(CardHand cards, Card dealerUpCard, Set<Move> allowedMoves) {
         if (rules.isBlackJack(cards)) {
             return Move.Stand;
         }
@@ -76,13 +78,12 @@ public class BasicStrategyPlayer extends BasePlayer {
         }
 
         if (move.equals("DoubleStand")) {
-            if (cards.count() != 2) {
+            if (allowedMoves.contains(Move.Double))
+				return Move.Double;
+			else
                 return Move.Stand;
-            } else {
-                return Move.Double;
-            }
         }
-        if (move.equals("Double") && cards.count() != 2) {
+        if (move.equals("Double") && !allowedMoves.contains(Move.Double)) {
             return Move.Hit;
         }
 

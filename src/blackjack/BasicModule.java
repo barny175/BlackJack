@@ -17,13 +17,12 @@ import com.google.inject.name.Names;
  * @author mbarnas
  */
 class BasicModule extends AbstractModule {
-	public static final String DEPOSIT = "deposit";
 
     @Override
     protected void configure() {
         bind(Rules.class).to(BasicRules.class);
         bind(CardSource.class).to(CardShuffler.class);
-		bind(Integer.class).annotatedWith(Names.named(DEPOSIT)).toInstance(100);
+		bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(100);
 		bind(Player.class).to(BasicStrategyPlayer.class);
     }
 }

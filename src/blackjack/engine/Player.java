@@ -3,6 +3,8 @@
  */
 package blackjack.engine;
 
+import java.util.Set;
+
 /**
  *
  * @author mbarnas
@@ -14,5 +16,5 @@ public interface Player {
     
     void gameEnded(Game game);
 
-    Move move(CardHand cards, Card dealerUpCard);
+    Move move(CardHand cards, Card dealerUpCard, Set<Move> allowedMoves);
 }

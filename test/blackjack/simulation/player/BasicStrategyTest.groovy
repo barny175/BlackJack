@@ -59,10 +59,9 @@ class BasicStrategyTest {
                 cards.addCard(c2)
                 
                 for (Card dealerCard : Card.ACE..Card.KING) {
-                    println "Player's cards: ${c}, ${c2}, dealers card ${dealerCard}"
-                    def move = player.move(cards, dealerCard)
+                    def move = player.move(cards, dealerCard, [Move.Double, Move.Hit, Move.Stand, Move.Split] as Set)
                     def expected = getBasicStrategyMove(cards, dealerCard)
-                    assertEquals(expected, move)
+                    assertEquals("Player's cards: ${c}, ${c2}, dealers card ${dealerCard}", expected, move)
                 }
             }
         }
@@ -70,11 +69,12 @@ class BasicStrategyTest {
 
     @Test
     void threeCardTest() {
+        def rules = new BasicRules()
         for (Card c : Card.ACE..Card.KING) {
             for (Card c2: Card.TWO..Card.NINE) {
                 for (Card c3: Card.TWO..Card.NINE) {
                     def player = new BasicStrategyPlayer(100)
-                    player.setRules(new BasicRules())
+                    player.setRules(rules)
                 
                     CardHand cards = new CardHand()
                     cards.addCard(c)
@@ -82,10 +82,11 @@ class BasicStrategyTest {
                     cards.addCard(c3)
                 
                     for (Card dealerCard : Card.ACE..Card.KING) {
-                        println "Player's cards: ${c}, ${c2}, ${c3}, dealers card ${dealerCard}"
-                        def move = player.move(cards, dealerCard)
+                        def game = new Game(mock(Engine.class), player)
+                        game.gameState = GameState.PlayersGame
+                        def move = player.move(cards, dealerCard, rules.getAllowedMoves(game))
                         def expected = getBasicStrategyMove(cards, dealerCard)
-                        assertEquals(expected, move)
+                        assertEquals("Player's cards: ${c}, ${c2}, ${c3}, dealers card ${dealerCard}", expected, move)
                     }
                 }
             }

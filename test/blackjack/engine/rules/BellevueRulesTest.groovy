@@ -23,7 +23,7 @@ class BellevueRulesTest {
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
-        when(player.move(any(), any())).thenReturn(Move.Double)
+        when(player.move(any(), any(), any())).thenReturn(Move.Double)
         
         engine.addPlayer(player)
 
@@ -39,7 +39,7 @@ class BellevueRulesTest {
 
             def player = mock(Player.class)
             when(player.bet()).thenReturn(10)
-            when(player.move(any(), any())).thenReturn(Move.Double)
+            when(player.move(any(), any(), any())).thenReturn(Move.Double)
 
             engine.addPlayer(player)
 

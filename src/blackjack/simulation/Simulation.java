@@ -6,7 +6,6 @@ package blackjack.simulation;
 
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
-import blackjack.engine.shufflers.TwoThirdsShuffler;
 import blackjack.simulation.player.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -28,7 +27,7 @@ public class Simulation {
 		new Simulation(new DealersStrategyPlayer(initialMoney)).run();
 		new Simulation(new OneHitPlayer(initialMoney)).run();
         new Simulation(new SimplePlayer(initialMoney)).run();
-		new Simulation(new BasicStrategyPlayer(initialMoney)).run();
+		new Simulation(injector.getInstance(BasicStrategyPlayer.class)).run();
 	}
 
 	public Simulation(BasePlayer player) {

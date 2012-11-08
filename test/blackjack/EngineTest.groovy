@@ -97,7 +97,7 @@ class EngineTest {
         def engine = getEngine(cardSrc)
         
         Player player = mock(Player.class)
-        when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
+        when(player.move(any(), any(), any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
         when(player.bet()).thenReturn(10)
         
         ArgumentCaptor<Game> gameCaptor = ArgumentCaptor.forClass(Game.class);
@@ -177,7 +177,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         engine.addPlayer(player)
-        when(player.move(any(), any())).thenReturn(Move.Stand)
+        when(player.move(any(), any(), any())).thenReturn(Move.Stand)
 
         engine.newGame()
         
@@ -193,13 +193,13 @@ class EngineTest {
         def player = mock(Player.class)
         
         engine.addPlayer(player)
-        when(player.move(any(), any())).thenReturn(Move.Stand)
+        when(player.move(any(), any(), any())).thenReturn(Move.Stand)
 
         engine.newGame()
         
         engine.start();
         
-        verify(player, times(1)).move(any(), any())        
+        verify(player, times(1)).move(any(), any(), any())        
     }
     
     @Test
@@ -224,7 +224,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
-        when(player.move(any(), any())).thenReturn(Move.Double)
+        when(player.move(any(), any(), any())).thenReturn(Move.Double)
         
         engine.addPlayer(player)
 
@@ -237,7 +237,7 @@ class EngineTest {
         assertEquals(GameResult.PlayerWin, game.gameResult())
 
         verify(player, never()).addMoney(10)
-        verify(player, times(1)).move(any(), any())
+        verify(player, times(1)).move(any(), any(), any())
     }
     
     @Test(expected=IllegalMoveException.class)
@@ -247,7 +247,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
-        when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Double)
+        when(player.move(any(), any(), any())).thenReturn(Move.Hit).thenReturn(Move.Double)
         
         engine.addPlayer(player)
 
@@ -262,7 +262,7 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
-        when(player.move(any(), any())).thenReturn(Move.Hit).thenReturn(Move.Split)
+        when(player.move(any(), any(), any())).thenReturn(Move.Hit).thenReturn(Move.Split)
         
         engine.addPlayer(player)
 
@@ -277,14 +277,14 @@ class EngineTest {
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
-        when(player.move(any(), any())).thenReturn(Move.Split).thenReturn(Move.Stand).thenReturn(Move.Stand)
+        when(player.move(any(), any(), any())).thenReturn(Move.Split).thenReturn(Move.Stand).thenReturn(Move.Stand)
         
         engine.addPlayer(player)
 
         engine.newGame()
         engine.start()
         
-        verify(player, times(3)).move(any(), any())
+        verify(player, times(3)).move(any(), any(), any())
         verify(player, times(2)).addMoney(-10)
     }
 
