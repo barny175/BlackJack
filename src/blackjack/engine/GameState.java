@@ -11,8 +11,8 @@ public enum GameState {
 	Started,
     FirstDeal,
     PlayersGame,
-    PlayerFinished,
-	DealerFinished,
+	DealersGame,
+	CheckState,
 	End,
     AfterSplit,
 	Splitted;

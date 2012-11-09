@@ -60,25 +60,30 @@ public class Engine {
         Game game = this.games.poll();
 		boolean dealerDraws = false;
         while (game != null) {
-            switch(game.gameState()) {
-				case AfterSplit:
-					dealToPlayer(game);
-					game.setGameState(GameState.FirstDeal);
-					break;
-				case FirstDeal:
-					checkBlackJack(game);
-					break;
-            }
-            
-            if (game.gameState() == GameState.FirstDeal) {
-                playersGame(game);
+			while (game.gameState() != GameState.DealersGame && game.gameState() != GameState.Splitted) {
+				switch(game.gameState()) {
+					case AfterSplit:
+						dealToPlayer(game);
+						game.setGameState(GameState.FirstDeal);
+						break;
+					case FirstDeal:
+						if (rules.isBlackJack(game.playerCards())) {
+							game.setGameState(GameState.DealersGame);
+							continue;
+						}
+						
+						playersGame(game);
+						break;
+					case Splitted:
+						game.setGameState(GameState.DealersGame);
+						break;
+				}
+			}
 
-                dealerDraws |= (game.gameState() == GameState.PlayerFinished);
-            }
-            
-            if (game.gameState() != GameState.Splitted)
-                this.endedGames.add(game);
-                    
+			this.endedGames.add(game);
+			
+			dealerDraws |= (game.gameState() == GameState.DealersGame);
+			
             game = this.games.poll();
         }
 
@@ -120,12 +125,12 @@ public class Engine {
             switch (move) {
                 case Double:
 					game.setBet(game.getBet() * 2);
-					game.setGameState(GameState.PlayerFinished);
+					game.setGameState(GameState.DealersGame);
                 case Hit:                
                     dealToPlayer(game);
 
                     if (checkBusted(game.playerCards())) {
-                        setGameResult(game, GameResult.PlayerBusted);
+                        game.setGameState(GameState.DealersGame);
                         return;
                     }
                     break;
@@ -136,7 +141,7 @@ public class Engine {
                     }
                     break;
 				default:
-					game.setGameState(GameState.PlayerFinished);
+					game.setGameState(GameState.DealersGame);
 					break;
             }
         } while (move == Move.Hit);
@@ -197,8 +202,6 @@ public class Engine {
     }
 
     private void checkBlackJack(Game game) {
-		assert game.gameState() == GameState.FirstDeal;
-		
         CardHand sumPlayer = game.playerCards();
         CardHand sumDealer = dealerCards;
 
@@ -231,10 +234,11 @@ public class Engine {
     private void checkGameState(Game game) {
         CardHand playerCards = game.playerCards();
 
-        if (game.gameState() != GameState.PlayerFinished) {
-            return;
-        }
+		checkBlackJack(game);
 
+		if (game.gameState() == GameState.End)
+			return;
+				
         if (checkBusted(playerCards)) {
             setGameResult(game, GameResult.PlayerBusted);
             return;
