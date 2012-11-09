@@ -17,7 +17,6 @@ public class Game {
     private final CardHand playerCards = new CardHand();
     private GameState gameState = GameState.Started;
     private final Engine engine;
-    private boolean splitted = false;
     private GameResult result;
 
     public Game (Engine engine, Player player) {
@@ -84,12 +83,8 @@ public class Game {
         game2.setGameState(GameState.AfterSplit);
         games.add(game2);
 
-        this.splitted = true;
+        this.gameState = GameState.Splitted;
         
         return games;
-    }
-
-    public boolean isSplitted() {
-        return splitted;
     }
 }

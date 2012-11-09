@@ -14,5 +14,6 @@ public enum GameState {
     PlayerFinished,
 	DealerFinished,
 	End,
-    AfterSplit;
+    AfterSplit,
+	Splitted;
 }

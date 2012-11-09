@@ -37,7 +37,7 @@ public class BellevueSimulation {
 			bind(Integer.class).toInstance(6);
             bind(Long.class).toInstance(6211L);
 			bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
-            bind(BasePlayer.class).to(BellevuePlayer.class);
+            bind(BasePlayer.class).to(BasicStrategyPlayer.class);
 		}
 	}
 
