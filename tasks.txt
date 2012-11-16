@@ -1,5 +1,3 @@
-simulation - vkreslovat "equity" krivku
-
 Casino bellevue pravidla - splitnuta esa - pouze jedna dalsi karta je mozna
 
 basicrules umoznuje zadat split i pre nestejnych kartach

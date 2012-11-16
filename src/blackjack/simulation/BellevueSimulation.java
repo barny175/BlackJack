@@ -4,10 +4,7 @@
  */
 package blackjack.simulation;
 
-import blackjack.engine.CardSource;
-import blackjack.engine.Engine;
-import blackjack.engine.IllegalMoveException;
-import blackjack.engine.Rules;
+import blackjack.engine.*;
 import blackjack.engine.rules.BellevueRules;
 import blackjack.engine.shufflers.TwoThirdsShuffler;
 import blackjack.simulation.player.*;
@@ -15,6 +12,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Names;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -37,13 +38,18 @@ public class BellevueSimulation {
 			bind(Integer.class).toInstance(6);
             bind(Long.class).toInstance(6211L);
 			bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
-            bind(BasePlayer.class).to(BasicStrategyPlayer.class);
+            try {
+                bind(PrintWriter.class).toInstance(new PrintWriter("equity.csv"));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(BellevueSimulation.class.getName()).log(Level.SEVERE, null, ex);
 		}
+            bind(Player.class).annotatedWith(Names.named("DECORATED_PLAYER")).to(BellevuePlayer.class);
 	}
+    }
 
 	public static void main(String[] args) {
 		injector = Guice.createInjector(new BellevueSimulationModule());
-		new BellevueSimulation(injector.getInstance(BasePlayer.class)).run();
+        new BellevueSimulation(injector.getInstance(EquityCurvePlayer.class)).run();
 	}
 
 	public BellevueSimulation(BasePlayer player) {
