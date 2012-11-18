@@ -49,8 +49,8 @@ class BellevueRulesTest {
     }
 	
 	@Test
-	void onlyOneCardAfterSplit() {
-		def engine = new Engine(new BellevueRules(), getCardSource([Card.NINE, Card.SIX, Card.NINE, Card.FIVE, Card.SIX, Card.NINE, Card.SIX]))
+	void onlyOneCardAfterSplitOfAces() {
+		def engine = new Engine(new BellevueRules(), getCardSource([Card.ACE, Card.SIX, Card.ACE, Card.FIVE, Card.SIX, Card.NINE, Card.SEVEN]))
 		def player = mock(Player.class)
 		when(player.bet()).thenReturn(10)
 		when(player.move(any(), any(), any())).thenReturn(Move.Split)
@@ -58,9 +58,9 @@ class BellevueRulesTest {
 		engine.newGame()
 		engine.start()
 		
-		verify(player.move(any(), any(), any()), times(1))
-		verify(player.addMoney(-10))
-		verify(player.addMoney(10))
+		verify(player, times(1)).move(any(), any(), any())
+		verify(player).addMoney(-10)
+		verify(player).addMoney(10)
 	}
 }
 

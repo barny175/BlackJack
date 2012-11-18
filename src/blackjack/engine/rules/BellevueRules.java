@@ -3,9 +3,9 @@
  */
 package blackjack.engine.rules;
 
-import blackjack.engine.CardHand;
-import blackjack.engine.Game;
-import blackjack.engine.Move;
+import blackjack.engine.*;
+import com.google.common.collect.Sets;
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
@@ -18,7 +18,13 @@ public class BellevueRules extends BasicRules {
     public Set<Move> getAllowedMoves(Game game) {
         Set<Move> allowedMoves = super.getAllowedMoves(game);
         
-        final int playerHardSum = game.playerCards().hardSum();
+        final CardHand playerCards = game.playerCards();
+        
+        if (game.isSplitted() && playerCards.count() == 1 && playerCards.getCards().get(0) == Card.ACE) {
+            return EnumSet.noneOf(Move.class);
+        }
+        
+        final int playerHardSum = playerCards.hardSum();
         if (playerHardSum < 9 || playerHardSum > 11)
             allowedMoves.remove(Move.Double);
         
@@ -29,4 +35,15 @@ public class BellevueRules extends BasicRules {
 	public boolean isBlackJack(CardHand cards) {
 		return !cards.isSplitted() && super.isBlackJack(cards);
 	}
+
+    @Override
+    public GameState nextState(Game game) {
+        if (game.gameState() == GameState.AfterSplit && game.playerCards().count() == 2
+                && game.playerCards().getCards().get(0) == Card.ACE)
+            return GameState.DealersGame;
+        
+        return super.nextState(game);
+    }
+    
+    
 }

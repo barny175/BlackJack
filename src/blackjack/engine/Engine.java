@@ -48,7 +48,7 @@ public class Engine {
         dealerCards = new CardHand();
 
         this.endedGames = new LinkedList<Game>();
-        
+
         bet(game);
 
         firstDeal(game);
@@ -58,33 +58,33 @@ public class Engine {
 
     public void start() throws IllegalMoveException {
         Game game = this.games.poll();
-		boolean dealerDraws = false;
+        boolean dealerDraws = false;
         while (game != null) {
-			while (game.gameState() != GameState.DealersGame && game.gameState() != GameState.Splitted) {
-				switch(game.gameState()) {
-					case AfterSplit:
-						dealToPlayer(game);
-						game.setGameState(GameState.FirstDeal);
-						break;
-					case FirstDeal:
-						if (rules.isBlackJack(game.playerCards())) {
-							game.setGameState(GameState.DealersGame);
-							continue;
-						}
-						
-						playersGame(game);
-						break;
-					case Splitted:
-						game.setGameState(GameState.DealersGame);
-						break;
-				}
-			}
+            switch (game.gameState()) {
+                case AfterSplit:
+                    dealToPlayer(game);
+                    game.setGameState(rules.nextState(game));
+                    break;
+                case FirstDeal:
+                    if (rules.isBlackJack(game.playerCards())
+                            || rules.isBlackJack(dealerCards)) {
+                        game.setGameState(GameState.CheckState);
+                        continue;
+                    }
 
-			this.endedGames.add(game);
-			
-			dealerDraws |= (game.gameState() == GameState.DealersGame);
-			
-            game = this.games.poll();
+                    playersGame(game);
+                    break;
+                case Splitted:
+                    game.setGameState(GameState.End);
+                    game = this.games.poll();
+                    break;
+                case DealersGame:
+                    dealerDraws = true;
+                case CheckState:
+                    this.endedGames.add(game);
+                    game = this.games.poll();
+                    break;
+            }
         }
 
         if (dealerDraws) {
@@ -114,19 +114,21 @@ public class Engine {
     private void playersGame(Game game) throws IllegalMoveException {
         Move move;
         do {
-			Set<Move> allowedMoves = rules.getAllowedMoves(game);
+            Set<Move> allowedMoves = rules.getAllowedMoves(game);
+            
             move = player.move(game.playerCards(), this.getDealerUpCard(), allowedMoves);
 
-			game.setGameState(GameState.PlayersGame);
-			
-			if (!allowedMoves.contains(move))
-				throw new IllegalMoveException();
-            
+            game.setGameState(GameState.PlayersGame);
+
+            if (!allowedMoves.contains(move)) {
+                throw new IllegalMoveException();
+            }
+
             switch (move) {
                 case Double:
-					game.setBet(game.getBet() * 2);
-					game.setGameState(GameState.DealersGame);
-                case Hit:                
+                    game.setBet(game.getBet() * 2);
+                    game.setGameState(GameState.DealersGame);
+                case Hit:
                     dealToPlayer(game);
 
                     if (checkBusted(game.playerCards())) {
@@ -140,16 +142,16 @@ public class Engine {
                         this.games.addFirst(g);
                     }
                     break;
-				default:
-					game.setGameState(GameState.DealersGame);
-					break;
+                default:
+                    game.setGameState(GameState.DealersGame);
+                    break;
             }
         } while (move == Move.Hit);
     }
 
     protected void firstDeal(Game game) {
-		assert game.gameState() == GameState.Started;
-		
+        assert game.gameState() == GameState.Started;
+
         dealToPlayer(game);
 
         dealerUpCard = dealToDealer();
@@ -157,8 +159,8 @@ public class Engine {
         dealToPlayer(game);
 
         dealToDealer();
-		
-		game.setGameState(GameState.FirstDeal);
+
+        game.setGameState(GameState.FirstDeal);
     }
 
     private void dealToPlayer(Game game) {
@@ -234,11 +236,12 @@ public class Engine {
     private void checkGameState(Game game) {
         CardHand playerCards = game.playerCards();
 
-		checkBlackJack(game);
+        checkBlackJack(game);
 
-		if (game.gameState() == GameState.End)
-			return;
-				
+        if (game.gameState() == GameState.End) {
+            return;
+        }
+
         if (checkBusted(playerCards)) {
             setGameResult(game, GameResult.PlayerBusted);
             return;

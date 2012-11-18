@@ -18,6 +18,7 @@ public class Game {
     private GameState gameState = GameState.Started;
     private final Engine engine;
     private GameResult result;
+    private boolean splitted = false;
 
     public Game (Engine engine, Player player) {
         this.player = player;
@@ -63,6 +64,10 @@ public class Game {
     public int getBet() {
         return bet;
     }
+
+    public boolean isSplitted() {
+        return splitted;
+    }
     
     public List<Game> split() {
         if (playerCards.count() != 2)
@@ -74,6 +79,7 @@ public class Game {
         game1.addPlayerCard(this.playerCards().getCards().get(0));
 		game1.playerCards().setSplitted(true);
         game1.setGameState(GameState.AfterSplit);
+        game1.splitted = true;
         games.add(game1);
         
         Game game2 = new Game(engine, player);
@@ -81,6 +87,7 @@ public class Game {
         game2.addPlayerCard(this.playerCards().getCards().get(1));
 		game2.playerCards().setSplitted(true);
         game2.setGameState(GameState.AfterSplit);
+        game2.splitted = true;
         games.add(game2);
 
         this.gameState = GameState.Splitted;

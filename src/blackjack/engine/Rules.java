@@ -18,4 +18,6 @@ public interface Rules {
     Set<Move> getAllowedMoves(Game game);
 	
 	boolean isBlackJack(CardHand cards);
+
+    GameState nextState(Game game);
 }
