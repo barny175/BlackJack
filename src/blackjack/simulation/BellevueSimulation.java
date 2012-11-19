@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class BellevueSimulation {
 
-	public static final int GAMES = 100000;
+	public static final int GAMES = 300000;
 	public static final int initialMoney = 100000;
 	private Engine engine;
 	private BasePlayer player;
@@ -75,7 +75,8 @@ public class BellevueSimulation {
 
 		final int result = this.player.getMoney();
 		if (result > 10) {
-			System.out.println(String.format("%-20s: %d (%d%%)", player.getName(), result, result * 100 / initialMoney));
+			System.out.println(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
+                    ((float)(initialMoney - result)) / GAMES * 10));
 		}
 	}
 }

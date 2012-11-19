@@ -4,55 +4,76 @@
  */
 package blackjack.simulation;
 
+import blackjack.engine.CardSource;
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
+import blackjack.engine.Rules;
+import blackjack.engine.rules.BasicRules;
+import blackjack.engine.shufflers.TwoThirdsShuffler;
 import blackjack.simulation.player.*;
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.name.Names;
 
 /**
  *
  * @author mbarnas
  */
 public class Simulation {
-    public static final int GAMES = 10000;
-    public static final int initialMoney = 500000;
-	private Engine engine;
-	private BasePlayer player;
-	private static Injector injector;
-    
-	public static void main(String[] args) {
-        injector = Guice.createInjector(new SimulationModule());
-		new Simulation(new StandPlayer(initialMoney)).run();
-		new Simulation(new DealersStrategyPlayer(initialMoney)).run();
-		new Simulation(new OneHitPlayer(initialMoney)).run();
-        new Simulation(new SimplePlayer(initialMoney)).run();
-		new Simulation(injector.getInstance(BasicStrategyPlayer.class)).run();
-	}
 
-	public Simulation(BasePlayer player) {
-		this.engine = injector.getInstance(Engine.class);
-		this.player = player;
-		this.engine.addPlayer(player);
-	}
-	
-	public void run() {
-		for (int i = 0; i < GAMES; i++) {
-			this.engine.newGame();
+    public static final int GAMES = 30000;
+    public static final int initialMoney = 500000;
+    private Engine engine;
+    private BasePlayer player;
+    private static Injector injector;
+
+    private static class SimulationModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(Rules.class).to(BasicRules.class);
+            bind(CardSource.class).to(TwoThirdsShuffler.class);
+            bind(Integer.class).toInstance(6);
+            bind(Long.class).toInstance(61L);
+            bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
+        }
+    }
+
+    public static void main(String[] args) {
+        injector = Guice.createInjector(new SimulationModule());
+        new Simulation(new StandPlayer(initialMoney)).run();
+        new Simulation(new DealersStrategyPlayer(initialMoney)).run();
+        new Simulation(new OneHitPlayer(initialMoney)).run();
+        new Simulation(new SimplePlayer(initialMoney)).run();
+        new Simulation(injector.getInstance(BasicStrategyPlayer.class)).run();
+    }
+
+    public Simulation(BasePlayer player) {
+        this.engine = injector.getInstance(Engine.class);
+        this.player = player;
+        this.engine.addPlayer(player);
+    }
+
+    public void run() {
+        for (int i = 0; i < GAMES; i++) {
+            this.engine.newGame();
             try {
                 this.engine.start();
             } catch (IllegalMoveException ex) {
                 System.out.print("Illegal move.");
             }
-			
-			if (this.player.getMoney() < 10) {
+
+            if (this.player.getMoney() < 10) {
                 System.out.println(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
-				break;
+                break;
             }
-		}
-        
+        }
+
         final int result = this.player.getMoney();
-		if (result > 10)
-			System.out.println(String.format("%-20s: %d (%d%%)", player.getName(), result, result * 100 / initialMoney));
-	}
+        if (result > 10) {
+            System.out.println(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
+                    ((float) (initialMoney - result)) / GAMES * 10));
+        }
+    }
 }
