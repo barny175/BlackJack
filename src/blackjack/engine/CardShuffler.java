@@ -3,9 +3,8 @@
  */
 package blackjack.engine;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import com.google.common.collect.Lists;
+import java.util.*;
 
 /**
  *
@@ -17,6 +16,7 @@ public class CardShuffler implements CardSource {
     public final int CARDS_IN_DECK = 13;
     protected Set<Integer> used;
 	protected final int allCards;
+    private List<ShuffleObserver> observers = Lists.newArrayList();
 
     public CardShuffler() {
         this(1);
@@ -34,8 +34,9 @@ public class CardShuffler implements CardSource {
     }
     
     @Override
-    public void shuffle() {
+    public void newGame() {
         used.clear();
+        notifyObservers();
     }
     
     @Override
@@ -56,5 +57,15 @@ public class CardShuffler implements CardSource {
 
     private Card numToCard(int card) {
         return Card.values()[card];
+    }
+
+    @Override
+    public void registerObserver(ShuffleObserver observer) {
+        this.observers.add(observer);
+    }
+
+    protected void notifyObservers() {
+        for (ShuffleObserver o : this.observers)
+            o.shuffling();
     }
 }

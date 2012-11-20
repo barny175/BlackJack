@@ -37,6 +37,13 @@ public class Game {
         return engine.getDealerUpCard();
     }
 
+    public CardHand dealerCards() {
+        if (gameState != GameState.End)
+            throw new SecurityException("Accessing dealer cards is allowed only for ended games.");
+        
+        return this.engine.getDealerCards();
+    }
+    
     public CardHand playerCards() {
         return playerCards;
     }

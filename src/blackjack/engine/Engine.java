@@ -37,8 +37,12 @@ public class Engine {
         this.player = player;
     }
 
+    public void registerShufflingObserver(ShuffleObserver observer) {
+        this.cardSource.registerObserver(observer);
+    }
+    
     public Game newGame() {
-        cardSource.shuffle();
+        cardSource.newGame();
 
         final Game game = new Game(this, player);
 

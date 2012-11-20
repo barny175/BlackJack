@@ -19,8 +19,8 @@ public class TwoThirdsShuffler extends CardShuffler {
 	}
 
 	@Override
-	public void shuffle() {
+	public void newGame() {
 		if (this.used.size() >= this.allCards * 2 / 3)
-			super.shuffle();
+			super.newGame();
 	}
 }

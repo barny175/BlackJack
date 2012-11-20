@@ -11,9 +11,10 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(CardShuffler.class)
 public interface CardSource {
-
     Card next();
 
-    public void shuffle();
+    void newGame();
+    
+    void registerObserver(ShuffleObserver observer);
     
 }
