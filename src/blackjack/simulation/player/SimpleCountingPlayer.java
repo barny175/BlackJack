@@ -8,6 +8,8 @@ import blackjack.engine.CardHand;
 import blackjack.engine.Game;
 import blackjack.engine.Move;
 import blackjack.engine.ShuffleObserver;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import java.util.Set;
 
 /**
@@ -17,15 +19,22 @@ import java.util.Set;
 public class SimpleCountingPlayer extends BasePlayer implements ShuffleObserver {
     private final BasePlayer player;
     private int count = 0;
+	private boolean registered;
 
-    public SimpleCountingPlayer(BasePlayer player, int money) {
+	@Inject
+    public SimpleCountingPlayer(BasePlayer player, @Named(BasicStrategyPlayer.DEPOSIT)int money) {
         super(money);
         this.player = player;
     }
 
     @Override
     public int bet() {
-        return super.bet();
+		if (count > 9)
+			return 40;
+		else if (count < 9)
+			return 10;
+		else
+			return 20;
     }
 
     @Override
@@ -47,15 +56,23 @@ public class SimpleCountingPlayer extends BasePlayer implements ShuffleObserver 
 
     private void countCards(CardHand playerCards) {
         for (Card c : playerCards.getCards()) {
-            if (c == Card.ACE)
-                count--;
-            if (c == Card.FOUR)
+            if (c.getValue() > 2 && c.getValue() < 8)
                 count++;
+            if (c.getSoftValue() >= 10)
+                count--;
         }
     }
 
     @Override
     public void shuffling() {
         this.count = 0;
-    }    
+    }
+
+	@Override
+	public void newGame(Game game) {
+		if (!registered) {
+			game.registerShufflingObserver(this);
+			registered = true;
+		}
+	}
 }

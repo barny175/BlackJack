@@ -45,6 +45,8 @@ public class Engine {
         cardSource.newGame();
 
         final Game game = new Game(this, player);
+		
+		player.newGame(game);
 
         this.games = new LinkedList<Game>();
         this.games.add(game);

@@ -4,6 +4,8 @@
 package blackjack.engine;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import java.util.*;
 
 /**
@@ -11,6 +13,9 @@ import java.util.*;
  * @author mbarnas
  */
 public class CardShuffler implements CardSource {
+	public static final String DECKS = "decks";
+	public static final String SEED = "seed";
+	
     protected int decks;
     private Random rand;
     public final int CARDS_IN_DECK = 13;
@@ -22,11 +27,12 @@ public class CardShuffler implements CardSource {
         this(1);
     }
     
-    public CardShuffler(int decks) {
+    public CardShuffler(@Named(DECKS) int decks) {
         this(decks, System.currentTimeMillis());
     }
 
-    public CardShuffler(int decks, long randSeed) {
+	@Inject
+    public CardShuffler(@Named(DECKS)int decks, @Named(SEED)long randSeed) {
         this.decks = decks;
         this.allCards = 4 * CARDS_IN_DECK * decks;
         this.rand = new Random(randSeed);
@@ -35,14 +41,12 @@ public class CardShuffler implements CardSource {
     
     @Override
     public void newGame() {
-        used.clear();
-        notifyObservers();
     }
     
     @Override
     public Card next() {
         if (used.size() == allCards)
-            return null;
+            shuffle();
         
         do {
             int nextInt = this.rand.nextInt(allCards);
@@ -68,4 +72,9 @@ public class CardShuffler implements CardSource {
         for (ShuffleObserver o : this.observers)
             o.shuffling();
     }
+
+	private void shuffle() {
+		used.clear();
+		notifyObservers();
+	}
 }

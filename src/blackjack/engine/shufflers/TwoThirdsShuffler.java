@@ -6,15 +6,15 @@ package blackjack.engine.shufflers;
 
 import blackjack.engine.CardShuffler;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  *
  * @author mbarnas
  */
 public class TwoThirdsShuffler extends CardShuffler {
-
     @Inject
-	public TwoThirdsShuffler(int decks, long randSeed) {
+	public TwoThirdsShuffler(@Named(DECKS) int decks, long randSeed) {
 		super(decks, randSeed);
 	}
 

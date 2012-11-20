@@ -4,12 +4,12 @@
  */
 package blackjack.simulation;
 
+import blackjack.engine.CardShuffler;
 import blackjack.engine.CardSource;
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
 import blackjack.engine.Rules;
 import blackjack.engine.rules.BasicRules;
-import blackjack.engine.shufflers.TwoThirdsShuffler;
 import blackjack.simulation.player.*;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -22,7 +22,7 @@ import com.google.inject.name.Names;
  */
 public class Simulation {
 
-    public static final int GAMES = 30000;
+    public static final int GAMES = 1000000;
     public static final int initialMoney = 500000;
     private Engine engine;
     private BasePlayer player;
@@ -33,20 +33,18 @@ public class Simulation {
         @Override
         protected void configure() {
             bind(Rules.class).to(BasicRules.class);
-            bind(CardSource.class).to(TwoThirdsShuffler.class);
-            bind(Integer.class).toInstance(6);
-            bind(Long.class).toInstance(61L);
+            bind(CardSource.class).to(CardShuffler.class);
+            bind(Integer.class).annotatedWith(Names.named(CardShuffler.DECKS)).toInstance(6);
+            bind(Long.class).annotatedWith(Names.named(CardShuffler.SEED)).toInstance(3142L);
             bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
+			bind(BasePlayer.class).to(BasicStrategyPlayer.class);
         }
     }
 
     public static void main(String[] args) {
         injector = Guice.createInjector(new SimulationModule());
-        new Simulation(new StandPlayer(initialMoney)).run();
-        new Simulation(new DealersStrategyPlayer(initialMoney)).run();
-        new Simulation(new OneHitPlayer(initialMoney)).run();
-        new Simulation(new SimplePlayer(initialMoney)).run();
-        new Simulation(injector.getInstance(BasicStrategyPlayer.class)).run();
+		new Simulation(injector.getInstance(BasicStrategyPlayer.class)).run();
+		new Simulation(injector.getInstance(SimpleCountingPlayer.class)).run();
     }
 
     public Simulation(BasePlayer player) {

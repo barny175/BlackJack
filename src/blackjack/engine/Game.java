@@ -25,6 +25,10 @@ public class Game {
         this.engine = engine;
     }
 
+	public void registerShufflingObserver(ShuffleObserver observer) {
+		engine.registerShufflingObserver(observer);
+	}
+	
     public GameResult gameResult() {
         return result;
     }

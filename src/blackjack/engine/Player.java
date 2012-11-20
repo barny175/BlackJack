@@ -10,6 +10,8 @@ import java.util.Set;
  * @author mbarnas
  */
 public interface Player {
+	void newGame(Game game);
+	
     int bet();
 
     void addMoney(int amount);

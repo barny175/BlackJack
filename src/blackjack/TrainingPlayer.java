@@ -4,7 +4,6 @@
 package blackjack;
 
 import blackjack.engine.*;
-import blackjack.simulation.player.BasicStrategyPlayer;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import java.util.Set;
@@ -16,12 +15,12 @@ import java.util.Set;
 public class TrainingPlayer implements Player {
     private CmdLinePlayer cmdLinePlayer;
 	@Inject
-    private BasicStrategyPlayer basicStrategyPlayer;
+    private Player idealPlayer;
 
 	@Inject
     public TrainingPlayer(Player player, @Named("deposit") int amount) {
         cmdLinePlayer = new CmdLinePlayer(amount);
-        basicStrategyPlayer = new BasicStrategyPlayer(amount);
+        this.idealPlayer = player;
     }
     
     @Override
@@ -42,7 +41,7 @@ public class TrainingPlayer implements Player {
     @Override
     public Move move(CardHand cards, Card dealerUpCard, Set<Move> allowedMoves) {
         Move move = cmdLinePlayer.move(cards, dealerUpCard, allowedMoves);
-        Move basicStrMove = basicStrategyPlayer.move(cards, dealerUpCard, allowedMoves);
+        Move basicStrMove = idealPlayer.move(cards, dealerUpCard, allowedMoves);
         if (basicStrMove != move) {
             BlackJack.println("Basic strategy suggests " + basicStrMove + "!!!");
         }
@@ -52,4 +51,9 @@ public class TrainingPlayer implements Player {
     int getMoney() {
         return this.cmdLinePlayer.getMoney();
     }
+
+	@Override
+	public void newGame(Game game) {
+		
+	}
 }

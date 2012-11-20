@@ -94,4 +94,15 @@ public class CmdLinePlayer implements Player {
 		}
 		return sb.toString();
 	}
+
+	@Override
+	public void newGame(Game game) {
+		game.registerShufflingObserver(new ShuffleObserver() {
+
+			@Override
+			public void shuffling() {
+				BlackJack.println("Shuffling.");
+			}
+		});
+	}
 }

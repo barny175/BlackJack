@@ -3,8 +3,8 @@ basicrules umoznuje zadat split i pre nestejnych kartach
 pocitani - simple
 nasimulovat basic strategie pro bellevue pravidla
 
-kontrola jestli kdyz uzivatel chce udelat akci kterou v danem okamziku nemuze, tak engine zarve
 simulace na zjisteni spravnych strategii
 nemichat po kazdem kole
 insurance
 dealera presunout do rules
+training player kontroluje i sazku

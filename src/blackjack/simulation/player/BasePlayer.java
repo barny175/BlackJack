@@ -37,4 +37,9 @@ public abstract class BasePlayer implements Player {
 	}
 	
 	public abstract String getName();
+
+	@Override
+	public void newGame(Game game) {
+		currentGame = game;
+	}
 }
