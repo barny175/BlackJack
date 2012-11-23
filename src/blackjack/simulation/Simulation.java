@@ -10,6 +10,7 @@ import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
 import blackjack.engine.Rules;
 import blackjack.engine.rules.BasicRules;
+import blackjack.engine.shufflers.EveryGameCardShuffler;
 import blackjack.simulation.player.*;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -33,7 +34,7 @@ public class Simulation {
         @Override
         protected void configure() {
             bind(Rules.class).to(BasicRules.class);
-            bind(CardSource.class).to(CardShuffler.class);
+            bind(CardSource.class).to(EveryGameCardShuffler.class);
             bind(Integer.class).annotatedWith(Names.named(CardShuffler.DECKS)).toInstance(6);
             bind(Long.class).annotatedWith(Names.named(CardShuffler.SEED)).toInstance(3142L);
             bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);

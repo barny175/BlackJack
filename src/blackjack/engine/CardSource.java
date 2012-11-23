@@ -11,7 +11,7 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(CardShuffler.class)
 public interface CardSource {
-    Card next();
+    Card next() throws LastCardException;
 
     void newGame();
     

@@ -22,6 +22,8 @@ public class CardShuffler implements CardSource {
     protected Set<Integer> used;
 	protected final int allCards;
     private List<ShuffleObserver> observers = Lists.newArrayList();
+	private List<Card> cards;
+	private int currentCard;
 
     public CardShuffler() {
         this(1);
@@ -37,6 +39,7 @@ public class CardShuffler implements CardSource {
         this.allCards = 4 * CARDS_IN_DECK * decks;
         this.rand = new Random(randSeed);
         this.used = new HashSet<Integer>(decks * CARDS_IN_DECK);
+		shuffleCards();
     }
     
     @Override
@@ -44,19 +47,11 @@ public class CardShuffler implements CardSource {
     }
     
     @Override
-    public Card next() {
-        if (used.size() == allCards)
-            shuffle();
+    public Card next() throws LastCardException {
+        if (currentCard >= allCards)
+            throw new LastCardException();
         
-        do {
-            int nextInt = this.rand.nextInt(allCards);
-            if (used.contains(nextInt))
-                continue;
-            
-            int card = nextInt % CARDS_IN_DECK;
-            used.add(nextInt);
-            return numToCard(card);
-        } while (true);
+        return cards.get(currentCard++);
     }
 
     private Card numToCard(int card) {
@@ -69,12 +64,25 @@ public class CardShuffler implements CardSource {
     }
 
     protected void notifyObservers() {
-        for (ShuffleObserver o : this.observers)
-            o.shuffling();
+        for (ShuffleObserver o : this.observers) {
+			o.shuffling();
+		}
     }
 
-	private void shuffle() {
-		used.clear();
+	public void shuffle() {
+		shuffleCards();
 		notifyObservers();
+	}
+
+	private void shuffleCards() {
+		this.cards = new ArrayList<Card>(allCards);
+		
+		for (int i = 0; i  < allCards;i++) {
+            int card = i % CARDS_IN_DECK;
+			this.cards.add(numToCard(card));
+		}
+		
+		Collections.shuffle(cards, rand);
+		this.currentCard = 0;
 	}
 }
