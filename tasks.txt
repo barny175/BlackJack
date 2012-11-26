@@ -2,9 +2,9 @@ pocitani - simple
 
 vice hracu - pouzit na simulaci, jestli na bwinu lze pocitanim vydelavat i presto, ze se micha po kazdem kole, kdyz se vyuzije vice hracu
 
-basicrules umoznuje zadat split i pre nestejnych kartach
-
 nasimulovat basic strategie pro bellevue pravidla
+
+basicrules umoznuje zadat split i pre nestejnych kartach
 
 simulace na zjisteni spravnych strategii
 nemichat po kazdem kole

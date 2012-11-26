@@ -15,12 +15,11 @@ import java.util.*;
 public class CardShuffler implements CardSource {
 	public static final String DECKS = "decks";
 	public static final String SEED = "seed";
-	
+    public static final int CARDS_IN_DECK = 13;
+    
     protected int decks;
     private Random rand;
-    public final int CARDS_IN_DECK = 13;
-    protected Set<Integer> used;
-	protected final int allCards;
+    protected final int allCards;
     private List<ShuffleObserver> observers = Lists.newArrayList();
 	private List<Card> cards;
 	private int currentCard;
@@ -38,8 +37,12 @@ public class CardShuffler implements CardSource {
         this.decks = decks;
         this.allCards = 4 * CARDS_IN_DECK * decks;
         this.rand = new Random(randSeed);
-        this.used = new HashSet<Integer>(decks * CARDS_IN_DECK);
+        
 		shuffleCards();
+    }
+
+    public int cardsDrawn() {
+        return currentCard;
     }
     
     @Override

@@ -34,10 +34,13 @@ public class BellevueSimulation {
 		@Override
 		protected void configure() {
 			bind(Rules.class).to(BellevueRules.class);
+            
+            bind(Integer.class).annotatedWith(Names.named(CardShuffler.DECKS)).toInstance(6);
 			bind(CardSource.class).to(TwoThirdsShuffler.class);
 			bind(Integer.class).toInstance(6);
-            bind(Long.class).toInstance(6211L);
-			bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
+            bind(Long.class).toInstance(8621L);
+			
+            bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
             try {
                 bind(PrintWriter.class).toInstance(new PrintWriter("equity.csv"));
             } catch (FileNotFoundException ex) {

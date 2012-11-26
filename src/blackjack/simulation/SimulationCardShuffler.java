@@ -6,30 +6,38 @@ package blackjack.simulation;
 
 import blackjack.engine.Card;
 import blackjack.engine.CardShuffler;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  *
  * @author mbarnas
  */
 public class SimulationCardShuffler extends CardShuffler {
-	private final Card[] firstCards;
-	private int cardsUsed;
+	private final List<Card> firstCards;
+    private int usedCards = 0;
 
 	public SimulationCardShuffler(int decks, Card... firstCards) {
-		super(decks);
-		this.firstCards = firstCards;
+		this.firstCards = new ArrayList<Card>(Arrays.asList(firstCards));
 	}
-	
 	
     @Override
     public Card next() {
-		if (cardsUsed < firstCards.length) {
-			Card c = firstCards[cardsUsed++];
-			this.used.add(c.ordinal());
+		if (usedCards < firstCards.size()) {
+            Card c = firstCards.get(usedCards++);
 			return c;
 		}
-		
-		return super.next();
-	}
+        Card next = null;
+        do {
+            next = super.next();
+            if (firstCards.contains(next))
+                firstCards.remove(next);
+                continue;
+        } while (next == null);
+            
+        return next;
+    }
+    
+    @Override
+    public void newGame() {
+    }
 }
