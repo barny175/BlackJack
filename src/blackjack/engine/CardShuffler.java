@@ -50,9 +50,9 @@ public class CardShuffler implements CardSource {
     }
     
     @Override
-    public Card next() throws LastCardException {
+    public Card next() {
         if (currentCard >= allCards)
-            throw new LastCardException();
+            return null;
         
         return cards.get(currentCard++);
     }

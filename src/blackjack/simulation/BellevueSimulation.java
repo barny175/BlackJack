@@ -37,8 +37,7 @@ public class BellevueSimulation {
             
             bind(Integer.class).annotatedWith(Names.named(CardShuffler.DECKS)).toInstance(6);
 			bind(CardSource.class).to(TwoThirdsShuffler.class);
-			bind(Integer.class).toInstance(6);
-            bind(Long.class).toInstance(8621L);
+            bind(Long.class).toInstance(6211L);
 			
             bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
             try {

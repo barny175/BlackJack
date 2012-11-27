@@ -13,30 +13,34 @@ import java.util.*;
  * @author mbarnas
  */
 public class SimulationCardShuffler extends CardShuffler {
-	private final List<Card> firstCards;
+
+    private final List<Card> firstCards;
     private int usedCards = 0;
 
-	public SimulationCardShuffler(int decks, Card... firstCards) {
-		this.firstCards = new ArrayList<Card>(Arrays.asList(firstCards));
-	}
-	
+    public SimulationCardShuffler(int decks, Card... firstCards) {
+        this.firstCards = new ArrayList<Card>(Arrays.asList(firstCards));
+    }
+
     @Override
     public Card next() {
-		if (usedCards < firstCards.size()) {
+        if (usedCards < firstCards.size()) {
             Card c = firstCards.get(usedCards++);
-			return c;
-		}
+            return c;
+        }
         Card next = null;
         do {
             next = super.next();
-            if (firstCards.contains(next))
+            if (firstCards.contains(next)) {
                 firstCards.remove(next);
-                continue;
-        } while (next == null);
-            
+				continue;
+            } else {
+				break;
+			}
+        } while (true);
+
         return next;
     }
-    
+
     @Override
     public void newGame() {
     }

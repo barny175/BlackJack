@@ -203,21 +203,6 @@ class EngineTest {
     }
     
     @Test
-    void shuffle() {
-        def cardSrc = mock(CardSource.class)
-        when(cardSrc.next()).thenReturn(Card.TWO)
-        
-        def engine = getEngine(cardSrc)
-        def player = mock(Player.class)
-        
-        engine.addPlayer(player)
-        
-        engine.newGame()
-        
-        verify(cardSrc).shuffle()
-    }
-    
-    @Test
     void doubleDown() {
         def cardSrc = getCardSource([Card.NINE, Card.FIVE, Card.SEVEN, Card.TEN, Card.TWO, Card.TWO])
         def engine = getEngine(cardSrc)

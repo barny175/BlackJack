@@ -45,6 +45,10 @@ class StubPlayer implements Player {
         return move.remove(0)
     }
     
+    void newGame(Game g) {
+        
+    }
+    
     int getMoney() {
         return money
     }

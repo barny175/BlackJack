@@ -6,6 +6,7 @@ package blackjack
 
 import org.junit.Test
 import blackjack.engine.*
+import blackjack.engine.shufflers.*
 
 /**
  *
@@ -13,8 +14,22 @@ import blackjack.engine.*
  */
 class CardShufflerTest {
 	@Test
-    public void allCards() {
+    public void baseCardShuffler() {
         def shuffler = new CardShuffler(1)
+		testShuffler(shuffler)
+    }
+	
+	@Test
+    public void twoThirdsCardShuffler() {
+		testShuffler(new TwoThirdsShuffler(1, 1))
+    }
+	
+	@Test
+    public void everyGameCardShuffler() {
+		testShuffler(new EveryGameCardShuffler())
+    }
+	
+	private void testShuffler(CardSource shuffler) {
         def cardCounts = [:]
         def card = null
         while (card = shuffler.next()) {
