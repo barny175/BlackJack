@@ -4,18 +4,12 @@
  */
 package blackjack.simulation;
 
-import blackjack.engine.CardShuffler;
-import blackjack.engine.CardSource;
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
-import blackjack.engine.Rules;
-import blackjack.engine.rules.BasicRules;
 import blackjack.engine.shufflers.EveryGameCardShuffler;
 import blackjack.simulation.player.*;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.name.Names;
 
 /**
  *
@@ -29,21 +23,8 @@ public class Simulation {
     private BasePlayer player;
     private static Injector injector;
 
-    private static class SimulationModule extends AbstractModule {
-
-        @Override
-        protected void configure() {
-            bind(Rules.class).to(BasicRules.class);
-            bind(CardSource.class).to(EveryGameCardShuffler.class);
-            bind(Integer.class).annotatedWith(Names.named(CardShuffler.DECKS)).toInstance(6);
-            bind(Long.class).annotatedWith(Names.named(CardShuffler.SEED)).toInstance(3142L);
-            bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(initialMoney);
-			bind(BasePlayer.class).to(BasicStrategyPlayer.class);
-        }
-    }
-
     public static void main(String[] args) {
-        injector = Guice.createInjector(new SimulationModule());
+        injector = Guice.createInjector(new SimulationModule(initialMoney, new EveryGameCardShuffler()));
 		new Simulation(injector.getInstance(BasicStrategyPlayer.class)).run();
 		new Simulation(injector.getInstance(SimpleCountingPlayer.class)).run();
     }

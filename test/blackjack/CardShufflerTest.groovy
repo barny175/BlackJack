@@ -5,8 +5,11 @@
 package blackjack
 
 import org.junit.Test
+import static org.junit.Assert.*
 import blackjack.engine.*
 import blackjack.engine.shufflers.*
+import blackjack.simulation.SimulationCardShuffler
+
 
 /**
  *
@@ -23,6 +26,26 @@ class CardShufflerTest {
     public void twoThirdsCardShuffler() {
 		testShuffler(new TwoThirdsShuffler(1, 1))
     }
+	
+	@Test
+    public void simulationCardShuffler() {
+		testShuffler(new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.JACK))
+    }
+	
+	
+    @Test
+    public void simulationShufflerFirstCards() {
+        def shuffler = new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.JACK)
+        assertEquals(Card.ACE, shuffler.next())
+        assertEquals(Card.TWO, shuffler.next())
+        assertEquals(Card.JACK, shuffler.next())
+		
+		shuffler.newGame();
+		
+		assertEquals(Card.ACE, shuffler.next())
+        assertEquals(Card.TWO, shuffler.next())
+        assertEquals(Card.JACK, shuffler.next())
+    }	
 	
 	@Test
     public void everyGameCardShuffler() {

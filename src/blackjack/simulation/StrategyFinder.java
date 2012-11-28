@@ -5,14 +5,10 @@
 package blackjack.simulation;
 
 import blackjack.engine.*;
-import blackjack.engine.rules.BasicRules;
-import blackjack.simulation.player.BasePlayer;
-import blackjack.simulation.player.BasicStrategyPlayer;
-import blackjack.simulation.player.HitPlayer;
-import blackjack.simulation.player.OneHitPlayer;
-import blackjack.simulation.player.StandPlayer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import blackjack.engine.shufflers.EveryGameCardShuffler;
+import blackjack.simulation.player.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  *
@@ -20,43 +16,43 @@ import java.util.logging.Logger;
  */
 public class StrategyFinder {
 
-	private final Engine engine;
-	private final BasePlayer player;
-	public static final int initialMoney = 20000;
+	public static final int GAMES = 1000000;
+	public static final int initialMoney = 500000;
+	private Engine engine;
+	private BasePlayer player;
+	private static Injector injector;
 
 	public static void main(String[] args) {
-		new StrategyFinder(new StandPlayer(initialMoney)).run();
-		new StrategyFinder(new HitPlayer(initialMoney)).run();
-		new StrategyFinder(new OneHitPlayer(initialMoney)).run();
-		new StrategyFinder(new BasicStrategyPlayer(initialMoney)).run();
+		injector = Guice.createInjector(new SimulationModule(initialMoney, new SimulationCardShuffler(1, Card.TWO, Card.TWO, Card.TWO)));
+		new StrategyFinder(injector.getInstance(BasicStrategyPlayer.class)).run();
+		new StrategyFinder(injector.getInstance(SimpleCountingPlayer.class)).run();
 	}
 
 	public StrategyFinder(BasePlayer player) {
-		this.engine = new Engine(new BasicRules(), new SimulationCardShuffler(6, Card.TWO, Card.TWO, Card.TWO));
+		this.engine = injector.getInstance(Engine.class);
 		this.player = player;
 		this.engine.addPlayer(player);
-
 	}
 
 	public void run() {
-		for (int i = 0; i < 10000; i++) {
-			Game game = this.engine.newGame();
-
-			if (game.gameState() == GameState.PlayersGame) {
-                try {
-                    this.engine.start();
-                } catch (IllegalMoveException ex) {
-                    System.out.print("Illegal move.");
-                }
+		for (int i = 0; i < GAMES; i++) {
+			this.engine.newGame();
+			try {
+				this.engine.start();
+			} catch (IllegalMoveException ex) {
+				System.out.print("Illegal move.");
 			}
 
 			if (this.player.getMoney() < 10) {
-				System.out.print("Short of money after " + i + " rounds. ");
+				System.out.println(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
 				break;
 			}
 		}
 
 		final int result = this.player.getMoney();
-		System.out.println("Final result for " + player.getName() + ": " + result + " (" + result * 100 / initialMoney + "%)");
+		if (result > 10) {
+			System.out.println(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
+					((float) (initialMoney - result)) / GAMES * 10));
+		}
 	}
 }
