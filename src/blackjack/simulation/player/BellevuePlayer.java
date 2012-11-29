@@ -61,6 +61,6 @@ public class BellevuePlayer extends BasicStrategyPlayer {
             {88, "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"},
             {99, "Split", "Split", "Split", "Split", "Split", "Stand", "Split", "Split", "Stand", "Stand"},
             {"TT", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
-            {"AA", "Split", "Split", "Split", "Hit", "Split", "Split", "Split", "Split", "Hit", "Hit"}};
+            {"AA", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"}};
     }
 }

@@ -4,7 +4,6 @@
 package blackjack.engine.rules;
 
 import blackjack.engine.*;
-import com.google.common.collect.Sets;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -44,6 +43,4 @@ public class BellevueRules extends BasicRules {
         
         return super.nextState(game);
     }
-    
-    
 }

@@ -5,7 +5,6 @@
 package blackjack.simulation;
 
 import blackjack.engine.*;
-import blackjack.engine.shufflers.EveryGameCardShuffler;
 import blackjack.simulation.player.*;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -16,16 +15,16 @@ import com.google.inject.Injector;
  */
 public class StrategyFinder {
 
-	public static final int GAMES = 1000000;
+	public static final int GAMES = 100000;
 	public static final int initialMoney = 500000;
 	private Engine engine;
 	private BasePlayer player;
 	private static Injector injector;
 
 	public static void main(String[] args) {
-		injector = Guice.createInjector(new SimulationModule(initialMoney, new SimulationCardShuffler(1, Card.TWO, Card.TWO, Card.TWO)));
-		new StrategyFinder(injector.getInstance(BasicStrategyPlayer.class)).run();
-		new StrategyFinder(injector.getInstance(SimpleCountingPlayer.class)).run();
+		injector = Guice.createInjector(new SimulationModule(initialMoney, new SimulationCardShuffler(1, Card.THREE, Card.TWO, Card.FIVE)));
+		new StrategyFinder(injector.getInstance(BellevuePlayer.class)).run();
+//		new StrategyFinder(injector.getInstance(SimpleCountingPlayer.class)).run();
 	}
 
 	public StrategyFinder(BasePlayer player) {
