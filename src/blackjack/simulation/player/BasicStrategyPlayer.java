@@ -49,18 +49,7 @@ public class BasicStrategyPlayer extends BasePlayer {
             move = aceRules(cards, dealerUpCard);
         }
 
-        if (move.equals("DoubleStand")) {
-            if (allowedMoves.contains(Move.Double)) {
-                return Move.Double;
-            } else {
-                return Move.Stand;
-            }
-        }
-        if (move.equals("Double") && !allowedMoves.contains(Move.Double)) {
-            return Move.Hit;
-        }
-
-        return Move.valueOf(move);
+        return stringToMove(move, allowedMoves);
     }
 
     @Override
@@ -110,7 +99,7 @@ public class BasicStrategyPlayer extends BasePlayer {
 
     }
 
-    private int getRowPos(Object firstCol) {
+    protected int getRowPos(Object firstCol) {
         int row = -1;
         for (int i = 0; i < strategy.length; i++) {
             if (strategy[i][0].equals(firstCol)) {
@@ -161,4 +150,19 @@ public class BasicStrategyPlayer extends BasePlayer {
             {"TT", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
             {"AA", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"}};
     }
+
+	protected Move stringToMove(String move, Set<Move> allowedMoves) {
+		if (move.equals("DoubleStand")) {
+			if (allowedMoves.contains(Move.Double)) {
+				return Move.Double;
+			} else {
+				return Move.Stand;
+			}
+		}
+		if (move.equals("Double") && !allowedMoves.contains(Move.Double)) {
+			return Move.Hit;
+		}
+
+		return Move.valueOf(move);
+	}
 }

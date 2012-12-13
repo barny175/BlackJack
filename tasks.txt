@@ -1,4 +1,5 @@
 pocitani - simple
+pocitani - HiLo
 
 vice hracu - pouzit na simulaci, jestli na bwinu lze pocitanim vydelavat i presto, ze se micha po kazdem kole, kdyz se vyuzije vice hracu
 
