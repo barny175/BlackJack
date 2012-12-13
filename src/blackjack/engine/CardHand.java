@@ -58,6 +58,10 @@ public class CardHand {
     public List<Card> getCards() {
         return cards;
     }
+	
+	public Card get(int index) {
+		return cards.get(index);
+	}
 
     public void reset() {
         this.cards.clear();

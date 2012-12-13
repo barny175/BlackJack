@@ -7,59 +7,110 @@ package blackjack.simulation;
 import blackjack.engine.Card;
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
-import blackjack.engine.Rules;
-import blackjack.simulation.player.BasePlayer;
+import blackjack.engine.rules.BasicRules;
 import blackjack.simulation.player.SimulationPlayer;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.util.EnumSet;
+import java.util.logging.Logger;
 
 /**
  *
  * @author mbarnas
  */
 public class AutomatedStrategyFinder {
-	
+
 	public static final int GAMES = 100000;
 	public static final int initialMoney = 500000;
 	private Engine engine;
-	private BasePlayer player;
-	private static Injector injector;
+	protected final BasicRules rules = new BasicRules();
+	private final String[] allMoves = {"Hit", "Stand", "Split", "Double", "DoubleStand"};
+	private static Logger logger = Logger.getLogger("");
 
 	public static void main(String[] args) {
-		Card[] firstCards = new Card[]{Card.THREE, Card.TWO, Card.SIX};
-		injector = Guice.createInjector(new SimulationModule(initialMoney, new SimulationCardShuffler(1, firstCards)));
-		
-		final SimulationPlayer simulationPlayer = new SimulationPlayer(firstCards, "Split", initialMoney);
-		simulationPlayer.setRules(injector.getInstance(Rules.class));
-		
-		new AutomatedStrategyFinder(simulationPlayer).run();
-	}
-
-	public AutomatedStrategyFinder(BasePlayer player) {
-		this.engine = injector.getInstance(Engine.class);
-		this.player = player;
-		this.engine.addPlayer(player);
+		new AutomatedStrategyFinder().run();
 	}
 
 	public void run() {
-		for (int i = 0; i < GAMES; i++) {
-			this.engine.newGame();
-			try {
-				this.engine.start();
-			} catch (IllegalMoveException ex) {
-				System.out.print("Illegal move.");
+		final Card firstCard = Card.TWO;
+		final Card secondCard = Card.FIVE;
+		for (Card dealersCard : EnumSet.range(Card.ACE, Card.KING)) {
+			String bestMove = null;
+			int bestScore = 0;
+			int numberOfGames = 0;
+
+			for (String move : allMoves) {
+				if (!isMoveAllowed(firstCard, secondCard, move)) {
+					continue;
+				}
+
+				final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(6).withPlayerCards(firstCard, secondCard).withDealersCard(dealersCard);
+
+				final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder()
+						.playersCard(firstCard, secondCard)
+						.dealersCard(dealersCard)
+						.move(move)
+						.withMoney(initialMoney)
+						.build();
+
+				player.setRules(rules);
+
+				this.engine = new Engine(rules, cardShuffler);
+				this.engine.addPlayer(player);
+
+				int i = 0;
+				for (; i < GAMES; i++) {
+					this.engine.newGame();
+					try {
+						this.engine.start();
+					} catch (IllegalMoveException ex) {
+						System.out.print("Illegal move.");
+					}
+
+					if (player.getMoney() < 10) {
+						logger.finer(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
+						break;
+					}
+				}
+
+				final int result = player.getMoney();
+				if (result > 10) {
+					logger.finer(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
+							((float) (initialMoney - result)) / GAMES * 10));
+				}
+
+				if (result < 10) {
+					if (bestMove == null) {
+						numberOfGames = i;
+						bestMove = move;
+					} else {
+						if (bestScore == 0 && i > numberOfGames) {
+							bestMove = move;
+							numberOfGames = i;
+						}
+					}
+				} else {
+					if (result > bestScore) {
+						bestMove = move;
+						bestScore = result;
+					}
+				}
 			}
 
-			if (this.player.getMoney() < 10) {
-				System.out.println(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
-				break;
+			if (bestScore == 0) {
+				System.out.println(String.format("Best move for player's cards [%s, %s] and dealer's card %s is %s. Short of money after %d games.",
+						firstCard, secondCard, dealersCard, bestMove, numberOfGames));
+			} else {
+				System.out.println(String.format("Best move for player's cards [%s, %s] and dealer's card %s is %s. Score %d (%d%%, %f%%)",
+					firstCard, secondCard, dealersCard, bestMove, bestScore, bestScore * 100 / initialMoney,
+					((float) (initialMoney - bestScore)) / GAMES * 10));
 			}
 		}
+	}
 
-		final int result = this.player.getMoney();
-		if (result > 10) {
-			System.out.println(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
-					((float) (initialMoney - result)) / GAMES * 10));
+	private boolean isMoveAllowed(Card firstCard, Card secondCard, String move) {
+		if (firstCard != secondCard && "Split".equals(move)) {
+			return false;
 		}
+
+		return true;
 	}
 }

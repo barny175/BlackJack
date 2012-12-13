@@ -24,6 +24,11 @@ public class BasicRules implements Rules {
             allowedMoves.remove(Move.Double);
             allowedMoves.remove(Move.Split);
         }
+		
+		final CardHand playerCards = game.playerCards();
+		if (playerCards.count() != 2 || playerCards.get(0) != playerCards.get(1)) {
+			allowedMoves.remove(Move.Split);
+		}
 
         return allowedMoves;
     }

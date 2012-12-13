@@ -1,3 +1,6 @@
+automatizovane hledani strategii
+AHS - nepoustet strategii, kdyz pravidla neumoznuji zadany move
+
 pocitani - simple
 pocitani - HiLo
 

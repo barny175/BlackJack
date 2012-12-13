@@ -9,7 +9,6 @@ import blackjack.engine.CardShuffler;
 import blackjack.engine.CardSource;
 import blackjack.engine.ShuffleObserver;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import java.util.*;
 
@@ -25,17 +24,34 @@ public class SimulationCardShuffler implements CardSource {
 	protected Set<Integer> used;
 	protected final int allCards;
 	private List<ShuffleObserver> observers = Lists.newArrayList();
-	private final Card[] firstCards;
+	private Card[] firstCards;
 	private int cardsUsed;
 
-	public SimulationCardShuffler(@Named(CardShuffler.DECKS) int decks, Card... firstCards) {
+	public SimulationCardShuffler(int decks) {
 		this.decks = decks;
-		this.firstCards = firstCards;
 		this.allCards = 4 * CARDS_IN_DECK * decks;
 		this.rand = new Random(System.currentTimeMillis());
 		this.used = new HashSet<Integer>(decks * CARDS_IN_DECK);
+		this.firstCards = new Card[3];
+	}
+	
+	public SimulationCardShuffler(@Named(CardShuffler.DECKS) int decks, Card... firstCards) {
+		this(decks);
+		
+		this.firstCards = firstCards;
+	}
+	
+	public SimulationCardShuffler withPlayerCards(Card firstCard, Card secondCard) {
+		this.firstCards[0] = firstCard;
+		this.firstCards[2] = secondCard;
+		return this;
 	}
 
+	public SimulationCardShuffler withDealersCard(Card dealersCard) {
+		this.firstCards[1] = dealersCard;
+		return this;
+	}
+	
 	@Override
 	public void newGame() {
 		shuffle();
