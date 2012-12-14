@@ -10,7 +10,8 @@ import blackjack.engine.IllegalMoveException;
 import blackjack.engine.rules.BasicRules;
 import blackjack.simulation.player.SimulationPlayer;
 import java.util.EnumSet;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,7 +24,7 @@ public class AutomatedStrategyFinder {
 	private Engine engine;
 	protected final BasicRules rules = new BasicRules();
 	private final String[] allMoves = {"Hit", "Stand", "Split", "Double", "DoubleStand"};
-	private static Logger logger = Logger.getLogger("");
+	private static Logger logger = LoggerFactory.getLogger(AutomatedStrategyFinder.class);
 
 	public static void main(String[] args) {
 		new AutomatedStrategyFinder().run();
@@ -62,18 +63,18 @@ public class AutomatedStrategyFinder {
 					try {
 						this.engine.start();
 					} catch (IllegalMoveException ex) {
-						System.out.print("Illegal move.");
+						logger.error("Illegal move.");
 					}
 
 					if (player.getMoney() < 10) {
-						logger.finer(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
+						logger.debug(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
 						break;
 					}
 				}
 
 				final int result = player.getMoney();
 				if (result > 10) {
-					logger.finer(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
+					logger.debug(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
 							((float) (initialMoney - result)) / GAMES * 10));
 				}
 
@@ -96,12 +97,12 @@ public class AutomatedStrategyFinder {
 			}
 
 			if (bestScore == 0) {
-				System.out.println(String.format("Best move for player's cards [%s, %s] and dealer's card %s is %s. Short of money after %d games.",
-						firstCard, secondCard, dealersCard, bestMove, numberOfGames));
+				logger.info("Best move for player's cards [{}, {}] and dealer's card {} is {}. Short of money after {} games.",
+						firstCard, secondCard, dealersCard, bestMove, numberOfGames);
 			} else {
-				System.out.println(String.format("Best move for player's cards [%s, %s] and dealer's card %s is %s. Score %d (%d%%, %f%%)",
+				logger.info("Best move for player's cards [{}, {}] and dealer's card {} is {}. Score {} ({}%, {}%)",
 					firstCard, secondCard, dealersCard, bestMove, bestScore, bestScore * 100 / initialMoney,
-					((float) (initialMoney - bestScore)) / GAMES * 10));
+					((float) (initialMoney - bestScore)) / GAMES * 10);
 			}
 		}
 	}
