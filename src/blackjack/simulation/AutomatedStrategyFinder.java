@@ -32,7 +32,7 @@ public class AutomatedStrategyFinder {
 
 	public void run() {
 		final Card firstCard = Card.TWO;
-		final Card secondCard = Card.FIVE;
+		final Card secondCard = Card.TWO;
 		for (Card dealersCard : EnumSet.range(Card.ACE, Card.KING)) {
 			String bestMove = null;
 			int bestScore = 0;
@@ -97,10 +97,10 @@ public class AutomatedStrategyFinder {
 			}
 
 			if (bestScore == 0) {
-				logger.info("Best move for player's cards [{}, {}] and dealer's card {} is {}. Short of money after {} games.",
+				logger.info("Player: {}, {}, dealer: {} - {}. Short of money after {} games.",
 						firstCard, secondCard, dealersCard, bestMove, numberOfGames);
 			} else {
-				logger.info("Best move for player's cards [{}, {}] and dealer's card {} is {}. Score {} ({}%, {}%)",
+				logger.info("Player: {}, {}, dealer: {} - {}. Score {} ({}%, {}%)",
 					firstCard, secondCard, dealersCard, bestMove, bestScore, bestScore * 100 / initialMoney,
 					((float) (initialMoney - bestScore)) / GAMES * 10);
 			}

@@ -1,5 +1,10 @@
+basicrules umoznuje zadat split i pre nestejnych kartach
+
 automatizovane hledani strategii
-AHS - nepoustet strategii, kdyz pravidla neumoznuji zadany move
+AHS - pro "short of money" take pocitat skore jako normalne
+AHS - nepoustet strategii, kdyz pravidla neumoznuji zadany move - tyka se i DoubleStand
+AHS - pustit pro vsechny mozne kombinace a vypsat v prehledne tabulce
+AHS - kombinace pro tri hracovo karty 
 
 pocitani - simple
 pocitani - HiLo
@@ -8,9 +13,6 @@ vice hracu - pouzit na simulaci, jestli na bwinu lze pocitanim vydelavat i prest
 
 nasimulovat basic strategie pro bellevue pravidla
 
-basicrules umoznuje zadat split i pre nestejnych kartach
-
-simulace na zjisteni spravnych strategii
 nemichat po kazdem kole
 insurance
 training player kontroluje i sazku
