@@ -21,6 +21,7 @@ public class AutomatedStrategyFinder {
 
 	public static final int GAMES = 100000;
 	public static final int initialMoney = 500000;
+	private static final float BET = 10;
 	private Engine engine;
 	protected final BasicRules rules = new BasicRules();
 	private final String[] allMoves = {"Hit", "Stand", "Split", "Double", "DoubleStand"};
@@ -92,18 +93,13 @@ public class AutomatedStrategyFinder {
 					if (result > bestScore) {
 						bestMove = move;
 						bestScore = result;
+						numberOfGames = i;
 					}
 				}
 			}
-
-			if (bestScore == 0) {
-				logger.info("Player: {}, {}, dealer: {} - {}. Short of money after {} games.",
-						firstCard, secondCard, dealersCard, bestMove, numberOfGames);
-			} else {
-				logger.info("Player: {}, {}, dealer: {} - {}. Score {} ({}%, {}%)",
+			logger.info("Player: {}, {}, dealer: {} - {}. Score {} ({}%, {})",
 					firstCard, secondCard, dealersCard, bestMove, bestScore, bestScore * 100 / initialMoney,
-					((float) (initialMoney - bestScore)) / GAMES * 10);
-			}
+					((float) (bestScore - initialMoney)) / numberOfGames / BET);
 		}
 	}
 
