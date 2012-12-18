@@ -1,5 +1,4 @@
 automatizovane hledani strategii
-AHS - pro "short of money" take pocitat skore jako normalne
 AHS - nepoustet strategii, kdyz pravidla neumoznuji zadany move - tyka se i DoubleStand
 AHS - pustit pro vsechny mozne kombinace a vypsat v prehledne tabulce
 AHS - kombinace pro tri hracovo karty 

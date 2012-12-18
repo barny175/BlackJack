@@ -65,8 +65,10 @@ public class SimulationCardShuffler implements CardSource {
 
 		if (cardsUsed < firstCards.length) {
 			Card c = firstCards[cardsUsed++];
-			this.used.add(c.ordinal());
-			return c;
+			if (c != null) {
+				this.used.add(c.ordinal());
+				return c;
+			}
 		}
 
 		do {

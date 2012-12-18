@@ -33,75 +33,78 @@ public class AutomatedStrategyFinder {
 
 	public void run() {
 		final Card firstCard = Card.TWO;
-		final Card secondCard = Card.TWO;
-		for (Card dealersCard : EnumSet.range(Card.ACE, Card.KING)) {
-			String bestMove = null;
-			int bestScore = 0;
-			int numberOfGames = 0;
+		final Card secondCard = Card.FOUR;
+		for (Card thirdCard : EnumSet.range(Card.TWO, Card.TWO)) {
+			for (Card dealersCard : EnumSet.range(Card.ACE, Card.KING)) {
+				String bestMove = null;
+				int bestScore = 0;
+				int numberOfGames = 0;
 
-			for (String move : allMoves) {
-				if (!isMoveAllowed(firstCard, secondCard, move)) {
-					continue;
-				}
-
-				final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(6).withPlayerCards(firstCard, secondCard).withDealersCard(dealersCard);
-
-				final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder()
-						.playersCard(firstCard, secondCard)
-						.dealersCard(dealersCard)
-						.move(move)
-						.withMoney(initialMoney)
-						.build();
-
-				player.setRules(rules);
-
-				this.engine = new Engine(rules, cardShuffler);
-				this.engine.addPlayer(player);
-
-				int i = 0;
-				for (; i < GAMES; i++) {
-					this.engine.newGame();
-					try {
-						this.engine.start();
-					} catch (IllegalMoveException ex) {
-						logger.error("Illegal move.");
+				for (String move : allMoves) {
+					if (!isMoveAllowed(firstCard, secondCard, move)) {
+						continue;
 					}
 
-					if (player.getMoney() < 10) {
-						logger.debug(String.format("%-20s: short of money after %d rounds. ", player.getName(), i));
-						break;
+					final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(6, new Card[] {firstCard, dealersCard, secondCard, null, thirdCard});
+
+					final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder()
+							.playersCard(new Card[] {firstCard, secondCard, thirdCard})
+							.dealersCard(dealersCard)
+							.move(move)
+							.withMoney(initialMoney)
+							.build();
+
+					player.setRules(rules);
+
+					this.engine = new Engine(rules, cardShuffler);
+					this.engine.addPlayer(player);
+
+					int i = 0;
+					for (; i < GAMES; i++) {
+						this.engine.newGame();
+						try {
+							this.engine.start();
+						} catch (IllegalMoveException ex) {
+							logger.error("Illegal move.");
+						}
+
+						if (player.getMoney() < 10) {
+							break;
+						}
 					}
-				}
 
-				final int result = player.getMoney();
-				if (result > 10) {
-					logger.debug(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
-							((float) (initialMoney - result)) / GAMES * 10));
-				}
+					final int result = player.getMoney();
+					if (result > 10) {
+						logger.debug(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
+								((float) (initialMoney - result)) / i / 10));
+					}
 
-				if (result < 10) {
-					if (bestMove == null) {
-						numberOfGames = i;
-						bestMove = move;
-					} else {
-						if (bestScore == 0 && i > numberOfGames) {
+					if (result < 10) {
+						if (bestMove == null) {
+							numberOfGames = i;
 							bestMove = move;
+						} else {
+							if (bestScore == 0 && i > numberOfGames) {
+								bestMove = move;
+								numberOfGames = i;
+							}
+						}
+					} else {
+						if (result > bestScore) {
+							bestMove = move;
+							bestScore = result;
 							numberOfGames = i;
 						}
 					}
-				} else {
-					if (result > bestScore) {
-						bestMove = move;
-						bestScore = result;
-						numberOfGames = i;
-					}
 				}
+				logger.info("Player: {}, {}, {}, dealer: {} - {}. Score {} ({}%, {})",
+						firstCard, secondCard, thirdCard, dealersCard, bestMove, bestScore, bestScore * 100 / initialMoney,
+						((float) (bestScore - initialMoney)) / numberOfGames / BET);
 			}
-			logger.info("Player: {}, {}, dealer: {} - {}. Score {} ({}%, {})",
-					firstCard, secondCard, dealersCard, bestMove, bestScore, bestScore * 100 / initialMoney,
-					((float) (bestScore - initialMoney)) / numberOfGames / BET);
 		}
 	}
+
+	
 
 	private boolean isMoveAllowed(Card firstCard, Card secondCard, String move) {
 		if (firstCard != secondCard && "Split".equals(move)) {
