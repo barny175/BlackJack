@@ -1,5 +1,3 @@
-basicrules umoznuje zadat split i pre nestejnych kartach
-
 automatizovane hledani strategii
 AHS - pro "short of money" take pocitat skore jako normalne
 AHS - nepoustet strategii, kdyz pravidla neumoznuji zadany move - tyka se i DoubleStand
