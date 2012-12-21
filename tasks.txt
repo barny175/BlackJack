@@ -1,3 +1,12 @@
+povolit split pro dva ruzne obrazky
+
+Peek x No Peek
+
+pravidla casina Happy Day
+- no peek?
+- no resplit aces
+- resplit max 3x
+
 automatizovane hledani strategii
 AHS - pro "short of money" take pocitat skore jako normalne
 AHS - nepoustet strategii, kdyz pravidla neumoznuji zadany move - tyka se i DoubleStand
