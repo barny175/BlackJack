@@ -1,0 +1,349 @@
+﻿@import "help_core_part1.css";
+@import "help_core_part2.css";
+@import "miniTip.css";
+
+.container {
+    width: 740px;
+    margin: 0 auto 0 10px;
+    padding: 0;
+} 
+#main-wrap {
+    width: 720px;
+}
+#header .header-bar, #header .logo {
+    margin: 11px 0 0 0;
+}
+.pm-nav-layout .pm-area-main {
+    width: 540px;
+}
+.product-navigation a {
+    height: 27px;
+    color: #ffcc00;
+    font-weight: 700;
+}
+/* disable markup for round corners in headers */
+#header .top-left-corner,
+#header .top-right-corner {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Footer
+======
+*/
+#footer {
+    margin: 18px auto 11px auto;
+}
+#footer .copyright {
+    width: 740px;
+}
+
+/* reusing the Vanilla Footer Links Section and overruling some stuff */
+#footer .meta-navigation > ul#footer-navigation {
+    position: absolute;
+    left: 129px;
+    top: 12px;
+}
+#footer .meta-navigation > ul#footer-navigation > li {
+    margin: 0 0 0 20px; 
+    float: left;
+}
+
+/*
+Content
+=======
+*/
+
+
+
+
+
+.listing {
+    width: 100%;
+}
+li .listing {
+    margin: 10px 10px 0 0;
+}
+.pm-page .pc-text .text > table.listing {
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* .linklist */
+.pc-text > section > div > ul.linklist {
+    padding-left: 0;
+    margin-left: 0;
+    list-style: none;
+}
+.pc-text > section > ul.linklist {
+    padding-left: 10px;
+    margin-left: 0;
+    list-style: none;
+}
+.pc-text ul.linklist ul {
+    padding-left: 0;
+    list-style: none;
+}
+.pc-text ul.linklist ul li {
+    margin-top: 6px;
+}
+.pc-text p + h2 {
+    margin-top: 20px;
+}
+.pm-page img {
+    display: inline;
+}
+
+/*
+Top Link, Back Link
+===================
+*/
+.toplink-box {
+    overflow: auto;
+    margin-bottom: 5px;
+}
+.toplink-hidden {
+    display: none;
+}
+.pc-text .backlink {
+    margin-top: 15px;
+}
+
+/*
+Document Links Sublayout: FAQ, FurterInformation, Top Links
+===========================================================
+*/
+.pc-text .help-link-section h4 {
+    color: #999;
+    margin-bottom: 10px;
+    padding-left: 0;
+}
+.pc-text p + .help-link-section h4 {
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px solid #272727;
+}
+.pc-text .help-link-section + .help-link-section h4 {
+    padding-top: 10px;
+}
+.pc-text .help-link-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+    margin-bottom: 0;
+}
+.pc-text .help-link-section ul li{
+    line-height: 16px;
+}
+
+/*
+Search
+======
+*/
+
+/*Search Box on the Left */
+
+.searchbox {
+    border-top: 1px solid #333333;
+}
+.searchbox.menu > ul {
+    padding-bottom: 5px;
+}
+.searchbox div.uni-button {
+    margin: 8px 10px 0 7px;
+    float: left;   
+}
+.searchbox div.uni-button span {
+    padding-left: 4px;  /* needed to overrule because it's otherwhise retrieved from the .menu span rule */
+    color: #ffffff;     /* needed to overrule the color of the buttontext that is otherwhise the .menu span color */
+}
+.searchbox input#searchform_0_SearchFormText {
+    margin: 7px 0 13px 10px;
+    width: 62px;
+    float: left;
+}
+.menu .searchbox.ui-widget-content-body ul li span {
+    display: block;
+    padding-right: 10px;
+}
+
+/*Search Result*/
+
+.pagination, .pagination span {
+    float: none;
+    margin: 0;
+}
+.pagination ul {
+    margin-bottom: 0;
+}
+#searchresult input#content_0_SearchResultText {
+    margin-top: 0;
+}
+#searchform div.uni-button  {
+    float: left;
+    margin-top: 1px;
+}
+#searchform {
+    font-size: 11px;
+    line-height: 16.5px;
+    
+    margin-bottom: 23px;
+    overflow: hidden;
+}
+.ie7 #searchform {
+    overflow: hidden;   
+}
+.ie7 #searchform input,
+.ie7 #searchform .selector {
+    float: left;   
+}
+.ie7 #searchform {
+    margin-bottom: 19px;
+}
+#searchform input#content_0_SearchResultText {
+    float: left;
+    width: 200px;
+    margin-right: 10px;
+}
+.ie7 #searchform input#content_0_SearchResultText {
+    margin-right: 14px;
+}
+#searchform .selector {
+    float: left;
+    width: 161px;
+    margin-right: 7px;
+}
+#searchform .selector select{
+    width: 165px;
+}
+#searchform div + div {
+    margin-bottom: 2px;
+}
+#searchresult .pagination {
+    overflow: hidden;   
+}
+#SearchHeader {
+    margin: 22px 0 27px 0; 
+}
+#search-list {
+    padding-left: 0;
+    margin-left: 0;
+}
+#search-list li {
+    list-style: none;    
+}
+#search-list h2 {
+    font-size: 13px;
+    margin-bottom: 0;
+}
+#search-list h2 a {
+    text-decoration: none;   
+}
+#search-list h2 a:hover {
+    text-decoration: underline;   
+}
+#search-list p {
+    padding-bottom: 19px;
+}
+#search-list h3 {
+    font-weight: 400;
+    line-height: 14px;
+    height: 14px;
+    margin: 0;
+}
+
+/*
+Search Input Field Icon: Magnifier
+==================================
+*/
+input.magnifier-left {
+    padding-left: 20px;
+    background-image: url('../images/shared/mainsprite_v1.png');
+    background-repeat: no-repeat;
+    background-position: 1px -409px;
+}
+input.focus[type="text"].magnifier-left, input[type="text"].magnifier-left:focus {
+    padding-left: 19px;
+    background-position: 0px -410px;
+}
+
+/*
+dynamic Glossary
+================
+*/
+span.glossary {
+    border-bottom: 1px dotted #fff;
+    cursor: help;
+    text-decoration: none;
+}
+
+/*
+last-modified Date
+==================
+*/
+p.last-modified {
+    text-align: right;
+    color:#888;
+    font-size: 11px;
+    margin-right: 0;
+    margin-bottom: 0px;
+    padding-top: 10px;
+}
+
+/*
+IE fixes
+========
+*/
+
+/* searchbox on the left is not shown correct */
+.ie7 .searchbox input#searchform_0_SearchFormText {
+    float: left;
+}
+.ie7 .searchbox {
+    padding-bottom: 13px;
+}
+/* toggle items are not left aligned correctly */
+.ie7 .menu > UL >LI + LI {
+    margin-bottom: 3px;
+}
+/* footer corrections */
+.ie7 #footer .copyright {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.ie7 #footer .language-switch {
+    margin-top: -27px;
+}
+.ie7 #footer {
+    padding-bottom: 11px;
+}
+/* fix pagination not in line with hits */
+.ie7 #content_0_TopPagination_PagingSummary,
+.ie7 #content_0_BottomPagination_PagingSummary {
+    float: left;
+}
+/* fix padding between search results form and hits/pagination */
+.ie7 #searchform {
+    margin-bottom: 27px;
+}
+/* fix main-wrap starting too low */
+.ie7 .sub-navigation ul li {
+    margin-bottom: 4px;
+}
