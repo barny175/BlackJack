@@ -22,9 +22,10 @@ public class StrategyFinder {
 	private static Injector injector;
 
 	public static void main(String[] args) {
-		injector = Guice.createInjector(new SimulationModule(initialMoney, new SimulationCardShuffler(1, Card.THREE, Card.TWO, Card.SIX)));
+		injector = Guice.createInjector(new SimulationModule(initialMoney, new SimulationCardShuffler(6, Card.FOUR, Card.TEN, Card.SIX)));
+		new StrategyFinder(injector.getInstance(BasicStrategyPlayer.class)).run();
 		new StrategyFinder(injector.getInstance(BellevuePlayer.class)).run();
-//		new StrategyFinder(injector.getInstance(SimpleCountingPlayer.class)).run();
+		new StrategyFinder(injector.getInstance(SimpleCountingPlayer.class)).run();
 	}
 
 	public StrategyFinder(BasePlayer player) {

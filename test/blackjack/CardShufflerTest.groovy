@@ -30,6 +30,7 @@ class CardShufflerTest {
 	@Test
     public void simulationCardShuffler() {
 		testShuffler(new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.JACK))
+		testShuffler(new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.JACK, null, Card.FIVE))
     }
 	
 	
@@ -45,6 +46,24 @@ class CardShufflerTest {
 		assertEquals(Card.ACE, shuffler.next())
         assertEquals(Card.TWO, shuffler.next())
         assertEquals(Card.JACK, shuffler.next())
+    }	
+	
+	@Test
+    public void simulationShufflerFirstThreeCards() {
+        def shuffler = new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.JACK, null, Card.FIVE)
+        assertEquals(Card.ACE, shuffler.next())
+        assertEquals(Card.TWO, shuffler.next())
+        assertEquals(Card.JACK, shuffler.next())
+		shuffler.next()
+		assertEquals(Card.FIVE, shuffler.next())
+		
+		shuffler.newGame();
+		
+		assertEquals(Card.ACE, shuffler.next())
+        assertEquals(Card.TWO, shuffler.next())
+        assertEquals(Card.JACK, shuffler.next())
+		shuffler.next()
+		assertEquals(Card.FIVE, shuffler.next())
     }	
 	
 	@Test
