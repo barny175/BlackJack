@@ -3,6 +3,7 @@
  */
 package blackjack.engine;
 
+import blackjack.engine.rules.Peek;
 import com.google.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,12 +23,22 @@ public class Engine {
     private CardHand dealerCards;
     private List<Game> endedGames;
     private Rules rules;
+	private boolean peek = true;
 
     @Inject
     public Engine(Rules rules, CardSource cardSource) {
         this.cardSource = cardSource;
         this.rules = rules;
     }
+
+	public void setEuropean() {
+		this.setPeek(false);
+	}
+	
+	@Inject
+	public void setPeek(@Peek boolean peek) {
+		this.peek = peek;
+	}
 
     public Card getDealerUpCard() {
         return this.dealerUpCard;
@@ -73,7 +84,7 @@ public class Engine {
                     break;
                 case FirstDeal:
                     if (rules.isBlackJack(game.playerCards())
-                            || rules.isBlackJack(dealerCards)) {
+                            || (this.peek && rules.isBlackJack(dealerCards))) {
                         game.setGameState(GameState.CheckState);
                         continue;
                     }
@@ -104,6 +115,9 @@ public class Engine {
     }
 
     private void dealersGame() {
+		if (!this.peek)
+			dealToDealer();
+		
         Move dealerMove;
         do {
             dealerMove = dealer.move(this.getDealerCards());
@@ -164,7 +178,8 @@ public class Engine {
 
         dealToPlayer(game);
 
-        dealToDealer();
+		if (this.peek)
+			dealToDealer();
 
         game.setGameState(GameState.FirstDeal);
     }

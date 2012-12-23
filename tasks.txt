@@ -1,5 +1,3 @@
-Peek x No Peek
-
 pravidla casina Happy Day
 - no peek?
 - no resplit aces
@@ -8,7 +6,7 @@ pravidla casina Happy Day
 automatizovane hledani strategii
 AHS - nepoustet strategii, kdyz pravidla neumoznuji zadany move - tyka se i DoubleStand
 AHS - pustit pro vsechny mozne kombinace a vypsat v prehledne tabulce
-AHS - kombinace pro tri hracovo karty 
+AHS - simulace pocitani - simulationshuffler se bude tvarit ze uz je odehrano tak aby sedel pocet
 
 pocitani - simple
 pocitani - HiLo

@@ -9,6 +9,7 @@ import blackjack.engine.Engine;
 import blackjack.engine.Player;
 import blackjack.engine.Rules;
 import blackjack.engine.rules.BasicRules;
+import blackjack.engine.rules.Peek;
 import blackjack.simulation.SimulationCardShuffler;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import com.google.inject.AbstractModule;
@@ -26,8 +27,9 @@ class BasicModule extends AbstractModule {
 		bind(Engine.class).in(Scopes.SINGLETON);
 		
         bind(Rules.class).to(BasicRules.class);
+		bind(Boolean.class).annotatedWith(Peek.class).toInstance(Boolean.TRUE);
 //        bind(CardSource.class).to(CardShuffler.class);
-		bind(CardSource.class).toInstance(new SimulationCardShuffler(6, Card.TWO, Card.SEVEN, Card.TWO, Card.TEN, Card.TEN, Card.TEN));
+		bind(CardSource.class).toInstance(new SimulationCardShuffler(6, Card.TWO, Card.TEN, Card.TWO, Card.TEN, Card.TEN, Card.ACE));
 		bind(Integer.class).annotatedWith(Names.named(BasicStrategyPlayer.DEPOSIT)).toInstance(100);
 		bind(Player.class).to(BasicStrategyPlayer.class);
     }

@@ -2,11 +2,11 @@
  * (C) 2012 Kerio Technologies s.r.o.
  */
 
-package blackjack
+package blackjack.engine
 
 import org.junit.Test
 import static org.junit.Assert.*
-import blackjack.engine.*
+import blackjack.*
 import blackjack.engine.rules.BasicRules
 import static org.mockito.Mockito.*
 import org.mockito.*
@@ -74,7 +74,44 @@ class EngineTest {
         assertEquals(GameResult.DealerWin, game.gameResult())    
     }
     
+    @Test
+    void dealerPeeks() {
+        def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.TWO, Card.TEN, Card.TWO])
+        def engine = new Engine(new BasicRules(), cardSrc)
+        engine.setPeek(true)
+        
+		def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any(), any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
+        
+        engine.addPlayer(player)
+
+        Game game = engine.newGame()
+        engine.start()
+        
+        assertTrue(game.dealerCards().getCards().contains(Card.SEVEN))
+		assertTrue(game.dealerCards().getCards().contains(Card.TEN))
+    }
     
+    @Test
+    void dealerNoPeek() {
+        def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.TWO, Card.TEN, Card.TWO, Card.TEN])
+        def engine = new Engine(new BasicRules(), cardSrc)
+        engine.setPeek(false)
+        
+		def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any(), any())).thenReturn(Move.Hit).thenReturn(Move.Stand)
+        
+        engine.addPlayer(player)
+
+        Game game = engine.newGame()
+        engine.start()
+        
+        assertTrue(game.dealerCards().getCards().contains(Card.SEVEN))
+		assertTrue(game.dealerCards().getCards().contains(Card.TWO))
+    }
+	
     @Test
     void playerBusts() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN, Card.TEN, Card.TEN])
