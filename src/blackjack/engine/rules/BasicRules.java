@@ -26,7 +26,7 @@ public class BasicRules implements Rules {
         }
 		
 		final CardHand playerCards = game.playerCards();
-		if (playerCards.count() != 2 || playerCards.get(0) != playerCards.get(1)) {
+		if (playerCards.count() != 2 || playerCards.get(0).getValue() != playerCards.get(1).getValue()) {
 			allowedMoves.remove(Move.Split);
 		}
 

@@ -33,6 +33,21 @@ class BasicRulesTest {
 	}
 	
 	@Test
+	void splitDifferentFigures() {
+		def player = mock(Player.class)
+		def engine = mock(Engine.class)
+		
+		def game = new Game(engine, player)
+		game.addPlayerCard(Card.TEN)
+		game.addPlayerCard(Card.JACK)
+		game.setGameState(GameState.FirstDeal)
+
+		def rules = new BasicRules()		
+		def allowedMoves = rules.getAllowedMoves(game)
+		assertTrue(allowedMoves.contains(Move.Split))
+	}
+	
+	@Test
 	void dontAllowSplitOfDifferentCards() {
 		def player = mock(Player.class)
 		def engine = mock(Engine.class)
