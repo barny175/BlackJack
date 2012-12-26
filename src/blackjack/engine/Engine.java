@@ -3,6 +3,7 @@
  */
 package blackjack.engine;
 
+import blackjack.engine.rules.DoubleAfterSplit;
 import blackjack.engine.rules.Peek;
 import com.google.inject.Inject;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ public class Engine {
     private List<Game> endedGames;
     private Rules rules;
 	private boolean peek = true;
+	private boolean doubleAfterSplit = true;
 
     @Inject
     public Engine(Rules rules, CardSource cardSource) {
@@ -38,6 +40,11 @@ public class Engine {
 	@Inject
 	public void setPeek(@Peek boolean peek) {
 		this.peek = peek;
+	}
+
+	@Inject
+	public void setDoubleAfterSplit(@DoubleAfterSplit boolean doubleAfterSplit) {
+		this.doubleAfterSplit = doubleAfterSplit;
 	}
 
     public Card getDealerUpCard() {
@@ -134,7 +141,7 @@ public class Engine {
     private void playersGame(Game game) throws IllegalMoveException {
         Move move;
         do {
-            Set<Move> allowedMoves = rules.getAllowedMoves(game);
+            Set<Move> allowedMoves = getAllowedMoves(game);
             
             move = player.move(game.playerCards(), this.getDealerUpCard(), allowedMoves);
 
@@ -168,6 +175,14 @@ public class Engine {
             }
         } while (move == Move.Hit);
     }
+
+	private Set<Move> getAllowedMoves(Game game) {
+		Set<Move> allowedMoves = rules.getAllowedMoves(game);
+		if (game.isSplitted() && ! this.doubleAfterSplit)
+			allowedMoves.remove(Move.Double);
+		
+		return allowedMoves;
+	}
 
     protected void firstDeal(Game game) {
         assert game.gameState() == GameState.Started;

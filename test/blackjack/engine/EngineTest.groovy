@@ -311,6 +311,47 @@ class EngineTest {
     }
 
     @Test
+    void doubleAfterSplit() {
+        def cardSrc = getCardSource([Card.TWO, Card.SEVEN, Card.TWO, Card.TEN, Card.TEN, Card.TEN, Card.THREE])
+        def engine = getEngine(cardSrc)
+        engine.setDoubleAfterSplit(true);
+		
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any(), any())).thenReturn(Move.Split).thenReturn(Move.Stand).thenReturn(Move.Double)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player, times(3)).move(any(), any(), any())
+        verify(player, times(1)).addMoney(-10)
+		verify(player, times(1)).addMoney(-20)
+    }
+	
+	@Test
+    void doubleAfterSplitForbidden() {
+        def cardSrc = getCardSource([Card.TWO, Card.SEVEN, Card.TWO, Card.TEN, Card.TEN, Card.TEN, Card.THREE])
+        def engine = getEngine(cardSrc)
+        engine.setDoubleAfterSplit(false);
+		
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any(), any())).thenReturn(Move.Split).thenReturn(Move.Stand).thenReturn(Move.Double)
+        
+        engine.addPlayer(player)
+
+		try {
+			engine.newGame()
+			engine.start()
+			fail("Double should be forbidden after split.");
+		} catch (IllegalMoveException ex) {
+			
+		} 
+    }
+	
+    @Test
     void twoGames() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN, Card.TEN, Card.EIGHT, Card.SEVEN, Card.NINE])
         def engine = getEngine(cardSrc)
