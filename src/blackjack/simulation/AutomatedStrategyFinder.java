@@ -34,9 +34,10 @@ public class AutomatedStrategyFinder {
 	}
 	
 	public void run() {
-		final Card firstCard = Card.FIVE;
-		final Card secondCard = Card.FIVE;
-		for (Card dealersCard : EnumSet.range(Card.ACE, Card.KING)) {
+		final Card firstCard = Card.SIX;
+		final Card secondCard = Card.SIX;
+		Card[] dealerCards = new Card[] {Card.TWO, Card.THREE, Card.FOUR, Card.FIVE, Card.SIX, Card.SEVEN, Card.EIGHT, Card.NINE, Card.TEN, Card.ACE};
+		for (Card dealersCard : dealerCards) {
 			String bestMove = null;
 			int bestScore = 0;
 			int numberOfGames = 0;
@@ -95,9 +96,9 @@ public class AutomatedStrategyFinder {
 					}
 				}
 			}
-			logger.info("Player: {}, {}, dealer: {} - {}. Score {} ({}%, {})",
-					firstCard, secondCard, dealersCard, bestMove, bestScore, bestScore * 100 / initialMoney,
-					((float) (bestScore - initialMoney)) / numberOfGames / BET);
+			logger.info(String.format("Player: %5s, %5s, dealer: %5s - %5s. Score %3d%% (%4.2f)",
+					firstCard, secondCard, dealersCard, bestMove, bestScore * 100 / initialMoney,
+					((float) (bestScore - initialMoney)) / numberOfGames / BET));
 		}
 	}
 
