@@ -23,10 +23,6 @@ public class BellevueRules extends BasicRules {
             return EnumSet.noneOf(Move.class);
         }
         
-        final int playerHardSum = playerCards.hardSum();
-        if (playerHardSum < 9 || playerHardSum > 11)
-            allowedMoves.remove(Move.Double);
-        
         return allowedMoves;
     }
 

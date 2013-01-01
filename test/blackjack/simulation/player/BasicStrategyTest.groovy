@@ -84,7 +84,7 @@ class BasicStrategyTest {
                     for (Card dealerCard : Card.ACE..Card.KING) {
                         def game = new Game(mock(Engine.class), player)
                         game.gameState = GameState.PlayersGame
-                        def move = player.move(cards, dealerCard, rules.getAllowedMoves(game))
+                        def move = player.move(cards, dealerCard, getAllowedMoves(rules, game))
                         def expected = getBasicStrategyMove(cards, dealerCard)
                         assertEquals("Player's cards: ${c}, ${c2}, ${c3}, dealers card ${dealerCard}", expected, move)
                     }
@@ -93,6 +93,18 @@ class BasicStrategyTest {
         }
     }
     
+	private def getAllowedMoves(rules, game) {
+		def moves = rules.getAllowedMoves(game)
+		
+		if (!rules.isSplitPossible(game))
+			moves.remove(Move.Split)
+			
+		if (!rules.isDoublePossible(game))
+			moves.remove(Move.Double)
+			
+		return moves
+	}
+	
     private Move getBasicStrategyMove(playerCards, dealerCard) {
         int hardSum = playerCards.hardSum()
         

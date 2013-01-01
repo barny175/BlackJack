@@ -6,6 +6,8 @@ package blackjack.simulation;
 
 import blackjack.engine.*;
 import blackjack.engine.rules.BasicRules;
+import blackjack.engine.rules.BasicSplitRules;
+import blackjack.engine.rules.BellevueDoubleRules;
 import blackjack.engine.rules.BellevueRules;
 import blackjack.simulation.player.SimulationPlayer;
 import java.util.EnumSet;
@@ -53,11 +55,8 @@ public class AutomatedStrategyFinder {
 						final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder().playersCard(firstCard, secondCard).dealersCard(dealersCard).move(move).withMoney(initialMoney).build();
 
 						player.setRules(rules);
-
-						this.engine = new Engine(rules, cardShuffler);
-						this.engine.setPeek(!this.european);
-						this.engine.setDoubleAfterSplit(false);
-						this.engine.addPlayer(player);
+						
+						prepareEngine(cardShuffler, player);
 
 						int i = 0;
 						for (; i < GAMES; i++) {
@@ -103,6 +102,15 @@ public class AutomatedStrategyFinder {
 			}
 		}
 		printTable();
+	}
+
+	private void prepareEngine(final SimulationCardShuffler cardShuffler, final SimulationPlayer player) {
+		this.engine = new Engine(rules, cardShuffler);
+		this.engine.setPeek(!this.european);
+		this.engine.setDoubleAfterSplit(false);
+		this.engine.setDoubleRules(new BellevueDoubleRules());
+		this.engine.setSplitRules(new BasicSplitRules());
+		this.engine.addPlayer(player);
 	}
 
 	private void reportResult(final Card firstCard, final Card secondCard, Card dealersCard, String bestMove, int score, float winPerGame) {

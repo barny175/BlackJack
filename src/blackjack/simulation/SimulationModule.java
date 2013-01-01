@@ -4,10 +4,8 @@
  */
 package blackjack.simulation;
 
-import blackjack.engine.CardShuffler;
-import blackjack.engine.CardSource;
-import blackjack.engine.Rules;
-import blackjack.engine.rules.BasicRules;
+import blackjack.engine.*;
+import blackjack.engine.rules.*;
 import blackjack.simulation.player.BasePlayer;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import com.google.inject.AbstractModule;
@@ -29,6 +27,11 @@ public class SimulationModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(Rules.class).to(BasicRules.class);
+		bind(SplitRules.class).to(BasicSplitRules.class);
+		bind(DoubleRules.class).to(BasicDoubleRules.class);
+		bind(Boolean.class).annotatedWith(Peek.class).toInstance(Boolean.TRUE);
+		bind(Boolean.class).annotatedWith(DoubleAfterSplit.class).toInstance(Boolean.TRUE);
+		
 		bind(CardSource.class).toInstance(cardSrc);
 		bind(Integer.class).annotatedWith(Names.named(CardShuffler.DECKS)).toInstance(6);
 //		bind(Long.class).annotatedWith(Names.named(CardShuffler.SEED)).toInstance(3112L);

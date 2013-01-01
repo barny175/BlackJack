@@ -18,21 +18,10 @@ public class BasicRules implements Rules {
 
     @Override
     public Set<Move> getAllowedMoves(Game game) {
-        Set<Move> allowedMoves = EnumSet.copyOf(allMoves);
-
-        if (game.gameState() != GameState.FirstDeal) {
-            allowedMoves.remove(Move.Double);
-            allowedMoves.remove(Move.Split);
-        }
-		
-		final CardHand playerCards = game.playerCards();
-		if (playerCards.count() != 2 || playerCards.get(0).getValue() != playerCards.get(1).getValue()) {
-			allowedMoves.remove(Move.Split);
-		}
-
-        return allowedMoves;
+        return EnumSet.copyOf(allMoves);
     }
 
+	
     @Override
     public boolean isBlackJack(CardHand cards) {
         return cards.count() == 2 && cards.softSum() == Rules.BLACKJACK;

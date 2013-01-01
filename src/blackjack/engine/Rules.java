@@ -19,5 +19,5 @@ public interface Rules {
 	
 	boolean isBlackJack(CardHand cards);
 
-    GameState nextState(Game game);
+    GameState nextState(Game game);	
 }

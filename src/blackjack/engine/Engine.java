@@ -26,6 +26,13 @@ public class Engine {
     private Rules rules;
 	private boolean peek = true;
 	private boolean doubleAfterSplit = true;
+	private SplitRules splitRules;
+	private DoubleRules doubleRules;
+
+	@Inject
+	public void setDoubleRules(DoubleRules doubleRules) {
+		this.doubleRules = doubleRules;
+	}
 
     @Inject
     public Engine(Rules rules, CardSource cardSource) {
@@ -35,6 +42,11 @@ public class Engine {
 
 	public void setEuropean() {
 		this.setPeek(false);
+	}
+
+	@Inject
+	public void setSplitRules(SplitRules splitRules) {
+		this.splitRules = splitRules;
 	}
 	
 	@Inject
@@ -178,7 +190,12 @@ public class Engine {
 
 	private Set<Move> getAllowedMoves(Game game) {
 		Set<Move> allowedMoves = rules.getAllowedMoves(game);
-		if (game.isSplitted() && ! this.doubleAfterSplit)
+		
+		if (!splitRules.isSplitPossible(game))
+			allowedMoves.remove(Move.Split);
+		
+		if (!doubleRules.isDoublePossible(game) || 
+			(game.isSplitted() && ! this.doubleAfterSplit))
 			allowedMoves.remove(Move.Double);
 		
 		return allowedMoves;

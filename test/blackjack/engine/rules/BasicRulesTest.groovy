@@ -58,8 +58,7 @@ class BasicRulesTest {
 		game.setGameState(GameState.FirstDeal)
 
 		def rules = new BasicRules()		
-		def allowedMoves = rules.getAllowedMoves(game)
-		assertFalse(allowedMoves.contains(Move.Split))
+		assertFalse(rules.isSplitPossible(game))
 	}
 }
 
