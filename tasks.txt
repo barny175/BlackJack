@@ -1,10 +1,11 @@
+rozdelit ruzne aspekty pravidel do ruznych interfaci a mit moduly pro ruzna kasina
+
 pravidla casina Happy Day
 - no peek?
 - no resplit aces
 - resplit max 3x
 
 automatizovane hledani strategii
-AHS - pustit pro vsechny mozne kombinace a vypsat v prehledne tabulce
 AHS - simulace pocitani - simulationshuffler se bude tvarit ze uz je odehrano tak aby sedel pocet
 
 pocitani - simple
