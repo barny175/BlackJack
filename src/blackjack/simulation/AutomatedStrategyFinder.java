@@ -5,10 +5,7 @@
 package blackjack.simulation;
 
 import blackjack.engine.*;
-import blackjack.engine.rules.BasicRules;
-import blackjack.engine.rules.BasicSplitRules;
-import blackjack.engine.rules.BellevueDoubleRules;
-import blackjack.engine.rules.BellevueRules;
+import blackjack.engine.rules.*;
 import blackjack.simulation.player.SimulationPlayer;
 import java.util.EnumSet;
 import java.util.Set;
@@ -21,15 +18,18 @@ import org.slf4j.LoggerFactory;
  */
 public class AutomatedStrategyFinder {
 
-	public static final int GAMES = 100000;
-	public static final int initialMoney = 500000;
-	private static final float BET = 10;
-	private Engine engine;
-//	protected final BasicRules rules = new BasicRules();
-	protected final BasicRules rules = new BellevueRules();
-	private final String[] allMoves = {"Hit", "Stand", "Split", "Double"};
 	private static Logger logger = LoggerFactory.getLogger(AutomatedStrategyFinder.class);
-	private boolean european = true;
+	private Engine engine;
+	
+	private int GAMES = 100000;
+	private int initialMoney = 100000;
+	private static final float BET = 2;
+	private final int decks = 1;
+	private final boolean doubleAfterSplit = true;
+	private final DoubleRules doubleRules = new BasicDoubleRules();
+	private final BasicRules rules = new BasicRules();
+	private final SplitRules splitRules = new BasicSplitRules();
+	private boolean peek = true;
 
 	public static void main(String[] args) {
 		new AutomatedStrategyFinder().run();
@@ -41,63 +41,22 @@ public class AutomatedStrategyFinder {
 		for (Card firstCard : EnumSet.range(Card.ACE, Card.TEN)) {
 			for (Card secondCard : EnumSet.range(Card.ACE, Card.TEN)) {
 				for (Card dealersCard : dealerCards) {
-					String bestMove = null;
-					int bestScore = 0;
-					int numberOfGames = 0;
 
-					for (String move : allMoves) {
-						if (!isMoveAllowed(rules, firstCard, secondCard, move)) {
-							continue;
-						}
-
-						final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(6).withDealersCard(dealersCard).withPlayerCards(firstCard, secondCard);
-
-						final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder().playersCard(firstCard, secondCard).dealersCard(dealersCard).move(move).withMoney(initialMoney).build();
-
-						player.setRules(rules);
-						
-						prepareEngine(cardShuffler, player);
-
-						int i = 0;
-						for (; i < GAMES; i++) {
-							this.engine.newGame();
-							try {
-								this.engine.start();
-							} catch (IllegalMoveException ex) {
-								logger.error("Illegal move.");
-							}
-
-							if (player.getMoney() < 10) {
-								break;
-							}
-						}
-
-						final int result = player.getMoney();
-						if (result > 10) {
-							logger.debug(String.format("%-20s: %d (%d%%, %f%%)", player.getName(), result, result * 100 / initialMoney,
-									((float) (initialMoney - result)) / i / 10));
-						}
-
-						if (result < 10) {
-							if (bestMove == null) {
-								numberOfGames = i;
-								bestMove = move;
-							} else {
-								if (bestScore == 0 && i > numberOfGames) {
-									bestMove = move;
-									numberOfGames = i;
-								}
-							}
-						} else {
-							if (result > bestScore) {
-								bestMove = move;
-								bestScore = result;
-								numberOfGames = i;
-							}
-						}
+					BasicStrategySimulation strategySimulation = new BasicStrategySimulation(firstCard, secondCard, dealersCard);
+					strategySimulation.setPeek(peek);
+					strategySimulation.setDecks(decks);
+					strategySimulation.setDoubleAfterSplit(doubleAfterSplit);
+					strategySimulation.setSplitRules(splitRules);
+					strategySimulation.setDoubleRules(doubleRules);
+					try {
+						strategySimulation.run();
+					} catch (IllegalMoveException ex) {
+						logger.error("Illegal move");
+						continue;
 					}
-
-					reportResult(firstCard, secondCard, dealersCard, bestMove, bestScore * 100 / initialMoney, ((float) (bestScore - initialMoney)) / numberOfGames / BET);
+					
+					reportResult(firstCard, secondCard, dealersCard, 
+							strategySimulation.getBestMove(), strategySimulation.getWinPerGame());
 				}
 			}
 		}
@@ -106,25 +65,25 @@ public class AutomatedStrategyFinder {
 
 	private void prepareEngine(final SimulationCardShuffler cardShuffler, final SimulationPlayer player) {
 		this.engine = new Engine(rules, cardShuffler);
-		this.engine.setPeek(!this.european);
-		this.engine.setDoubleAfterSplit(false);
-		this.engine.setDoubleRules(new BellevueDoubleRules());
-		this.engine.setSplitRules(new BasicSplitRules());
+		this.engine.setPeek(this.peek);
+		this.engine.setDoubleAfterSplit(doubleAfterSplit);
+		this.engine.setDoubleRules(doubleRules);
+		this.engine.setSplitRules(splitRules);
 		this.engine.addPlayer(player);
 	}
 
-	private void reportResult(final Card firstCard, final Card secondCard, Card dealersCard, String bestMove, int score, float winPerGame) {
+	private void reportResult(final Card firstCard, final Card secondCard, Card dealersCard, String bestMove, float winPerGame) {
 		Object[] row = getRowPos(firstCard, secondCard);
 		if (row != null) {
-			row[dealersCard.getSoftValue() - 1] = String.format("%s (%s%%)", bestMove, score);
+			row[dealersCard.getSoftValue() - 1] = String.format("%s (%4.2f%%)", bestMove, winPerGame);
 		}
-		logger.info(String.format("Player: %5s, %5s, dealer: %5s - %5s. Score %3d%% (%4.2f)",
-				firstCard, secondCard, dealersCard, bestMove, score, winPerGame));
+		logger.info(String.format("Player: %5s, %5s, dealer: %5s - %5s. Win per game %4.2f",
+				firstCard, secondCard, dealersCard, bestMove, winPerGame));
 	}
 
 	private boolean isMoveAllowed(BasicRules rules, Card firstCard, Card secondCard, String move) {
 		if (firstCard != secondCard && "Split".equals(move)) {
-			return false;
+			return doubleAfterSplit;
 		}
 
 		Game game = new Game(engine, null);
@@ -192,8 +151,11 @@ public class AutomatedStrategyFinder {
 
 	private void printTable() {
 		for (Object[] row : this.strategy) {
-			for (Object o : row) {
-				System.out.print(String.format("%14s", o));
+			for (int i = 0; i < row.length; i++) {
+				if (i == 0 )
+					System.out.print(String.format("%3s", row[i]));
+				else 
+					System.out.print(String.format("%16s", row[i]));
 			}
 			System.out.println();
 		}

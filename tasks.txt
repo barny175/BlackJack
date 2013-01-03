@@ -1,4 +1,10 @@
-rozdelit ruzne aspekty pravidel do ruznych interfaci a mit moduly pro ruzna kasina
+pocitani - simple
+
+ruzna basic strategie pro ruzne varianty hry
+
+insurance
+
+even money
 
 pravidla casina Happy Day
 - no peek?
@@ -8,7 +14,8 @@ pravidla casina Happy Day
 automatizovane hledani strategii
 AHS - simulace pocitani - simulationshuffler se bude tvarit ze uz je odehrano tak aby sedel pocet
 
-pocitani - simple
+doxxbet.com - simulace - 1 deck BJ - treti hrac bude sazet hodne podle toho, co dostali predchozi hraci
+
 pocitani - HiLo
 
 vice hracu - pouzit na simulaci, jestli na bwinu lze pocitanim vydelavat i presto, ze se micha po kazdem kole, kdyz se vyuzije vice hracu
@@ -16,5 +23,6 @@ vice hracu - pouzit na simulaci, jestli na bwinu lze pocitanim vydelavat i prest
 nasimulovat basic strategie pro bellevue pravidla
 
 nemichat po kazdem kole
-insurance
 training player kontroluje i sazku
+
+nacitani pravidel z property filu
