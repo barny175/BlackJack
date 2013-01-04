@@ -2,7 +2,7 @@ pocitani - simple
 
 ruzna basic strategie pro ruzne varianty hry
 
-insurance
+-insurance
 
 even money
 

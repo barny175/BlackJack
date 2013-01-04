@@ -20,19 +20,4 @@ public class BasicRules implements Rules {
     public Set<Move> getAllowedMoves(Game game) {
         return EnumSet.copyOf(allMoves);
     }
-
-	
-    @Override
-    public boolean isBlackJack(CardHand cards) {
-        return cards.count() == 2 && cards.softSum() == Rules.BLACKJACK;
-    }
-
-    @Override
-    public GameState nextState(Game game) {
-        switch (game.gameState()) {
-            case AfterSplit:
-                return GameState.FirstDeal;
-        }
-        throw new IllegalStateException("Method is not expected to be used in this place.");
-    }
 }

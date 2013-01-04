@@ -20,13 +20,23 @@ public class Utils {
         return ch
     }
     
+	public static CardSource getCardSourceNoPeek(def cardsPlayer, def cardsDealer) {
+	    def mergedCards = cardsPlayer.plus(1, cardsDealer[0])
+		mergedCards.addAll(cardsDealer[1..-1])
+
+        return getCardSource(mergedCards)
+    	
+	}
+	
     public static CardSource getCardSource(def cardsPlayer, def cardsDealer) {
-        assert cardsPlayer.size() == cardsDealer.size()
         def mergedCards = []
-        cardsPlayer.size().times {
-            mergedCards[it * 2] = cardsPlayer[it]
-            mergedCards[it * 2 + 1] = cardsDealer[it]
-        }
+		def max = Math.max(cardsPlayer.size(), cardsDealer.size())
+		max.times {
+			if (it < cardsPlayer.size())
+	            mergedCards.add(cardsPlayer[it])
+			if (it < cardsDealer.size())
+		        mergedCards.add(cardsDealer[it])
+		}
         
         return getCardSource(mergedCards)
     }

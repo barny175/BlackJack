@@ -20,6 +20,8 @@ class BellevueRulesTest {
     void disallowedDouble() {
         def cardSrc = getCardSource([Card.SIX, Card.FIVE, Card.SIX, Card.TEN, Card.TWO, Card.TWO])
         def engine = new Engine(new BellevueRules(), cardSrc)
+		engine.setSplitRules(new BasicSplitRules())
+		engine.setDoubleRules(new BellevueDoubleRules())
         
         def player = mock(Player.class)
         when(player.bet()).thenReturn(10)
@@ -36,6 +38,8 @@ class BellevueRulesTest {
         for (Card c : Card.SEVEN..Card.NINE) {
             def cardSrc = getCardSource([Card.TWO, Card.FIVE, c, Card.TWO, Card.TEN, Card.TWO])
             def engine = new Engine(new BellevueRules(), cardSrc)
+			engine.setSplitRules(new BasicSplitRules())
+			engine.setDoubleRules(new BasicDoubleRules())
 			engine.setPeek(false)
 
             def player = mock(Player.class)
@@ -52,6 +56,8 @@ class BellevueRulesTest {
 	@Test
 	void onlyOneCardAfterSplitOfAces() {
 		def engine = new Engine(new BellevueRules(), getCardSource([Card.ACE, Card.SIX, Card.ACE, Card.SIX, Card.NINE, Card.SEVEN, Card.FIVE]))
+		engine.setSplitRules(new BasicSplitRules())
+		engine.setDoubleRules(new BasicDoubleRules())
 		engine.setPeek(false)
 		
 		def player = mock(Player.class)

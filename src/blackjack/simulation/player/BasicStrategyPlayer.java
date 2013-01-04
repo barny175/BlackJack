@@ -6,6 +6,7 @@ package blackjack.simulation.player;
 
 import blackjack.engine.Card;
 import blackjack.engine.CardHand;
+import blackjack.engine.Engine;
 import blackjack.engine.Move;
 import blackjack.engine.Rules;
 import com.google.inject.Inject;
@@ -36,7 +37,7 @@ public class BasicStrategyPlayer extends BasePlayer {
 
     @Override
     public Move move(CardHand cards, Card dealerUpCard, Set<Move> allowedMoves) {
-        if (rules.isBlackJack(cards)) {
+        if (cards.isBlackJack()) {
             return Move.Stand;
         }
 

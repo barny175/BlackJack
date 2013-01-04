@@ -3,6 +3,8 @@
  */
 package blackjack.engine;
 
+import blackjack.engine.rules.BasicDoubleRules;
+import blackjack.engine.rules.BasicSplitRules;
 import blackjack.engine.rules.DoubleAfterSplit;
 import blackjack.engine.rules.Peek;
 import com.google.inject.Inject;
@@ -99,11 +101,16 @@ public class Engine {
             switch (game.gameState()) {
                 case AfterSplit:
                     dealToPlayer(game);
-                    game.setGameState(rules.nextState(game));
+                    
+					if (game.playerCards().getCards().get(0) == Card.ACE)
+						game.setGameState(GameState.DealersGame);
+					else
+						game.setGameState(GameState.FirstDeal);
+					
                     break;
                 case FirstDeal:
-                    if (rules.isBlackJack(game.playerCards())
-                            || (this.peek && rules.isBlackJack(dealerCards))) {
+                    if (game.playerCards().isBlackJack()
+                            || (this.peek && dealerCards.isBlackJack())) {
                         game.setGameState(GameState.CheckState);
                         continue;
                     }
@@ -260,14 +267,14 @@ public class Engine {
         CardHand sumPlayer = game.playerCards();
         CardHand sumDealer = dealerCards;
 
-        if (rules.isBlackJack(sumPlayer)) {
-            if (rules.isBlackJack(sumDealer)) {
+        if (sumPlayer.isBlackJack()) {
+            if (sumDealer.isBlackJack()) {
                 setGameResult(game, GameResult.Push);
             } else {
                 setGameResult(game, GameResult.PlayerBlackJack);
             }
         } else {
-            if (rules.isBlackJack(sumDealer)) {
+            if (sumDealer.isBlackJack()) {
                 setGameResult(game, GameResult.DealerWin);
             }
         }

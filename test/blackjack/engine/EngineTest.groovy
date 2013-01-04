@@ -11,6 +11,8 @@ import blackjack.engine.rules.BasicRules
 import static org.mockito.Mockito.*
 import org.mockito.*
 import static blackjack.Utils.*
+import blackjack.engine.rules.BasicSplitRules
+import blackjack.engine.rules.BasicDoubleRules
 
 /**
  *
@@ -77,7 +79,7 @@ class EngineTest {
     @Test
     void dealerPeeks() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.TWO, Card.TEN, Card.TWO])
-        def engine = new Engine(new BasicRules(), cardSrc)
+        def engine = getEngine(cardSrc)
         engine.setPeek(true)
         
 		def player = mock(Player.class)
@@ -96,7 +98,7 @@ class EngineTest {
     @Test
     void dealerNoPeek() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.TWO, Card.TEN, Card.TWO, Card.TEN])
-        def engine = new Engine(new BasicRules(), cardSrc)
+        def engine = getEngine(cardSrc)
         engine.setPeek(false)
         
 		def player = mock(Player.class)
@@ -351,6 +353,63 @@ class EngineTest {
 		} 
     }
 	
+	@Test
+    void splitAces() {
+        def cardSrc = getCardSource([Card.ACE, Card.ACE, Card.SEVEN, Card.TEN], [Card.TEN, Card.NINE])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any(), any())).thenReturn(Move.Split)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player, times(1)).move(any(), any(), any())
+        verify(player, times(1)).addMoney(-10)
+		verify(player, times(1)).addMoney(10)
+    }
+	
+	@Test
+    void splitAcesDealerHasBlackjack() {
+        def cardSrc = getCardSourceNoPeek([Card.ACE, Card.ACE, Card.SEVEN, Card.TEN], [Card.TEN, Card.ACE])
+        def engine = getEngine(cardSrc)
+		engine.setPeek(false)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any(), any())).thenReturn(Move.Split)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player, times(1)).move(any(), any(), any())
+        verify(player, times(2)).addMoney(-10)
+    }
+	
+	@Test
+    void splitTensDealerHasBlackjack() {
+        def cardSrc = getCardSourceNoPeek([Card.TEN, Card.QUEEN, Card.ACE, Card.ACE], [Card.TEN, Card.ACE])
+        def engine = getEngine(cardSrc)
+		engine.setPeek(false)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+        when(player.move(any(), any(), any())).thenReturn(Move.Split).thenReturn(Move.Stand).thenReturn(Move.Stand)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player, times(3)).move(any(), any(), any())
+        verify(player, times(2)).addMoney(-10)
+    }
+	
     @Test
     void twoGames() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN, Card.TEN, Card.EIGHT, Card.SEVEN, Card.NINE])
@@ -383,6 +442,9 @@ class EngineTest {
     }
     
     Engine getEngine(CardSource cardsrc) {
-        new Engine(new BasicRules(), cardsrc)
+        def engine = new Engine(new BasicRules(), cardsrc)
+		engine.setSplitRules(new BasicSplitRules())
+		engine.setDoubleRules(new BasicDoubleRules())
+		return engine
     }
 }

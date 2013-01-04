@@ -12,6 +12,8 @@ import java.util.List;
  * @author mbarnas
  */
 public class CardHand {
+	
+	public static int BLACKJACK = 21;
 
     private List<Card> cards = new ArrayList<Card>(6);
     private int aceCount;
@@ -69,8 +71,11 @@ public class CardHand {
         hardSum = 0;
     }
 
-    private boolean isBlackJack() {
-        return (softSum() == Rules.BLACKJACK && cards.size() == 2);
+    public boolean isBlackJack() {
+		if (splitted)
+			return false;
+		
+        return (softSum() == CardHand.BLACKJACK && cards.size() == 2);
     }
 
     @Override

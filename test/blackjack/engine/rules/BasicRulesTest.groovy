@@ -57,7 +57,7 @@ class BasicRulesTest {
 		game.addPlayerCard(Card.THREE)
 		game.setGameState(GameState.FirstDeal)
 
-		def rules = new BasicRules()		
+		def rules = new BasicSplitRules()		
 		assertFalse(rules.isSplitPossible(game))
 	}
 }

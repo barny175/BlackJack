@@ -25,18 +25,4 @@ public class BellevueRules extends BasicRules {
         
         return allowedMoves;
     }
-
-	@Override
-	public boolean isBlackJack(CardHand cards) {
-		return !cards.isSplitted() && super.isBlackJack(cards);
-	}
-
-    @Override
-    public GameState nextState(Game game) {
-        if (game.gameState() == GameState.AfterSplit && game.playerCards().count() == 2
-                && game.playerCards().getCards().get(0) == Card.ACE)
-            return GameState.DealersGame;
-        
-        return super.nextState(game);
-    }
 }

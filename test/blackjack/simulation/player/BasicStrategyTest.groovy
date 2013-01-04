@@ -9,13 +9,16 @@ import org.junit.Test
 import static org.junit.Assert.*
 import blackjack.engine.*
 import static org.mockito.Mockito.*
-import blackjack.engine.rules.BasicRules
+import blackjack.engine.rules.*
 
 /**
  *
  * @author mbarnas
  */
 class BasicStrategyTest {
+	def splitRules = new BasicSplitRules()
+	def doubleRules = new BasicDoubleRules()
+	
     def strategy = [[7, "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"], 
         [8, "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
         [9, "H", "D", "D", "D", "D", "H", "H", "H", "H", "H"],
@@ -96,10 +99,10 @@ class BasicStrategyTest {
 	private def getAllowedMoves(rules, game) {
 		def moves = rules.getAllowedMoves(game)
 		
-		if (!rules.isSplitPossible(game))
+		if (!splitRules.isSplitPossible(game))
 			moves.remove(Move.Split)
 			
-		if (!rules.isDoublePossible(game))
+		if (!doubleRules.isDoublePossible(game))
 			moves.remove(Move.Double)
 			
 		return moves
