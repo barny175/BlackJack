@@ -56,4 +56,9 @@ public class TrainingPlayer implements Player {
 	public void newGame(Game game) {
 		
 	}
+
+	@Override
+	public int insuranceBet() {
+		return this.cmdLinePlayer.insuranceBet();
+	}
 }

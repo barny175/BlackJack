@@ -14,6 +14,8 @@ public interface Player {
 	
     int bet();
 
+    int insuranceBet();
+
     void addMoney(int amount);
     
     void gameEnded(Game game);

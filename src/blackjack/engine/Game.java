@@ -19,6 +19,8 @@ public class Game {
     private final Engine engine;
     private GameResult result;
     private boolean splitted = false;
+	private int insuranceBet;
+	private boolean insuranceWon;
 
     public Game (Engine engine, Player player) {
         this.player = player;
@@ -105,4 +107,23 @@ public class Game {
         
         return games;
     }
+
+	void setInsuranceBet(int insuranceBet) {
+		if (insuranceBet > this.bet / 2)
+			throw new IllegalArgumentException("Insurance can be at most half of the original bet.");
+		
+		this.insuranceBet = insuranceBet;
+	}
+
+	public int getInsuranceBet() {
+		return insuranceBet;
+	}
+
+	void setInsuranceWon(boolean insuranceWon) {
+		this.insuranceWon = insuranceWon;
+	}
+
+	public boolean isInsuranceWon() {
+		return insuranceWon;
+	}
 }

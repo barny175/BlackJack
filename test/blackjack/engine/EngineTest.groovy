@@ -63,7 +63,7 @@ class EngineTest {
     
     @Test
     void dealerBlackJack() {
-        def cardSrc = getCardSource([Card.TWO, Card.ACE, Card.TEN, Card.TEN])
+        def cardSrc = getCardSource([Card.TWO, Card.TEN, Card.TEN, Card.ACE])
         def engine = getEngine(cardSrc)
         
         def player = mock(Player.class)
@@ -263,7 +263,63 @@ class EngineTest {
         verify(player, never()).addMoney(10)
         verify(player, times(1)).move(any(), any(), any())
     }
-    
+
+    @Test
+    void insuranceDealerHasBlackjack() {
+        def cardSrc = getCardSource([Card.NINE, Card.ACE, Card.SEVEN, Card.TEN, Card.TWO, Card.TWO])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+		when(player.insuranceBet()).thenReturn(4)
+        
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player).addMoney(-10)
+		verify(player).addMoney(8)
+        verify(player, times(1)).insuranceBet()
+    }
+	
+    @Test
+    void insuranceDealerHasNotBlackjack() {
+        def cardSrc = getCardSource([Card.NINE, Card.ACE, Card.TEN, Card.SEVEN, Card.TWO, Card.TWO])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+		when(player.insuranceBet()).thenReturn(5)
+        when(player.move(any(), any(), any())).thenReturn(Move.Stand)
+		
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+        
+        verify(player).addMoney(10)
+		verify(player).addMoney(-5)
+        verify(player, times(1)).insuranceBet()
+    }
+	
+	
+    @Test(expected=IllegalArgumentException.class)
+    void insuranceMaxAmount() {
+        def cardSrc = getCardSource([Card.NINE, Card.ACE, Card.TEN, Card.SEVEN, Card.TWO, Card.TWO])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+		when(player.insuranceBet()).thenReturn(6)
+        when(player.move(any(), any(), any())).thenReturn(Move.Stand)
+		
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+    }
+	
     @Test(expected=IllegalMoveException.class)
     void disallowedDouble() {
         def cardSrc = getCardSource([Card.TWO, Card.FIVE, Card.SEVEN, Card.TEN, Card.TWO, Card.TWO])

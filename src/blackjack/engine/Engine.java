@@ -3,8 +3,6 @@
  */
 package blackjack.engine;
 
-import blackjack.engine.rules.BasicDoubleRules;
-import blackjack.engine.rules.BasicSplitRules;
 import blackjack.engine.rules.DoubleAfterSplit;
 import blackjack.engine.rules.Peek;
 import com.google.inject.Inject;
@@ -109,6 +107,9 @@ public class Engine {
 					
                     break;
                 case FirstDeal:
+					if (dealerUpCard == Card.ACE)
+						game.setInsuranceBet(game.getPlayer().insuranceBet());
+					
                     if (game.playerCards().isBlackJack()
                             || (this.peek && dealerCards.isBlackJack())) {
                         game.setGameState(GameState.CheckState);
@@ -188,8 +189,8 @@ public class Engine {
                         this.games.addFirst(g);
                     }
                     break;
-                default:
-                    game.setGameState(GameState.DealersGame);
+				default:
+					game.setGameState(GameState.DealersGame);
                     break;
             }
         } while (move == Move.Hit);
@@ -204,7 +205,7 @@ public class Engine {
 		if (!doubleRules.isDoublePossible(game) || 
 			(game.isSplitted() && ! this.doubleAfterSplit))
 			allowedMoves.remove(Move.Double);
-		
+	
 		return allowedMoves;
 	}
 
@@ -247,20 +248,28 @@ public class Engine {
     }
 
     private void payPrizes(Game game) {
+		final Player player = game.getPlayer();
         switch (game.gameResult()) {
             case PlayerBlackJack:
-                game.getPlayer().addMoney(game.getBet() * 3 / 2);
+                player.addMoney(game.getBet() * 3 / 2);
                 break;
             case Push:
                 break;
             case PlayerWin:
-                game.getPlayer().addMoney(game.getBet());
+                player.addMoney(game.getBet());
                 break;
             case PlayerBusted:
             case DealerWin:
-                game.getPlayer().addMoney(-1 * game.getBet());
+                player.addMoney(-1 * game.getBet());
                 break;
         }
+		
+		if (game.getInsuranceBet() != 0) {
+			if (game.isInsuranceWon())
+				player.addMoney(game.getInsuranceBet() * 2);
+			else
+				player.addMoney(game.getInsuranceBet() * -1);
+		}
     }
 
     private void checkBlackJack(Game game) {
@@ -276,6 +285,8 @@ public class Engine {
         } else {
             if (sumDealer.isBlackJack()) {
                 setGameResult(game, GameResult.DealerWin);
+				if (game.getInsuranceBet() != 0)
+					game.setInsuranceWon(true);
             }
         }
     }

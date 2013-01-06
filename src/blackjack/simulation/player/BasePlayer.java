@@ -22,6 +22,11 @@ public abstract class BasePlayer implements Player {
 	public void setBet(int bet) {
 		this.bet = bet;
 	}
+
+	@Override
+	public int insuranceBet() {
+		return this.bet / 2;
+	}
 	
 	@Override
 	public void addMoney(int amount) {

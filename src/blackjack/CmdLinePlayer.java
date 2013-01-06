@@ -105,4 +105,9 @@ public class CmdLinePlayer implements Player {
 			}
 		});
 	}
+
+	@Override
+	public int insuranceBet() {
+		return 5;
+	}
 }

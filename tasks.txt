@@ -2,8 +2,6 @@ pocitani - simple
 
 ruzna basic strategie pro ruzne varianty hry
 
--insurance
-
 even money
 
 pravidla casina Happy Day
@@ -14,7 +12,7 @@ pravidla casina Happy Day
 automatizovane hledani strategii
 AHS - simulace pocitani - simulationshuffler se bude tvarit ze uz je odehrano tak aby sedel pocet
 
-doxxbet.com - simulace - 1 deck BJ - treti hrac bude sazet hodne podle toho, co dostali predchozi hraci
+doxxbet.com - simulace - 1 deck BJ - treti hrac bude sazet hodne podle toho, co dostali predchozi hraci 
 
 pocitani - HiLo
 
@@ -26,3 +24,7 @@ nemichat po kazdem kole
 training player kontroluje i sazku
 
 nacitani pravidel z property filu
+
+kellyho kriterium http://www.hazardnihrac.com/online-black-jack-kellyho-kriterium-jak-maximalizovat-zisk-v-blackjacku
+
+simulacni hrac - hrac, ktery pusti simulaci pro kazdy tah, aby zjistit, co je v dane chvili optimalni
