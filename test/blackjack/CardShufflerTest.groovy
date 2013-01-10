@@ -31,8 +31,8 @@ class CardShufflerTest {
     public void simulationCardShuffler() {
 		testShuffler(new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.JACK))
 		testShuffler(new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.JACK, null, Card.FIVE))
+		testShuffler(new SimulationCardShuffler(1, Card.ACE, Card.TWO, Card.TWO))
     }
-	
 	
     @Test
     public void simulationShufflerFirstCards() {
@@ -89,5 +89,49 @@ class CardShufflerTest {
         GroovyTestCase.assertEquals(4, cardCounts[Card.JACK])
         GroovyTestCase.assertEquals(4, cardCounts[Card.KING])
     }
+
+	
+	@Test(expected=IllegalStateException.class)
+    public void simulationShufflerTooManyPredefinedCards() {
+        def shuffler = new SimulationCardShuffler(1)
+			.withPlayerCards(Card.ACE, Card.TWO)
+			.withDealersCard(Card.KING)
+			.withCardsMissing(Card.ACE, Card.TEN, Card.TWO, Card.KING, Card.KING, Card.KING, Card.KING)
+			
+		shuffler.next()
+		shuffler.next()
+	}
+	
+	@Test
+    public void simulationShufflerMissingCards() {
+        def shuffler = new SimulationCardShuffler(1)
+			.withPlayerCards(Card.ACE, Card.TWO)
+			.withDealersCard(Card.JACK)
+			.withCardsMissing(Card.ACE, Card.TEN, Card.TWO, Card.KING, Card.KING, Card.KING, Card.KING)
+
+		def cardCounts = [:]
+		
+        assertEquals(Card.ACE, shuffler.next()); cardCounts[Card.ACE] = 1
+        assertEquals(Card.JACK, shuffler.next()); cardCounts[Card.TWO] = 1
+        assertEquals(Card.TWO, shuffler.next()); cardCounts[Card.JACK] = 1
+		
+        def card = null
+        while (card = shuffler.next()) {
+            if (!cardCounts[card])
+                cardCounts[card] = 1
+            else
+                cardCounts[card]++;
+        }
+        
+        GroovyTestCase.assertEquals(3, cardCounts[Card.TWO])
+		GroovyTestCase.assertEquals(4, cardCounts[Card.THREE])
+        GroovyTestCase.assertEquals(4, cardCounts[Card.NINE])
+        GroovyTestCase.assertEquals(3, cardCounts[Card.TEN])
+        GroovyTestCase.assertEquals(4, cardCounts[Card.QUEEN])
+        GroovyTestCase.assertEquals(4, cardCounts[Card.JACK])
+        GroovyTestCase.assertEquals(null, cardCounts[Card.KING])
+		GroovyTestCase.assertEquals(3, cardCounts[Card.ACE])
+    }	
+
 }
 

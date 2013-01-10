@@ -52,6 +52,18 @@ public class SimulationCardShuffler implements CardSource {
 		return this;
 	}
 	
+	/**
+	 * given cards are not in deck
+	 * @param missingCards
+	 * @return 
+	 */
+	public SimulationCardShuffler withCardsMissing(Card... missingCards) {
+		for (Card c : missingCards) {
+			useCard(c);
+		}
+		return this;
+	}
+	
 	@Override
 	public void newGame() {
 		shuffle();
@@ -66,7 +78,7 @@ public class SimulationCardShuffler implements CardSource {
 		if (cardsUsed < firstCards.length) {
 			Card c = firstCards[cardsUsed++];
 			if (c != null) {
-				this.used.add(c.ordinal());
+				useCard(c);
 				return c;
 			}
 		}
@@ -102,5 +114,15 @@ public class SimulationCardShuffler implements CardSource {
 		used.clear();
 		cardsUsed = 0;
 		notifyObservers();
+	}
+
+	private void useCard(Card c) {
+		for (int i = c.ordinal(); i < this.decks * 4 * Card.values().length; i += Card.values().length) {
+			if (!this.used.contains(i)) {
+				this.used.add(i);
+				return;
+			}
+		}
+		throw new IllegalStateException("Two many predefined cards.");
 	}
 }
