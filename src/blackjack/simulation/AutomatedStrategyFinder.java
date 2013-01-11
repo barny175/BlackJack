@@ -150,6 +150,8 @@ public class AutomatedStrategyFinder {
 	}
 
 	private void printTable() {
+		System.out.println("                TWO           THREE            FOUR            FIVE             SIX           SEVEN           EIGHT            NINE             TEN            ACE");
+			
 		for (Object[] row : this.strategy) {
 			for (int i = 0; i < row.length; i++) {
 				if (i == 0 )

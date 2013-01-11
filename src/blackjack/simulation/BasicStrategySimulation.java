@@ -40,7 +40,7 @@ public class BasicStrategySimulation {
 	private int numberOfGames = 0;
 	
 	private Engine engine;
-	private Boolean insuranceAllowed;
+	private Boolean insuranceAllowed = Boolean.FALSE;
 	
 	public String getBestMove() {
 		return bestMove + (this.insuranceAllowed ? "Insurance" : "");
@@ -97,13 +97,13 @@ public class BasicStrategySimulation {
 	}
 
 	public void run() throws IllegalMoveException {
-		List<Boolean> insuranceValues = Lists.newArrayList();
+		List<Boolean> insuranceValues = Lists.newArrayList(Boolean.FALSE);
 		if (dealersCard == Card.ACE)
 			insuranceValues.add(Boolean.TRUE);
 		
 		for (Boolean insurance : insuranceValues) {
 		for (String move : allMoves) {
-			if (!isMoveAllowed(rules, firstCard, secondCard, move)) {
+			if (!isMoveAllowed(rules, firstCard, secondCard, move, insurance)) {
 				continue;
 			}
 
@@ -167,8 +167,8 @@ public class BasicStrategySimulation {
 		this.engine.addPlayer(player);
 	}
 
-	private boolean isMoveAllowed(BasicRules rules, Card firstCard, Card secondCard, String move) {
-		if (firstCard != secondCard && "Split".equals(move)) {
+	private boolean isMoveAllowed(BasicRules rules, Card firstCard, Card secondCard, String move, Boolean insurance) {
+		if ("Split".equals(move) && (firstCard != secondCard || insurance)) {
 			return false;
 		}
 

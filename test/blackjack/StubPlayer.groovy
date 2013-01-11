@@ -60,4 +60,8 @@ class StubPlayer implements Player {
     void gameEnded(Game game) {
         this.res = game.gameResult()
     }
+	
+	int insuranceBet() {
+		return 0
+	}
 }
