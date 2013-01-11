@@ -9,6 +9,8 @@ import blackjack.engine.rules.BasicDoubleRules;
 import blackjack.engine.rules.BasicRules;
 import blackjack.engine.rules.BasicSplitRules;
 import blackjack.simulation.player.SimulationPlayer;
+import com.google.common.collect.Lists;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,9 +40,10 @@ public class BasicStrategySimulation {
 	private int numberOfGames = 0;
 	
 	private Engine engine;
+	private Boolean insuranceAllowed;
 	
 	public String getBestMove() {
-		return bestMove;
+		return bestMove + (this.insuranceAllowed ? "Insurance" : "");
 	}
 
 	public int getBestScore() {
@@ -94,6 +97,11 @@ public class BasicStrategySimulation {
 	}
 
 	public void run() throws IllegalMoveException {
+		List<Boolean> insuranceValues = Lists.newArrayList();
+		if (dealersCard == Card.ACE)
+			insuranceValues.add(Boolean.TRUE);
+		
+		for (Boolean insurance : insuranceValues) {
 		for (String move : allMoves) {
 			if (!isMoveAllowed(rules, firstCard, secondCard, move)) {
 				continue;
@@ -101,7 +109,14 @@ public class BasicStrategySimulation {
 
 			final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(decks).withDealersCard(dealersCard).withPlayerCards(firstCard, secondCard);
 
-			final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder().playersCard(firstCard, secondCard).dealersCard(dealersCard).move(move).withMoney(initialMoney).build();
+			final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder()
+					.playersCard(firstCard, secondCard)
+					.dealersCard(dealersCard)
+					.move(move)
+					.withMoney(initialMoney)
+					.insurance(insurance)
+					.build();
+			
 			player.setBet(this.bet);
 			player.setRules(rules);
 
@@ -123,10 +138,12 @@ public class BasicStrategySimulation {
 				if (this.bestMove == null) {
 					numberOfGames = i;
 					bestMove = move;
+					insuranceAllowed = insurance;
 				} else {
 					if (bestScore == 0 && i > numberOfGames) {
 						bestMove = move;
 						numberOfGames = i;
+						insuranceAllowed = insurance;
 					}
 				}
 			} else {
@@ -134,8 +151,10 @@ public class BasicStrategySimulation {
 					bestMove = move;
 					bestScore = result;
 					numberOfGames = i;
+					insuranceAllowed = insurance;
 				}
 			}
+		}
 		}
 	}
 

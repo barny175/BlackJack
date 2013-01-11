@@ -303,7 +303,6 @@ class EngineTest {
         verify(player, times(1)).insuranceBet()
     }
 	
-	
     @Test(expected=IllegalArgumentException.class)
     void insuranceMaxAmount() {
         def cardSrc = getCardSource([Card.NINE, Card.ACE, Card.TEN, Card.SEVEN, Card.TWO, Card.TWO])
@@ -313,6 +312,22 @@ class EngineTest {
         when(player.bet()).thenReturn(10)
 		when(player.insuranceBet()).thenReturn(6)
         when(player.move(any(), any(), any())).thenReturn(Move.Stand)
+		
+        engine.addPlayer(player)
+
+        engine.newGame()
+        engine.start()
+    }
+
+    @Test(expected=IllegalMoveException.class)
+    void noSplitAfterInsurance() {
+        def cardSrc = getCardSource([Card.ACE, Card.ACE, Card.ACE, Card.SEVEN, Card.TWO, Card.TWO])
+        def engine = getEngine(cardSrc)
+        
+        def player = mock(Player.class)
+        when(player.bet()).thenReturn(10)
+		when(player.insuranceBet()).thenReturn(3)
+        when(player.move(any(), any(), any())).thenReturn(Move.Split)
 		
         engine.addPlayer(player)
 

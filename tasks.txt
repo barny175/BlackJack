@@ -2,8 +2,6 @@ pocitani - simple
 
 ruzna basic strategie pro ruzne varianty hry
 
-even money
-
 pravidla casina Happy Day
 - no peek?
 - no resplit aces

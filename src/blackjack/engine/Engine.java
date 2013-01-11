@@ -205,6 +205,9 @@ public class Engine {
 		if (!doubleRules.isDoublePossible(game) || 
 			(game.isSplitted() && ! this.doubleAfterSplit))
 			allowedMoves.remove(Move.Double);
+		
+		if (game.getInsuranceBet() != 0)
+			allowedMoves.remove(Move.Split);
 	
 		return allowedMoves;
 	}

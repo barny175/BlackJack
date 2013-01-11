@@ -18,12 +18,18 @@ public class SimulationPlayer extends BasicStrategyPlayer {
 	private final CardHand firstTwoCards = new CardHand();
 	private Card dealersCard;
 	private String move;
+	private boolean insurance = false;
+
+	private void setInsurance(boolean insurance) {
+		this.insurance = insurance;
+	}
 
 	public static class SimulationPlayerBuilder {
 		private String move;
 		private Card dealersCard;
 		private Card[] playersCards;
 		private int money;
+		private boolean insurance;
 		
 		public SimulationPlayerBuilder move(String move) {
 			this.move = move;
@@ -44,8 +50,15 @@ public class SimulationPlayer extends BasicStrategyPlayer {
 			return this;
 		}
 				
+		public SimulationPlayerBuilder insurance(boolean val) {
+			this.insurance = val;
+			return this;
+		}
+		
 		public SimulationPlayer build() {
-			return new SimulationPlayer(this.playersCards, dealersCard, move, money);
+			final SimulationPlayer simulationPlayer = new SimulationPlayer(this.playersCards, dealersCard, move, money);
+			simulationPlayer.setInsurance(this.insurance);
+			return simulationPlayer;
 		}
 	}
 	
@@ -74,6 +87,15 @@ public class SimulationPlayer extends BasicStrategyPlayer {
 		return super.move(cards, dealerUpCard, allowedMoves);
 	}
 
+	@Override
+	public int insuranceBet() {
+		if (this.insurance)
+			return this.bet() / 2;
+		
+		return 0;
+	}
+
+	
 	@Override
 	public String getName() {
 		return super.getName() + ", " + move + ", " + this.firstTwoCards + ",dealer's card: " + this.dealersCard;
