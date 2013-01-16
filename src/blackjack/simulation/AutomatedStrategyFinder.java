@@ -63,15 +63,6 @@ public class AutomatedStrategyFinder {
 		printTable();
 	}
 
-	private void prepareEngine(final SimulationCardShuffler cardShuffler, final SimulationPlayer player) {
-		this.engine = new Engine(rules, cardShuffler);
-		this.engine.setPeek(this.peek);
-		this.engine.setDoubleAfterSplit(doubleAfterSplit);
-		this.engine.setDoubleRules(doubleRules);
-		this.engine.setSplitRules(splitRules);
-		this.engine.addPlayer(player);
-	}
-
 	private void reportResult(final Card firstCard, final Card secondCard, Card dealersCard, String bestMove, float winPerGame) {
 		Object[] row = getRowPos(firstCard, secondCard);
 		if (row != null) {

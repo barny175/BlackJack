@@ -1,5 +1,7 @@
 pocitani - simple
 
+nacitani pravidel z property filu
+
 ruzna basic strategie pro ruzne varianty hry
 
 pravidla casina Happy Day
@@ -18,10 +20,7 @@ vice hracu - pouzit na simulaci, jestli na bwinu lze pocitanim vydelavat i prest
 
 nasimulovat basic strategie pro bellevue pravidla
 
-nemichat po kazdem kole
 training player kontroluje i sazku
-
-nacitani pravidel z property filu
 
 kellyho kriterium http://www.hazardnihrac.com/online-black-jack-kellyho-kriterium-jak-maximalizovat-zisk-v-blackjacku
 
