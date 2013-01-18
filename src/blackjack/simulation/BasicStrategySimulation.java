@@ -7,7 +7,6 @@ package blackjack.simulation;
 import blackjack.engine.*;
 import blackjack.engine.rules.BasicDoubleRules;
 import blackjack.engine.rules.BasicRules;
-import blackjack.engine.rules.BasicSplitRules;
 import blackjack.simulation.player.SimulationPlayer;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -29,7 +28,7 @@ public class BasicStrategySimulation {
 	private DoubleRules doubleRules = new BasicDoubleRules();
 	protected BasicRules rules = new BasicRules();
 	private boolean peek = true;
-	private SplitRules splitRules = new BasicSplitRules();
+	private boolean resplitAces = true;
 	private final Card firstCard;
 	private final Card secondCard;
 	private final Card dealersCard;
@@ -48,6 +47,10 @@ public class BasicStrategySimulation {
 
 	public float getWinPerGame() {
 		return bestScore;
+	}
+
+	public void setResplitAces(boolean resplitAces) {
+		this.resplitAces = resplitAces;
 	}
 
 	public void setBet(int bet) {
@@ -84,10 +87,6 @@ public class BasicStrategySimulation {
 
 	public void setRules(BasicRules rules) {
 		this.rules = rules;
-	}
-
-	public void setSplitRules(SplitRules splitRules) {
-		this.splitRules = splitRules;
 	}
 
 	public BasicStrategySimulation(Card firstCard, Card secondCard, Card dealersCard) {
@@ -132,7 +131,7 @@ public class BasicStrategySimulation {
 				simulation.setGames(games);
 				simulation.setPeek(peek);
 				simulation.setRules(rules);
-				simulation.setSplitRules(splitRules);
+				simulation.setResplitAces(resplitAces);
 				simulation.run();
 
 				final float result = simulation.getWinPerGame();

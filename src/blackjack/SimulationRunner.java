@@ -7,18 +7,12 @@ package blackjack;
 import blackjack.engine.Card;
 import blackjack.engine.CardSource;
 import blackjack.engine.IllegalMoveException;
-import blackjack.engine.rules.BasicRules;
-import blackjack.engine.rules.BasicSplitRules;
-import blackjack.engine.shufflers.EveryGameCardShuffler;
 import blackjack.simulation.Simulation;
 import blackjack.simulation.SimulationCardShuffler;
-import blackjack.simulation.SimulationModule;
 import blackjack.simulation.player.BasePlayer;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import blackjack.simulation.player.SimpleCountingPlayer;
 import com.google.common.base.Preconditions;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -51,6 +45,7 @@ public class SimulationRunner {
 	private int initialMoney;
 	private boolean peek;
 	private int bet;
+	private boolean resplitAces;
 
 	
 	private void run() {
@@ -94,6 +89,9 @@ public class SimulationRunner {
 		Preconditions.checkNotNull(properties.getProperty("peek"));
 		this.peek = Boolean.parseBoolean(properties.getProperty("peek"));
 
+		Preconditions.checkNotNull(properties.getProperty("resplitAces"));
+		this.resplitAces = Boolean.parseBoolean(properties.getProperty("resplitAces"));
+		
 		this.games = Integer.parseInt(properties.getProperty("games", "100000"));
 		
 		this.initialMoney = Integer.parseInt(properties.getProperty("initialMoney", "100000"));
@@ -106,7 +104,7 @@ public class SimulationRunner {
 		simulation.setDoubleAfterSplit(doubleAfterSplit);
 		simulation.setGames(games);
 		simulation.setInitialMoney(initialMoney);
-		simulation.setSplitRules(new BasicSplitRules());
+		simulation.setResplitAces(resplitAces);
 		simulation.setPeek(peek);
 		simulation.setBet(bet);
 		simulation.setCardShuffler(shuffler);

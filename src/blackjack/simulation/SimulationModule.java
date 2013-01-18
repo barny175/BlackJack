@@ -27,7 +27,6 @@ public class SimulationModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(Rules.class).to(BasicRules.class);
-		bind(SplitRules.class).to(BasicSplitRules.class);
 		bind(DoubleRules.class).to(BasicDoubleRules.class);
 		bind(Boolean.class).annotatedWith(Peek.class).toInstance(Boolean.TRUE);
 		bind(Boolean.class).annotatedWith(DoubleAfterSplit.class).toInstance(Boolean.TRUE);

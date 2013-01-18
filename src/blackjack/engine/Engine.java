@@ -6,6 +6,7 @@ package blackjack.engine;
 import blackjack.engine.rules.DoubleAfterSplit;
 import blackjack.engine.rules.Peek;
 import com.google.inject.Inject;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +27,8 @@ public class Engine {
     private Rules rules;
 	private boolean peek = true;
 	private boolean doubleAfterSplit = true;
-	private SplitRules splitRules;
 	private DoubleRules doubleRules;
+	private boolean resplitAces = true;
 
 	@Inject
 	public void setDoubleRules(DoubleRules doubleRules) {
@@ -44,11 +45,10 @@ public class Engine {
 		this.setPeek(false);
 	}
 
-	@Inject
-	public void setSplitRules(SplitRules splitRules) {
-		this.splitRules = splitRules;
+	public void setResplitAces(boolean resplitAces) {
+		this.resplitAces = resplitAces;
 	}
-	
+
 	@Inject
 	public void setPeek(@Peek boolean peek) {
 		this.peek = peek;
@@ -198,9 +198,10 @@ public class Engine {
 
 	private Set<Move> getAllowedMoves(Game game) {
 		Set<Move> allowedMoves = rules.getAllowedMoves(game);
-		
-		if (!splitRules.isSplitPossible(game))
+
+		if (!isSplitPossible(game)) {
 			allowedMoves.remove(Move.Split);
+		}
 		
 		if (!doubleRules.isDoublePossible(game) || 
 			(game.isSplitted() && ! this.doubleAfterSplit))
@@ -212,6 +213,24 @@ public class Engine {
 		return allowedMoves;
 	}
 
+	private boolean isSplitPossible(Game game) {
+		if (game.gameState() != GameState.FirstDeal) {
+            return false;
+        }
+		
+		final CardHand playerCards = game.playerCards();
+		if (playerCards.count() != 2 || playerCards.get(0).getValue() != playerCards.get(1).getValue()) {
+			return false;
+		}
+		
+		if (!resplitAces &&
+				(game.isSplitted() && game.playerCards().count() == 1 && game.playerCards().getCards().get(0) == Card.ACE)) {
+			return false;
+		}
+		
+		return true;
+	}
+	
     protected void firstDeal(Game game) {
         assert game.gameState() == GameState.Started;
 

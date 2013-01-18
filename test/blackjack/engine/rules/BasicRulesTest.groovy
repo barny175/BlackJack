@@ -46,19 +46,5 @@ class BasicRulesTest {
 		def allowedMoves = rules.getAllowedMoves(game)
 		assertTrue(allowedMoves.contains(Move.Split))
 	}
-	
-	@Test
-	void dontAllowSplitOfDifferentCards() {
-		def player = mock(Player.class)
-		def engine = mock(Engine.class)
-		
-		def game = new Game(engine, player)
-		game.addPlayerCard(Card.TWO)
-		game.addPlayerCard(Card.THREE)
-		game.setGameState(GameState.FirstDeal)
-
-		def rules = new BasicSplitRules()		
-		assertFalse(rules.isSplitPossible(game))
-	}
 }
 

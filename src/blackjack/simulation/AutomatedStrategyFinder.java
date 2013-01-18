@@ -22,7 +22,7 @@ public class AutomatedStrategyFinder {
 	private final boolean doubleAfterSplit = true;
 	private final DoubleRules doubleRules = new BasicDoubleRules();
 	private final BasicRules rules = new BasicRules();
-	private final SplitRules splitRules = new BasicSplitRules();
+	private final boolean resplitAces = true;;
 	private boolean peek = true;
 
 	public static void main(String[] args) {
@@ -40,7 +40,7 @@ public class AutomatedStrategyFinder {
 					strategySimulation.setPeek(peek);
 					strategySimulation.setDecks(decks);
 					strategySimulation.setDoubleAfterSplit(doubleAfterSplit);
-					strategySimulation.setSplitRules(splitRules);
+					strategySimulation.setResplitAces(resplitAces);
 					strategySimulation.setDoubleRules(doubleRules);
 					try {
 						strategySimulation.run();

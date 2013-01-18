@@ -11,7 +11,6 @@ import blackjack.engine.rules.BasicRules
 import static org.mockito.Mockito.*
 import org.mockito.*
 import static blackjack.Utils.*
-import blackjack.engine.rules.BasicSplitRules
 import blackjack.engine.rules.BasicDoubleRules
 
 /**
@@ -481,6 +480,19 @@ class EngineTest {
         verify(player, times(2)).addMoney(-10)
     }
 	
+	@Test
+	void dontAllowSplitOfDifferentCards() {
+		def player = mock(Player.class)
+		def engine = mock(Engine.class)
+		
+		def game = new Game(engine, player)
+		game.addPlayerCard(Card.TWO)
+		game.addPlayerCard(Card.THREE)
+		game.setGameState(GameState.FirstDeal)
+
+		fail("Not implemented")
+	}
+	
     @Test
     void twoGames() {
         def cardSrc = getCardSource([Card.TEN, Card.SEVEN, Card.SEVEN, Card.TEN, Card.TEN, Card.EIGHT, Card.SEVEN, Card.NINE])
@@ -514,7 +526,7 @@ class EngineTest {
     
     Engine getEngine(CardSource cardsrc) {
         def engine = new Engine(new BasicRules(), cardsrc)
-		engine.setSplitRules(new BasicSplitRules())
+		engine.setResplitAces(true)
 		engine.setDoubleRules(new BasicDoubleRules())
 		return engine
     }

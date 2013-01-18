@@ -16,7 +16,6 @@ import blackjack.engine.rules.*
  * @author mbarnas
  */
 class BasicStrategyTest {
-	def splitRules = new BasicSplitRules()
 	def doubleRules = new BasicDoubleRules()
 	
     def strategy = [[7, "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"], 
@@ -55,7 +54,6 @@ class BasicStrategyTest {
         for (Card c : Card.ACE..Card.KING) {
             for (Card c2: Card.TWO..Card.NINE) {
                 def player = new BasicStrategyPlayer(100)
-                player.setRules(new BasicRules())
                 
                 CardHand cards = new CardHand()
                 cards.addCard(c)
@@ -77,7 +75,6 @@ class BasicStrategyTest {
             for (Card c2: Card.TWO..Card.NINE) {
                 for (Card c3: Card.TWO..Card.NINE) {
                     def player = new BasicStrategyPlayer(100)
-                    player.setRules(rules)
                 
                     CardHand cards = new CardHand()
                     cards.addCard(c)
@@ -99,13 +96,32 @@ class BasicStrategyTest {
 	private def getAllowedMoves(rules, game) {
 		def moves = rules.getAllowedMoves(game)
 		
-		if (!splitRules.isSplitPossible(game))
+		if (!isSplitPossible(game))
 			moves.remove(Move.Split)
 			
 		if (!doubleRules.isDoublePossible(game))
 			moves.remove(Move.Double)
 			
 		return moves
+	}
+
+	
+	private boolean isSplitPossible(Game game) {
+		if (game.gameState() != GameState.FirstDeal) {
+            return false;
+        }
+		
+		final CardHand playerCards = game.playerCards();
+		if (playerCards.count() != 2 || playerCards.get(0).getValue() != playerCards.get(1).getValue()) {
+			return false;
+		}
+		
+		if (!resplitAces &&
+				(game.isSplitted() && game.playerCards().count() == 1 && game.playerCards().getCards().get(0) == Card.ACE)) {
+			return false;
+		}
+		
+		return true;
 	}
 	
     private Move getBasicStrategyMove(playerCards, dealerCard) {

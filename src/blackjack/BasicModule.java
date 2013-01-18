@@ -23,7 +23,6 @@ class BasicModule extends AbstractModule {
 		bind(Engine.class).in(Scopes.SINGLETON);
 		
         bind(Rules.class).to(BasicRules.class);
-		bind(SplitRules.class).to(BasicSplitRules.class);
 		bind(DoubleRules.class).to(BasicDoubleRules.class);
 		
 		bind(Boolean.class).annotatedWith(Peek.class).toInstance(Boolean.TRUE);

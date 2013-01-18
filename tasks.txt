@@ -1,10 +1,12 @@
-pocitani - simple
+refactoring = issplitpossible duplokovana v engine a basicstrategztestu
 
 vsechna pravidla pomoci options - ne pres interfaci, resp. interfaci ano, ae umoznit zadavani pres bool hodnoty pres nejaky enginebuilder
 
 nacitani pravidel z property filu (apache configuration)
 
 ASF - vypis pravidla na zacatku tisku tabulky
+
+pocitani - simple
 
 ruzna basic strategie pro ruzne varianty hry
 
