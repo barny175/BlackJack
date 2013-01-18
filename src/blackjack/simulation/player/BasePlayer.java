@@ -25,7 +25,7 @@ public abstract class BasePlayer implements Player {
 
 	@Override
 	public int insuranceBet() {
-		return this.bet / 2;
+		return 0;
 	}
 	
 	@Override
