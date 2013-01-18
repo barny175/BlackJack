@@ -6,9 +6,7 @@ package blackjack.simulation;
 
 import blackjack.engine.*;
 import blackjack.engine.rules.*;
-import blackjack.simulation.player.SimulationPlayer;
 import java.util.EnumSet;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,11 +17,7 @@ import org.slf4j.LoggerFactory;
 public class AutomatedStrategyFinder {
 
 	private static Logger logger = LoggerFactory.getLogger(AutomatedStrategyFinder.class);
-	private Engine engine;
-	
-	private int GAMES = 100000;
-	private int initialMoney = 100000;
-	private static final float BET = 2;
+
 	private final int decks = 1;
 	private final boolean doubleAfterSplit = true;
 	private final DoubleRules doubleRules = new BasicDoubleRules();
@@ -72,20 +66,6 @@ public class AutomatedStrategyFinder {
 				firstCard, secondCard, dealersCard, bestMove, winPerGame));
 	}
 
-	private boolean isMoveAllowed(BasicRules rules, Card firstCard, Card secondCard, String move) {
-		if (firstCard != secondCard && "Split".equals(move)) {
-			return doubleAfterSplit;
-		}
-
-		Game game = new Game(engine, null);
-		game.setGameState(GameState.FirstDeal);
-		game.addPlayerCard(firstCard);
-		game.addPlayerCard(secondCard);
-		Set<Move> allowedMoves = rules.getAllowedMoves(game);
-
-		Move m = Move.valueOf(move);
-		return allowedMoves.contains(m);
-	}
 	private Object[][] strategy = new Object[][]{
 		{7, null, null, null, null, null, null, null, null, null, null},
 		{8, null, null, null, null, null, null, null, null, null, null},

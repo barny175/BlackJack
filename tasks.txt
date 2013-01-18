@@ -1,6 +1,8 @@
 pocitani - simple
 
-nacitani pravidel z property filu
+vsechna pravidla pomoci options - ne pres interfaci, resp. interfaci ano, ae umoznit zadavani pres bool hodnoty pres nejaky enginebuilder
+
+nacitani pravidel z property filu (apache configuration)
 
 ruzna basic strategie pro ruzne varianty hry
 
