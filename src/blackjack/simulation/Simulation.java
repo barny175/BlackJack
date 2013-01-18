@@ -24,7 +24,6 @@ public class Simulation {
 
 	public static final int GAMES = 1000000;
 	private BasePlayer player;
-	private final String[] allMoves = {"Hit", "Stand", "Split", "Double"};
 	private int games = 100000;
 	private int initialMoney = 100000;
 	private int bet = 2;

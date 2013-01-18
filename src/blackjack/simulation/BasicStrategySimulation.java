@@ -15,12 +15,12 @@ import java.util.Set;
 
 /**
  * runs simulation for given player first two cards and dealer's card
+ *
  * @author mbarnas
  */
 public class BasicStrategySimulation {
 
 	private final String[] allMoves = {"Hit", "Stand", "Split", "Double"};
-
 	private int games = 100000;
 	private int initialMoney = 100000;
 	private int bet = 2;
@@ -30,28 +30,23 @@ public class BasicStrategySimulation {
 	protected BasicRules rules = new BasicRules();
 	private boolean peek = true;
 	private SplitRules splitRules = new BasicSplitRules();
-	
 	private final Card firstCard;
 	private final Card secondCard;
 	private final Card dealersCard;
-	
 	private String bestMove = null;
-	private int bestScore = 0;
-	private int numberOfGames = 0;
-	
-	private Engine engine;
+	private Float bestScore = null;
 	private Boolean insuranceAllowed = Boolean.FALSE;
-	
+
 	public String getBestMove() {
 		return bestMove + (this.insuranceAllowed ? "Insurance" : "");
 	}
 
-	public int getBestScore() {
+	public float getBestScore() {
 		return bestScore;
 	}
-	
+
 	public float getWinPerGame() {
-		return  ((float) (bestScore - initialMoney)) / numberOfGames / bet;
+		return bestScore;
 	}
 
 	public void setBet(int bet) {
@@ -98,73 +93,50 @@ public class BasicStrategySimulation {
 
 	public void run() throws IllegalMoveException {
 		List<Boolean> insuranceValues = Lists.newArrayList(Boolean.FALSE);
-		if (dealersCard == Card.ACE)
+		if (dealersCard == Card.ACE) {
 			insuranceValues.add(Boolean.TRUE);
-		
+		}
+
 		for (Boolean insurance : insuranceValues) {
-		for (String move : allMoves) {
-			if (!isMoveAllowed(rules, firstCard, secondCard, move, insurance)) {
-				continue;
-			}
-
-			final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(decks).withDealersCard(dealersCard).withPlayerCards(firstCard, secondCard);
-
-			final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder()
-					.playersCard(firstCard, secondCard)
-					.dealersCard(dealersCard)
-					.move(move)
-					.withMoney(initialMoney)
-					.insurance(insurance)
-					.build();
-			
-			player.setBet(this.bet);
-			player.setRules(rules);
-
-			prepareEngine(cardShuffler, player);
-
-			int i = 0;
-			for (; i < games; i++) {
-				this.engine.newGame();
-				this.engine.start();
-
-				if (player.getMoney() < 10) {
-					break;
+			for (String move : allMoves) {
+				if (!isMoveAllowed(rules, firstCard, secondCard, move, insurance)) {
+					continue;
 				}
-			}
 
-			final int result = player.getMoney();
+				final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(decks).withDealersCard(dealersCard).withPlayerCards(firstCard, secondCard);
 
-			if (result < 10) {
-				if (this.bestMove == null) {
-					numberOfGames = i;
-					bestMove = move;
-					insuranceAllowed = insurance;
-				} else {
-					if (bestScore == 0 && i > numberOfGames) {
-						bestMove = move;
-						numberOfGames = i;
-						insuranceAllowed = insurance;
-					}
-				}
-			} else {
-				if (result > bestScore) {
+				final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder()
+						.playersCard(firstCard, secondCard)
+						.dealersCard(dealersCard)
+						.move(move)
+						.withMoney(initialMoney)
+						.insurance(insurance)
+						.build();
+
+				player.setBet(this.bet);
+				player.setRules(rules);
+
+				Simulation simulation = new Simulation();
+				simulation.setBet(bet);
+				simulation.setCardShuffler(cardShuffler);
+				simulation.setPlayer(player);
+				simulation.setDoubleAfterSplit(doubleAfterSplit);
+				simulation.setDoubleRules(doubleRules);
+				simulation.setGames(games);
+				simulation.setPeek(peek);
+				simulation.setRules(rules);
+				simulation.setSplitRules(splitRules);
+				simulation.run();
+
+				final float result = simulation.getWinPerGame();
+
+				if (bestScore == null || result > bestScore) {
 					bestMove = move;
 					bestScore = result;
-					numberOfGames = i;
 					insuranceAllowed = insurance;
 				}
 			}
 		}
-		}
-	}
-
-	private void prepareEngine(final SimulationCardShuffler cardShuffler, final SimulationPlayer player) {
-		this.engine = new Engine(rules, cardShuffler);
-		this.engine.setPeek(this.peek);
-		this.engine.setDoubleAfterSplit(this.doubleAfterSplit);
-		this.engine.setDoubleRules(this.doubleRules);
-		this.engine.setSplitRules(this.splitRules);
-		this.engine.addPlayer(player);
 	}
 
 	private boolean isMoveAllowed(BasicRules rules, Card firstCard, Card secondCard, String move, Boolean insurance) {
@@ -172,7 +144,7 @@ public class BasicStrategySimulation {
 			return false;
 		}
 
-		Game game = new Game(engine, null);
+		Game game = new Game(null, null);
 		game.setGameState(GameState.FirstDeal);
 		game.addPlayerCard(firstCard);
 		game.addPlayerCard(secondCard);

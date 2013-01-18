@@ -4,6 +4,8 @@ vsechna pravidla pomoci options - ne pres interfaci, resp. interfaci ano, ae umo
 
 nacitani pravidel z property filu (apache configuration)
 
+ASF - vypis pravidla na zacatku tisku tabulky
+
 ruzna basic strategie pro ruzne varianty hry
 
 pravidla casina Happy Day
