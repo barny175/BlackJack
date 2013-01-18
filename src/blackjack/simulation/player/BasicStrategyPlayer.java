@@ -6,9 +6,7 @@ package blackjack.simulation.player;
 
 import blackjack.engine.Card;
 import blackjack.engine.CardHand;
-import blackjack.engine.Engine;
 import blackjack.engine.Move;
-import blackjack.engine.Rules;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import java.util.Set;
@@ -20,15 +18,9 @@ import java.util.Set;
 public class BasicStrategyPlayer extends BasePlayer {
 
     public static final String DEPOSIT = "deposit";
-    private Rules rules;
     protected Object[][] strategy;
 
-    @Inject
-    public void setRules(Rules rules) {
-        this.rules = rules;
-    }
-
-    @Inject
+	@Inject
     public BasicStrategyPlayer(@Named(BasicStrategyPlayer.DEPOSIT) int money) {
         super(money);
 

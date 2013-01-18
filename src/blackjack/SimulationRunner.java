@@ -4,11 +4,14 @@
  */
 package blackjack;
 
+import blackjack.engine.Card;
 import blackjack.engine.CardSource;
 import blackjack.engine.IllegalMoveException;
+import blackjack.engine.rules.BasicRules;
 import blackjack.engine.rules.BasicSplitRules;
 import blackjack.engine.shufflers.EveryGameCardShuffler;
 import blackjack.simulation.Simulation;
+import blackjack.simulation.SimulationCardShuffler;
 import blackjack.simulation.SimulationModule;
 import blackjack.simulation.player.BasePlayer;
 import blackjack.simulation.player.BasicStrategyPlayer;
@@ -52,16 +55,20 @@ public class SimulationRunner {
 	
 	private void run() {
 		try {
-			Injector injector = Guice.createInjector(new SimulationModule(100000, new EveryGameCardShuffler()));
+			//Injector injector = Guice.createInjector(new SimulationModule(100000, new SimulationCardShuffler(1)));
 			
-			final CardSource shuffler = injector.getInstance(CardSource.class);
-			final BasicStrategyPlayer basicPlayer = injector.getInstance(BasicStrategyPlayer.class);
+			//final CardSource shuffler = new SimulationCardShuffler(1).withCardsMissing(Card.ACE, Card.ACE, Card.ACE, Card.ACE);
+			final CardSource shuffler = new SimulationCardShuffler(1).withCardsMissing(Card.FIVE, Card.FIVE, Card.FIVE, Card.FIVE);
+			
+			final BasicStrategyPlayer basicPlayer = new BasicStrategyPlayer(initialMoney);
+			
 			Simulation simulation = createSimulation(shuffler, basicPlayer);
 			simulation.run();
-			System.out.println("Score for "+ basicPlayer.getName() + " is " + simulation.getBestScore() + " (" + simulation.getWinPerGame() + ")");
+			System.out.println(String.format("Score for %s is %d (%.1f)", basicPlayer.getName(), simulation.getBestScore(), simulation.getWinPerGame() * 100));
 			
-			final SimpleCountingPlayer player = injector.getInstance(SimpleCountingPlayer.class);
+			final SimpleCountingPlayer player = new SimpleCountingPlayer(new BasicStrategyPlayer(initialMoney), initialMoney, decks);
 			player.setBet(2);
+			
 			simulation = createSimulation(shuffler, player);
 			simulation.run();
 			System.out.println("Score for "+ player.getName() + " is " + simulation.getBestScore() + " (" + simulation.getWinPerGame() + ")");

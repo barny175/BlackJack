@@ -36,6 +36,7 @@ public class BasicStrategySimulation {
 	private String bestMove = null;
 	private Float bestScore = null;
 	private Boolean insuranceAllowed = Boolean.FALSE;
+	private Card[] missingCards;
 
 	public String getBestMove() {
 		return bestMove + (this.insuranceAllowed ? "Insurance" : "");
@@ -73,6 +74,10 @@ public class BasicStrategySimulation {
 		this.initialMoney = initialMoney;
 	}
 
+	public void setMissingCards(Card... missingCards) {
+		this.missingCards = missingCards;
+	}
+	
 	public void setPeek(boolean peek) {
 		this.peek = peek;
 	}
@@ -103,7 +108,10 @@ public class BasicStrategySimulation {
 					continue;
 				}
 
-				final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(decks).withDealersCard(dealersCard).withPlayerCards(firstCard, secondCard);
+				final SimulationCardShuffler cardShuffler = new SimulationCardShuffler(decks)
+						.withDealersCard(dealersCard)
+						.withPlayerCards(firstCard, secondCard)
+						.withCardsMissing(missingCards);
 
 				final SimulationPlayer player = new SimulationPlayer.SimulationPlayerBuilder()
 						.playersCard(firstCard, secondCard)
@@ -114,7 +122,6 @@ public class BasicStrategySimulation {
 						.build();
 
 				player.setBet(this.bet);
-				player.setRules(rules);
 
 				Simulation simulation = new Simulation();
 				simulation.setBet(bet);

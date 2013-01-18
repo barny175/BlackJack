@@ -26,6 +26,7 @@ public class SimulationCardShuffler implements CardSource {
 	private List<ShuffleObserver> observers = Lists.newArrayList();
 	private Card[] firstCards;
 	private int cardsUsed;
+	private Card[] missingCards;
 
 	public SimulationCardShuffler(int decks) {
 		this.decks = decks;
@@ -58,9 +59,10 @@ public class SimulationCardShuffler implements CardSource {
 	 * @return 
 	 */
 	public SimulationCardShuffler withCardsMissing(Card... missingCards) {
-		for (Card c : missingCards) {
-			useCard(c);
-		}
+		this.missingCards = missingCards;
+		
+		useCards(missingCards);
+		
 		return this;
 	}
 	
@@ -112,6 +114,7 @@ public class SimulationCardShuffler implements CardSource {
 
 	private void shuffle() {
 		used.clear();
+		useCards(missingCards);
 		cardsUsed = 0;
 		notifyObservers();
 	}
@@ -124,5 +127,13 @@ public class SimulationCardShuffler implements CardSource {
 			}
 		}
 		throw new IllegalStateException("Two many predefined cards.");
+	}
+
+	private void useCards(Card[] missingCards) {
+		if (missingCards != null) {
+			for (Card c : missingCards) {
+				useCard(c);
+			}
+		}
 	}
 }
