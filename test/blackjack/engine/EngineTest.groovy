@@ -483,14 +483,17 @@ class EngineTest {
 	@Test
 	void dontAllowSplitOfDifferentCards() {
 		def player = mock(Player.class)
-		def engine = mock(Engine.class)
+		ArgumentCaptor<Game> playerCaptor = ArgumentCaptor.forClass(Player.class);		
+		when(player.move(any(), any(), playerCaptor.capture())).thenReturn(Move.Stand)
 		
-		def game = new Game(engine, player)
-		game.addPlayerCard(Card.TWO)
-		game.addPlayerCard(Card.THREE)
-		game.setGameState(GameState.FirstDeal)
+		def engine = getEngine([Card.NINE, Card.TWO, Card.TEN, Card.TEN, Card.TEN])
+		engine.addPlayer(player)
 
-		fail("Not implemented")
+		def game = engine.newGame()
+		engine.start()
+
+		assertNull(playerCaptor.getValue().find { it == Move.Split} )
+
 	}
 	
     @Test
