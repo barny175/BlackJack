@@ -5,12 +5,11 @@
 package blackjack.simulation;
 
 import blackjack.engine.CardSource;
-import blackjack.engine.DoubleRules;
+import blackjack.engine.DoubleOn;
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
 import blackjack.engine.Player;
 import blackjack.engine.Rules;
-import blackjack.engine.rules.BasicDoubleRules;
 import blackjack.engine.rules.BasicRules;
 import blackjack.simulation.player.*;
 
@@ -26,7 +25,7 @@ public class Simulation {
 	private int initialMoney = 100000;
 	private int bet = 2;
 	private boolean doubleAfterSplit = true;
-	private DoubleRules doubleRules = new BasicDoubleRules();
+	private DoubleOn doubleRules = DoubleOn.All;
 	protected Rules rules = new BasicRules();
 	private boolean peek = true;
 	private int bestScore = 0;
@@ -71,7 +70,7 @@ public class Simulation {
 		this.doubleAfterSplit = doubleAfterSplit;
 	}
 
-	public void setDoubleRules(DoubleRules doubleRules) {
+	public void setDoubleRules(DoubleOn doubleRules) {
 		this.doubleRules = doubleRules;
 	}
 

@@ -20,7 +20,7 @@ public class AutomatedStrategyFinder {
 
 	private final int decks = 1;
 	private final boolean doubleAfterSplit = true;
-	private final DoubleRules doubleRules = new BasicDoubleRules();
+	private final DoubleOn doubleRules = DoubleOn.All;
 	private final BasicRules rules = new BasicRules();
 	private final boolean resplitAces = true;;
 	private boolean peek = true;

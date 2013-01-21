@@ -5,7 +5,6 @@
 package blackjack.simulation;
 
 import blackjack.engine.*;
-import blackjack.engine.rules.BasicDoubleRules;
 import blackjack.engine.rules.BasicRules;
 import blackjack.simulation.player.SimulationPlayer;
 import com.google.common.collect.Lists;
@@ -25,7 +24,7 @@ public class BasicStrategySimulation {
 	private int bet = 2;
 	private int decks = 1;
 	private boolean doubleAfterSplit = true;
-	private DoubleRules doubleRules = new BasicDoubleRules();
+	private DoubleOn doubleRules = DoubleOn.All;
 	protected BasicRules rules = new BasicRules();
 	private boolean peek = true;
 	private boolean resplitAces = true;
@@ -69,7 +68,7 @@ public class BasicStrategySimulation {
 		this.doubleAfterSplit = doubleAfterSplit;
 	}
 
-	public void setDoubleRules(DoubleRules doubleRules) {
+	public void setDoubleRules(DoubleOn doubleRules) {
 		this.doubleRules = doubleRules;
 	}
 

@@ -6,6 +6,7 @@ package blackjack;
 
 import blackjack.engine.Card;
 import blackjack.engine.CardSource;
+import blackjack.engine.DoubleOn;
 import blackjack.engine.IllegalMoveException;
 import blackjack.simulation.Simulation;
 import blackjack.simulation.SimulationCardShuffler;
@@ -46,14 +47,13 @@ public class SimulationRunner {
 	private boolean peek;
 	private int bet;
 	private boolean resplitAces;
-
+	private DoubleOn doubleOn;
 	
 	private void run() {
 		try {
 			//Injector injector = Guice.createInjector(new SimulationModule(100000, new SimulationCardShuffler(1)));
 			
-			//final CardSource shuffler = new SimulationCardShuffler(1).withCardsMissing(Card.ACE, Card.ACE, Card.ACE, Card.ACE);
-			final CardSource shuffler = new SimulationCardShuffler(1).withCardsMissing(Card.FIVE, Card.FIVE, Card.FIVE, Card.FIVE);
+			final CardSource shuffler = new SimulationCardShuffler(1).withCardsMissing(Card.TEN, Card.TEN, Card.TEN, Card.TEN);
 			
 			final BasicStrategyPlayer basicPlayer = new BasicStrategyPlayer(initialMoney);
 			
@@ -92,6 +92,9 @@ public class SimulationRunner {
 		Preconditions.checkNotNull(properties.getProperty("resplitAces"));
 		this.resplitAces = Boolean.parseBoolean(properties.getProperty("resplitAces"));
 		
+		Preconditions.checkNotNull(properties.getProperty("doubleOn"));
+		this.doubleOn = DoubleOn.valueOf(properties.getProperty("doubleOn"));
+		
 		this.games = Integer.parseInt(properties.getProperty("games", "100000"));
 		
 		this.initialMoney = Integer.parseInt(properties.getProperty("initialMoney", "100000"));
@@ -110,6 +113,7 @@ public class SimulationRunner {
 		simulation.setCardShuffler(shuffler);
 		simulation.setPlayer(basicPlayer);
 		simulation.setCardShuffler(shuffler);
+		simulation.setDoubleRules(doubleOn);
 		return simulation;
 	}
 	

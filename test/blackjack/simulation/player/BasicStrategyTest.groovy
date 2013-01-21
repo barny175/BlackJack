@@ -16,7 +16,7 @@ import blackjack.engine.rules.*
  * @author mbarnas
  */
 class BasicStrategyTest {
-	def doubleRules = new BasicDoubleRules()
+	def doubleRules = DoubleOn.All
 	
     def strategy = [[7, "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"], 
         [8, "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],

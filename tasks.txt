@@ -1,6 +1,6 @@
-refactoring = issplitpossible duplokovana v engine a basicstrategztestu
-
 vsechna pravidla pomoci options - ne pres interfaci, resp. interfaci ano, ae umoznit zadavani pres bool hodnoty pres nejaky enginebuilder
+
+refactoring = issplitpossible duplokovana v engine a basicstrategztestu
 
 nacitani pravidel z property filu (apache configuration)
 

@@ -3,10 +3,7 @@
  */
 package blackjack.engine;
 
-import blackjack.engine.rules.DoubleAfterSplit;
-import blackjack.engine.rules.Peek;
 import com.google.inject.Inject;
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -27,11 +24,11 @@ public class Engine {
     private Rules rules;
 	private boolean peek = true;
 	private boolean doubleAfterSplit = true;
-	private DoubleRules doubleRules;
+	private DoubleOn doubleRules;
 	private boolean resplitAces = true;
 
 	@Inject
-	public void setDoubleRules(DoubleRules doubleRules) {
+	public void setDoubleRules(DoubleOn doubleRules) {
 		this.doubleRules = doubleRules;
 	}
 
@@ -107,8 +104,9 @@ public class Engine {
 					
                     break;
                 case FirstDeal:
-					if (dealerUpCard == Card.ACE)
+					if (dealerUpCard == Card.ACE) {
 						game.setInsuranceBet(game.getPlayer().insuranceBet());
+					}
 					
                     if (game.playerCards().isBlackJack()
                             || (this.peek && dealerCards.isBlackJack())) {

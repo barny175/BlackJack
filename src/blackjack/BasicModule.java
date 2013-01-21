@@ -3,7 +3,8 @@
  */
 package blackjack;
 
-import blackjack.engine.DoubleRules;
+import blackjack.engine.Peek;
+import blackjack.engine.DoubleAfterSplit;
 import blackjack.engine.*;
 import blackjack.engine.rules.*;
 import blackjack.simulation.SimulationCardShuffler;
@@ -23,7 +24,7 @@ class BasicModule extends AbstractModule {
 		bind(Engine.class).in(Scopes.SINGLETON);
 		
         bind(Rules.class).to(BasicRules.class);
-		bind(DoubleRules.class).to(BasicDoubleRules.class);
+		bind(DoubleOn.class).toInstance(DoubleOn.All);
 		
 		bind(Boolean.class).annotatedWith(Peek.class).toInstance(Boolean.TRUE);
 		bind(Boolean.class).annotatedWith(DoubleAfterSplit.class).toInstance(Boolean.TRUE);

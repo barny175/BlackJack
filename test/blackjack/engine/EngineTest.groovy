@@ -11,7 +11,6 @@ import blackjack.engine.rules.BasicRules
 import static org.mockito.Mockito.*
 import org.mockito.*
 import static blackjack.Utils.*
-import blackjack.engine.rules.BasicDoubleRules
 
 /**
  *
@@ -530,7 +529,7 @@ class EngineTest {
     Engine getEngine(CardSource cardsrc) {
         def engine = new Engine(new BasicRules(), cardsrc)
 		engine.setResplitAces(true)
-		engine.setDoubleRules(new BasicDoubleRules())
+		engine.setDoubleRules(DoubleOn.All)
 		return engine
     }
 }
