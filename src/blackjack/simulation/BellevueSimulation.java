@@ -5,7 +5,6 @@
 package blackjack.simulation;
 
 import blackjack.engine.*;
-import blackjack.engine.rules.BellevueRules;
 import blackjack.engine.shufflers.TwoThirdsShuffler;
 import blackjack.simulation.player.*;
 import com.google.inject.AbstractModule;
@@ -33,8 +32,6 @@ public class BellevueSimulation {
 
 		@Override
 		protected void configure() {
-			bind(Rules.class).to(BellevueRules.class);
-            
             bind(Integer.class).annotatedWith(Names.named(CardShuffler.DECKS)).toInstance(6);
 			bind(CardSource.class).to(TwoThirdsShuffler.class);
             bind(Long.class).toInstance(3142L);

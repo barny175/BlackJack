@@ -9,8 +9,6 @@ import blackjack.engine.DoubleOn;
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
 import blackjack.engine.Player;
-import blackjack.engine.Rules;
-import blackjack.engine.rules.BasicRules;
 import blackjack.simulation.player.*;
 
 /**
@@ -26,7 +24,6 @@ public class Simulation {
 	private int bet = 2;
 	private boolean doubleAfterSplit = true;
 	private DoubleOn doubleRules = DoubleOn.All;
-	protected Rules rules = new BasicRules();
 	private boolean peek = true;
 	private int bestScore = 0;
 	private int numberOfGames = 0;
@@ -82,10 +79,6 @@ public class Simulation {
 		this.peek = peek;
 	}
 
-	public void setRules(Rules rules) {
-		this.rules = rules;
-	}
-
 	public void run() throws IllegalMoveException {
 		prepareEngine(cardShuffler, player);
 
@@ -105,7 +98,7 @@ public class Simulation {
 	}
 
 	private void prepareEngine(final CardSource cardShuffler, final Player player) {
-		this.engine = new Engine(rules, cardShuffler);
+		this.engine = new Engine(cardShuffler);
 		this.engine.setPeek(this.peek);
 		this.engine.setDoubleAfterSplit(this.doubleAfterSplit);
 		this.engine.setDoubleRules(this.doubleRules);

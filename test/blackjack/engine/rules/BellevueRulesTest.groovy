@@ -19,7 +19,7 @@ class BellevueRulesTest {
     @Test(expected=IllegalMoveException.class)
     void disallowedDouble() {
         def cardSrc = getCardSource([Card.SIX, Card.FIVE, Card.SIX, Card.TEN, Card.TWO, Card.TWO])
-        def engine = new Engine(new BellevueRules(), cardSrc)
+        def engine = new Engine(cardSrc)
 		engine.setResplitAces(false)
 		engine.setDoubleRules(DoubleOn.NineToAce)
         
@@ -37,7 +37,7 @@ class BellevueRulesTest {
     void allowedDouble() {
         for (Card c : Card.SEVEN..Card.NINE) {
             def cardSrc = getCardSource([Card.TWO, Card.FIVE, c, Card.TWO, Card.TEN, Card.TWO])
-            def engine = new Engine(new BellevueRules(), cardSrc)
+            def engine = new Engine(cardSrc)
 			engine.setResplitAces(false)
 			engine.setDoubleRules(DoubleOn.All)
 			engine.setPeek(false)
@@ -55,7 +55,7 @@ class BellevueRulesTest {
 	
 	@Test
 	void onlyOneCardAfterSplitOfAces() {
-		def engine = new Engine(new BellevueRules(), getCardSource([Card.ACE, Card.SIX, Card.ACE, Card.SIX, Card.NINE, Card.SEVEN, Card.FIVE]))
+		def engine = new Engine(getCardSource([Card.ACE, Card.SIX, Card.ACE, Card.SIX, Card.NINE, Card.SEVEN, Card.FIVE]))
 		engine.setResplitAces(false)
 		engine.setDoubleRules(DoubleOn.All)
 		engine.setPeek(false)

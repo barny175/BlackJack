@@ -3,10 +3,8 @@
  */
 package blackjack;
 
-import blackjack.engine.Peek;
 import blackjack.engine.DoubleAfterSplit;
 import blackjack.engine.*;
-import blackjack.engine.rules.*;
 import blackjack.simulation.SimulationCardShuffler;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import com.google.inject.AbstractModule;
@@ -23,7 +21,6 @@ class BasicModule extends AbstractModule {
     protected void configure() {
 		bind(Engine.class).in(Scopes.SINGLETON);
 		
-        bind(Rules.class).to(BasicRules.class);
 		bind(DoubleOn.class).toInstance(DoubleOn.All);
 		
 		bind(Boolean.class).annotatedWith(Peek.class).toInstance(Boolean.TRUE);

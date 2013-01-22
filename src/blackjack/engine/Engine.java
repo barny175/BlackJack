@@ -3,7 +3,9 @@
  */
 package blackjack.engine;
 
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +16,8 @@ import java.util.Set;
  */
 public class Engine {
 
+	public static final Set<Move> allMoves = Sets.newEnumSet(EnumSet.allOf(Move.class), Move.class);
+	
     private Player player;
     private Dealer dealer = new Dealer();
     private CardSource cardSource;
@@ -21,7 +25,6 @@ public class Engine {
     private LinkedList<Game> games;
     private CardHand dealerCards;
     private List<Game> endedGames;
-    private Rules rules;
 	private boolean peek = true;
 	private boolean doubleAfterSplit = true;
 	private DoubleOn doubleRules;
@@ -33,9 +36,8 @@ public class Engine {
 	}
 
     @Inject
-    public Engine(Rules rules, CardSource cardSource) {
+    public Engine(CardSource cardSource) {
         this.cardSource = cardSource;
-        this.rules = rules;
     }
 
 	public void setEuropean() {
@@ -195,7 +197,7 @@ public class Engine {
     }
 
 	private Set<Move> getAllowedMoves(Game game) {
-		Set<Move> allowedMoves = rules.getAllowedMoves(game);
+		Set<Move> allowedMoves = EnumSet.copyOf(allMoves);
 
 		if (!isSplitPossible(game)) {
 			allowedMoves.remove(Move.Split);

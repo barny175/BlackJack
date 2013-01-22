@@ -27,9 +27,10 @@ class BasicRulesTest {
 		game.addPlayerCard(Card.THREE)
 		game.setGameState(GameState.FirstDeal)
 
-		def rules = new BasicRules()		
-		def allowedMoves = rules.getAllowedMoves(game)
-		assertTrue(allowedMoves.contains(Move.Split))
+		fail("Not refactored yet")
+//		def rules = new BasicRules()		
+//		def allowedMoves = rules.getAllowedMoves(game)
+//		assertTrue(allowedMoves.contains(Move.Split))
 	}
 	
 	@Test
@@ -42,9 +43,10 @@ class BasicRulesTest {
 		game.addPlayerCard(Card.JACK)
 		game.setGameState(GameState.FirstDeal)
 
-		def rules = new BasicRules()		
-		def allowedMoves = rules.getAllowedMoves(game)
-		assertTrue(allowedMoves.contains(Move.Split))
+		fail("Not refactored yet")
+//		def rules = new BasicRules()		
+//		def allowedMoves = rules.getAllowedMoves(game)
+//		assertTrue(allowedMoves.contains(Move.Split))
 	}
 }
 

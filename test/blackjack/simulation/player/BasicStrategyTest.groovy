@@ -70,7 +70,6 @@ class BasicStrategyTest {
 
     @Test
     void threeCardTest() {
-        def rules = new BasicRules()
         for (Card c : Card.ACE..Card.KING) {
             for (Card c2: Card.TWO..Card.NINE) {
                 for (Card c3: Card.TWO..Card.NINE) {
@@ -84,7 +83,7 @@ class BasicStrategyTest {
                     for (Card dealerCard : Card.ACE..Card.KING) {
                         def game = new Game(mock(Engine.class), player)
                         game.gameState = GameState.PlayersGame
-                        def move = player.move(cards, dealerCard, getAllowedMoves(rules, game))
+                        def move = player.move(cards, dealerCard, getAllowedMoves(game))
                         def expected = getBasicStrategyMove(cards, dealerCard)
                         assertEquals("Player's cards: ${c}, ${c2}, ${c3}, dealers card ${dealerCard}", expected, move)
                     }
@@ -93,8 +92,8 @@ class BasicStrategyTest {
         }
     }
     
-	private def getAllowedMoves(rules, game) {
-		def moves = rules.getAllowedMoves(game)
+	private def getAllowedMoves(game) {
+		def moves = Engine.allMoves
 		
 		if (!isSplitPossible(game))
 			moves.remove(Move.Split)

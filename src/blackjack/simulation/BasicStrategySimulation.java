@@ -5,7 +5,6 @@
 package blackjack.simulation;
 
 import blackjack.engine.*;
-import blackjack.engine.rules.BasicRules;
 import blackjack.simulation.player.SimulationPlayer;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -25,7 +24,6 @@ public class BasicStrategySimulation {
 	private int decks = 1;
 	private boolean doubleAfterSplit = true;
 	private DoubleOn doubleRules = DoubleOn.All;
-	protected BasicRules rules = new BasicRules();
 	private boolean peek = true;
 	private boolean resplitAces = true;
 	private final Card firstCard;
@@ -84,10 +82,6 @@ public class BasicStrategySimulation {
 		this.peek = peek;
 	}
 
-	public void setRules(BasicRules rules) {
-		this.rules = rules;
-	}
-
 	public BasicStrategySimulation(Card firstCard, Card secondCard, Card dealersCard) {
 		this.firstCard = firstCard;
 		this.secondCard = secondCard;
@@ -102,7 +96,7 @@ public class BasicStrategySimulation {
 
 		for (Boolean insurance : insuranceValues) {
 			for (String move : allMoves) {
-				if (!isMoveAllowed(rules, firstCard, secondCard, move, insurance)) {
+				if (!isMoveAllowed(firstCard, secondCard, move, insurance)) {
 					continue;
 				}
 
@@ -129,7 +123,6 @@ public class BasicStrategySimulation {
 				simulation.setDoubleRules(doubleRules);
 				simulation.setGames(games);
 				simulation.setPeek(peek);
-				simulation.setRules(rules);
 				simulation.setResplitAces(resplitAces);
 				simulation.run();
 
@@ -144,7 +137,7 @@ public class BasicStrategySimulation {
 		}
 	}
 
-	private boolean isMoveAllowed(BasicRules rules, Card firstCard, Card secondCard, String move, Boolean insurance) {
+	private boolean isMoveAllowed(Card firstCard, Card secondCard, String move, Boolean insurance) {
 		if ("Split".equals(move) && (firstCard != secondCard || insurance)) {
 			return false;
 		}
@@ -153,8 +146,11 @@ public class BasicStrategySimulation {
 		game.setGameState(GameState.FirstDeal);
 		game.addPlayerCard(firstCard);
 		game.addPlayerCard(secondCard);
-		Set<Move> allowedMoves = rules.getAllowedMoves(game);
+		
+		if (doubleRules.isDoublePossible(game) && "Double".equals(move))
+			return false;
 
+		Set<Move> allowedMoves = Engine.allMoves;
 		Move m = Move.valueOf(move);
 		return allowedMoves.contains(m);
 	}

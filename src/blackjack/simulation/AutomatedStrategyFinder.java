@@ -5,7 +5,6 @@
 package blackjack.simulation;
 
 import blackjack.engine.*;
-import blackjack.engine.rules.*;
 import java.util.EnumSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,6 @@ public class AutomatedStrategyFinder {
 	private final int decks = 1;
 	private final boolean doubleAfterSplit = true;
 	private final DoubleOn doubleRules = DoubleOn.All;
-	private final BasicRules rules = new BasicRules();
 	private final boolean resplitAces = true;;
 	private boolean peek = true;
 

@@ -7,7 +7,6 @@ package blackjack.simulation;
 import blackjack.engine.Peek;
 import blackjack.engine.DoubleAfterSplit;
 import blackjack.engine.*;
-import blackjack.engine.rules.*;
 import blackjack.simulation.player.BasePlayer;
 import blackjack.simulation.player.BasicStrategyPlayer;
 import com.google.inject.AbstractModule;
@@ -28,7 +27,6 @@ public class SimulationModule extends AbstractModule {
 	
 	@Override
 	protected void configure() {
-		bind(Rules.class).to(BasicRules.class);
 		bind(DoubleOn.class).toInstance(DoubleOn.All);
 		bind(Boolean.class).annotatedWith(Peek.class).toInstance(Boolean.TRUE);
 		bind(Boolean.class).annotatedWith(DoubleAfterSplit.class).toInstance(Boolean.TRUE);

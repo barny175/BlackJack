@@ -7,7 +7,6 @@ package blackjack.engine
 import org.junit.Test
 import static org.junit.Assert.*
 import blackjack.*
-import blackjack.engine.rules.BasicRules
 import static org.mockito.Mockito.*
 import org.mockito.*
 import static blackjack.Utils.*
@@ -527,7 +526,7 @@ class EngineTest {
     }
     
     Engine getEngine(CardSource cardsrc) {
-        def engine = new Engine(new BasicRules(), cardsrc)
+        def engine = new Engine(cardsrc)
 		engine.setResplitAces(true)
 		engine.setDoubleRules(DoubleOn.All)
 		return engine

@@ -10,7 +10,6 @@ import org.junit.Test
 import static org.junit.Assert.*
 import blackjack.engine.*
 import static org.mockito.Mockito.*
-import blackjack.engine.rules.BasicRules
 /**
  *
  * @author mbarnas
