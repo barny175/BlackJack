@@ -16,11 +16,10 @@ import org.slf4j.LoggerFactory;
 public class AutomatedStrategyFinder {
 
 	private static Logger logger = LoggerFactory.getLogger(AutomatedStrategyFinder.class);
-
 	private final int decks = 1;
 	private final boolean doubleAfterSplit = true;
-	private final DoubleOn doubleRules = DoubleOn.All;
-	private final boolean resplitAces = true;;
+	private final DoubleOn doubleOn = DoubleOn.All;
+	private final boolean resplitAces = true;
 	private boolean peek = true;
 
 	public static void main(String[] args) {
@@ -35,24 +34,21 @@ public class AutomatedStrategyFinder {
 				for (Card dealersCard : dealerCards) {
 
 					BasicStrategySimulation strategySimulation = new BasicStrategySimulation(firstCard, secondCard, dealersCard);
-					strategySimulation.setPeek(peek);
+					strategySimulation.setRules(getRules());
 					strategySimulation.setDecks(decks);
-					strategySimulation.setDoubleAfterSplit(doubleAfterSplit);
-					strategySimulation.setResplitAces(resplitAces);
-					strategySimulation.setDoubleRules(doubleRules);
 					try {
 						strategySimulation.run();
 					} catch (IllegalMoveException ex) {
 						logger.error("Illegal move");
 						continue;
 					}
-					
-					reportResult(firstCard, secondCard, dealersCard, 
+
+					reportResult(firstCard, secondCard, dealersCard,
 							strategySimulation.getBestMove(), strategySimulation.getWinPerGame());
 				}
 			}
 		}
-		printTable();
+		printResult();
 	}
 
 	private void reportResult(final Card firstCard, final Card secondCard, Card dealersCard, String bestMove, float winPerGame) {
@@ -63,7 +59,6 @@ public class AutomatedStrategyFinder {
 		logger.info(String.format("Player: %5s, %5s, dealer: %5s - %5s. Win per game %4.2f",
 				firstCard, secondCard, dealersCard, bestMove, winPerGame));
 	}
-
 	private Object[][] strategy = new Object[][]{
 		{7, null, null, null, null, null, null, null, null, null, null},
 		{8, null, null, null, null, null, null, null, null, null, null},
@@ -118,17 +113,44 @@ public class AutomatedStrategyFinder {
 		return null;
 	}
 
+	private void printResult() {
+		printRules();
+		printTable();		
+	}
+
+	private Rules getRules() {
+		Rules rules = new Rules();
+		rules.setPeek(this.peek);
+		rules.setDoubleAfterSplit(this.doubleAfterSplit);
+		rules.setDoubleRules(this.doubleOn);
+		rules.setResplitAces(resplitAces);
+		return rules;
+	}
+
 	private void printTable() {
 		System.out.println("                TWO           THREE            FOUR            FIVE             SIX           SEVEN           EIGHT            NINE             TEN            ACE");
-			
+
 		for (Object[] row : this.strategy) {
 			for (int i = 0; i < row.length; i++) {
-				if (i == 0 )
+				if (i == 0) {
 					System.out.print(String.format("%3s", row[i]));
-				else 
+				} else {
 					System.out.print(String.format("%16s", row[i]));
+				}
 			}
 			System.out.println();
 		}
+	}
+
+	private void printRules() {
+		println("Decks: " + this.decks);
+		println("Double on: " + this.doubleOn);
+		println("Double after split: " + this.doubleAfterSplit);
+		println("Dealer peeks: " + this.peek);
+		println("Resplit aces: " + this.resplitAces);
+	}
+	
+	private void println(String message) {
+		System.out.println(message);
 	}
 }

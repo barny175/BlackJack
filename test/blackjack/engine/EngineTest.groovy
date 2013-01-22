@@ -527,8 +527,6 @@ class EngineTest {
     
     Engine getEngine(CardSource cardsrc) {
         def engine = new Engine(cardsrc)
-		engine.setResplitAces(true)
-		engine.setDoubleRules(DoubleOn.All)
 		return engine
     }
 }

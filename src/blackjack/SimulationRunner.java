@@ -8,6 +8,7 @@ import blackjack.engine.Card;
 import blackjack.engine.CardSource;
 import blackjack.engine.DoubleOn;
 import blackjack.engine.IllegalMoveException;
+import blackjack.engine.Rules;
 import blackjack.simulation.Simulation;
 import blackjack.simulation.SimulationCardShuffler;
 import blackjack.simulation.player.BasePlayer;
@@ -72,10 +73,6 @@ public class SimulationRunner {
 		}
 	}
 
-	private static void usage() {
-		System.out.println("Usage: java -cp BlackJack.jar blackjack.SimulationRunner simulation.properties");
-	}
-
 	private void loadProperties(FileInputStream propertyFile) throws IOException {
 		Properties properties = new Properties();
 		properties.load(propertyFile);
@@ -103,18 +100,22 @@ public class SimulationRunner {
 	}
 
 	private Simulation createSimulation(final CardSource shuffler, final BasePlayer basicPlayer) {
-		Simulation simulation = new Simulation();
-		simulation.setDoubleAfterSplit(doubleAfterSplit);
+		Simulation simulation = new Simulation(getRules());
 		simulation.setGames(games);
 		simulation.setInitialMoney(initialMoney);
-		simulation.setResplitAces(resplitAces);
-		simulation.setPeek(peek);
 		simulation.setBet(bet);
 		simulation.setCardShuffler(shuffler);
 		simulation.setPlayer(basicPlayer);
 		simulation.setCardShuffler(shuffler);
-		simulation.setDoubleRules(doubleOn);
 		return simulation;
 	}
 	
+	private Rules getRules() {
+		Rules rules = new Rules();
+		rules.setPeek(this.peek);
+		rules.setDoubleAfterSplit(this.doubleAfterSplit);
+		rules.setDoubleRules(this.doubleOn);
+		rules.setResplitAces(resplitAces);
+		return rules;
+	}
 }

@@ -5,10 +5,10 @@
 package blackjack.simulation;
 
 import blackjack.engine.CardSource;
-import blackjack.engine.DoubleOn;
 import blackjack.engine.Engine;
 import blackjack.engine.IllegalMoveException;
 import blackjack.engine.Player;
+import blackjack.engine.Rules;
 import blackjack.simulation.player.*;
 
 /**
@@ -22,17 +22,14 @@ public class Simulation {
 	private int games = 100000;
 	private int initialMoney = 100000;
 	private int bet = 2;
-	private boolean doubleAfterSplit = true;
-	private DoubleOn doubleRules = DoubleOn.All;
-	private boolean peek = true;
 	private int bestScore = 0;
 	private int numberOfGames = 0;
 	private Engine engine;
 	private CardSource cardShuffler;
-	private boolean resplitAces;
+	private Rules rules;
 
-	public void setResplitAces(boolean resplitAces) {
-		this.resplitAces = resplitAces;
+	public Simulation(Rules rules) {
+		this.rules = rules;
 	}
 
 	public void setPlayer(BasePlayer player) {
@@ -63,22 +60,10 @@ public class Simulation {
 		this.games = games;
 	}
 
-	public void setDoubleAfterSplit(boolean doubleAfterSplit) {
-		this.doubleAfterSplit = doubleAfterSplit;
-	}
-
-	public void setDoubleRules(DoubleOn doubleRules) {
-		this.doubleRules = doubleRules;
-	}
-
 	public void setInitialMoney(int initialMoney) {
 		this.initialMoney = initialMoney;
 	}
-
-	public void setPeek(boolean peek) {
-		this.peek = peek;
-	}
-
+	
 	public void run() throws IllegalMoveException {
 		prepareEngine(cardShuffler, player);
 
@@ -99,10 +84,8 @@ public class Simulation {
 
 	private void prepareEngine(final CardSource cardShuffler, final Player player) {
 		this.engine = new Engine(cardShuffler);
-		this.engine.setPeek(this.peek);
-		this.engine.setDoubleAfterSplit(this.doubleAfterSplit);
-		this.engine.setDoubleRules(this.doubleRules);
-		this.engine.setResplitAces(resplitAces);
+		
+		this.engine.setRules(rules);
 		this.engine.addPlayer(player);
 	}
 }

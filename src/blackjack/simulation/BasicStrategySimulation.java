@@ -22,10 +22,6 @@ public class BasicStrategySimulation {
 	private int initialMoney = 100000;
 	private int bet = 2;
 	private int decks = 1;
-	private boolean doubleAfterSplit = true;
-	private DoubleOn doubleRules = DoubleOn.All;
-	private boolean peek = true;
-	private boolean resplitAces = true;
 	private final Card firstCard;
 	private final Card secondCard;
 	private final Card dealersCard;
@@ -33,6 +29,7 @@ public class BasicStrategySimulation {
 	private Float bestScore = null;
 	private Boolean insuranceAllowed = Boolean.FALSE;
 	private Card[] missingCards;
+	private Rules rules = new Rules();
 
 	public String getBestMove() {
 		return bestMove + (this.insuranceAllowed ? "Insurance" : "");
@@ -46,8 +43,8 @@ public class BasicStrategySimulation {
 		return bestScore;
 	}
 
-	public void setResplitAces(boolean resplitAces) {
-		this.resplitAces = resplitAces;
+	public void setRules(Rules rules) {
+		this.rules = rules;
 	}
 
 	public void setBet(int bet) {
@@ -62,24 +59,12 @@ public class BasicStrategySimulation {
 		this.decks = decks;
 	}
 
-	public void setDoubleAfterSplit(boolean doubleAfterSplit) {
-		this.doubleAfterSplit = doubleAfterSplit;
-	}
-
-	public void setDoubleRules(DoubleOn doubleRules) {
-		this.doubleRules = doubleRules;
-	}
-
 	public void setInitialMoney(int initialMoney) {
 		this.initialMoney = initialMoney;
 	}
 
 	public void setMissingCards(Card... missingCards) {
 		this.missingCards = missingCards;
-	}
-	
-	public void setPeek(boolean peek) {
-		this.peek = peek;
 	}
 
 	public BasicStrategySimulation(Card firstCard, Card secondCard, Card dealersCard) {
@@ -115,15 +100,11 @@ public class BasicStrategySimulation {
 
 				player.setBet(this.bet);
 
-				Simulation simulation = new Simulation();
+				Simulation simulation = new Simulation(rules);
 				simulation.setBet(bet);
 				simulation.setCardShuffler(cardShuffler);
 				simulation.setPlayer(player);
-				simulation.setDoubleAfterSplit(doubleAfterSplit);
-				simulation.setDoubleRules(doubleRules);
 				simulation.setGames(games);
-				simulation.setPeek(peek);
-				simulation.setResplitAces(resplitAces);
 				simulation.run();
 
 				final float result = simulation.getWinPerGame();
@@ -147,10 +128,10 @@ public class BasicStrategySimulation {
 		game.addPlayerCard(firstCard);
 		game.addPlayerCard(secondCard);
 		
-		if (doubleRules.isDoublePossible(game) && "Double".equals(move))
+		Set<Move> allowedMoves = rules.getAllowedMoves(game);
+		if (!allowedMoves.contains(Move.Double) && "Double".equals(move))
 			return false;
 
-		Set<Move> allowedMoves = Engine.allMoves;
 		Move m = Move.valueOf(move);
 		return allowedMoves.contains(m);
 	}

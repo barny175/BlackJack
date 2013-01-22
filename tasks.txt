@@ -1,8 +1,3 @@
-vsechna pravidla pomoci options - ne pres interfaci, resp. interfaci ano, ae umoznit zadavani pres bool hodnoty pres nejaky enginebuilder
-
-refactoring = issplitpossible duplokovana v engine a basicstrategytestu
-isdoublepossible duplikovana v engine a v basicstrategysimulation
-
 nacitani pravidel z property filu (apache configuration)
 
 ASF - vypis pravidla na zacatku tisku tabulky

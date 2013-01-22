@@ -17,6 +17,7 @@ import blackjack.engine.rules.*
  */
 class BasicStrategyTest {
 	def doubleRules = DoubleOn.All
+	def Rules rules = new Rules()
 	
     def strategy = [[7, "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"], 
         [8, "H", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
@@ -83,7 +84,7 @@ class BasicStrategyTest {
                     for (Card dealerCard : Card.ACE..Card.KING) {
                         def game = new Game(mock(Engine.class), player)
                         game.gameState = GameState.PlayersGame
-                        def move = player.move(cards, dealerCard, getAllowedMoves(game))
+                        def move = player.move(cards, dealerCard, rules.getAllowedMoves(game))
                         def expected = getBasicStrategyMove(cards, dealerCard)
                         assertEquals("Player's cards: ${c}, ${c2}, ${c3}, dealers card ${dealerCard}", expected, move)
                     }
@@ -92,37 +93,6 @@ class BasicStrategyTest {
         }
     }
     
-	private def getAllowedMoves(game) {
-		def moves = Engine.allMoves
-		
-		if (!isSplitPossible(game))
-			moves.remove(Move.Split)
-			
-		if (!doubleRules.isDoublePossible(game))
-			moves.remove(Move.Double)
-			
-		return moves
-	}
-
-	
-	private boolean isSplitPossible(Game game) {
-		if (game.gameState() != GameState.FirstDeal) {
-            return false;
-        }
-		
-		final CardHand playerCards = game.playerCards();
-		if (playerCards.count() != 2 || playerCards.get(0).getValue() != playerCards.get(1).getValue()) {
-			return false;
-		}
-		
-		if (!resplitAces &&
-				(game.isSplitted() && game.playerCards().count() == 1 && game.playerCards().getCards().get(0) == Card.ACE)) {
-			return false;
-		}
-		
-		return true;
-	}
-	
     private Move getBasicStrategyMove(playerCards, dealerCard) {
         int hardSum = playerCards.hardSum()
         

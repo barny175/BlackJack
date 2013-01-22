@@ -25,40 +25,35 @@ public class Engine {
     private LinkedList<Game> games;
     private CardHand dealerCards;
     private List<Game> endedGames;
-	private boolean peek = true;
-	private boolean doubleAfterSplit = true;
-	private DoubleOn doubleRules;
-	private boolean resplitAces = true;
-
-	@Inject
-	public void setDoubleRules(DoubleOn doubleRules) {
-		this.doubleRules = doubleRules;
-	}
+	private Rules rules = new Rules();
 
     @Inject
     public Engine(CardSource cardSource) {
         this.cardSource = cardSource;
+	}
+	
+	@Inject
+	public void setRules(Rules rules) {
+		this.rules = rules;
     }
 
-	public void setEuropean() {
-		this.setPeek(false);
+	public void setPeek(boolean peek) {
+		rules.setPeek(peek);
 	}
-
+	
+	public void setDoubleAfterSplit(boolean doubleAfterSplit) {
+		rules.setDoubleAfterSplit(doubleAfterSplit);
+	}
+	
 	public void setResplitAces(boolean resplitAces) {
-		this.resplitAces = resplitAces;
+		rules.setResplitAces(resplitAces);
 	}
-
-	@Inject
-	public void setPeek(@Peek boolean peek) {
-		this.peek = peek;
+	
+    public void setDoubleRules(DoubleOn doubleOn) {
+		rules.setDoubleRules(doubleOn);
 	}
-
-	@Inject
-	public void setDoubleAfterSplit(@DoubleAfterSplit boolean doubleAfterSplit) {
-		this.doubleAfterSplit = doubleAfterSplit;
-	}
-
-    public Card getDealerUpCard() {
+	
+	public Card getDealerUpCard() {
         return this.dealerUpCard;
     }
 
@@ -111,7 +106,7 @@ public class Engine {
 					}
 					
                     if (game.playerCards().isBlackJack()
-                            || (this.peek && dealerCards.isBlackJack())) {
+                            || (rules.getPeek() && dealerCards.isBlackJack())) {
                         game.setGameState(GameState.CheckState);
                         continue;
                     }
@@ -142,7 +137,7 @@ public class Engine {
     }
 
     private void dealersGame() {
-		if (!this.peek)
+		if (!rules.getPeek())
 			dealToDealer();
 		
         Move dealerMove;
@@ -161,7 +156,7 @@ public class Engine {
     private void playersGame(Game game) throws IllegalMoveException {
         Move move;
         do {
-            Set<Move> allowedMoves = getAllowedMoves(game);
+            Set<Move> allowedMoves = rules.getAllowedMoves(game);
             
             move = player.move(game.playerCards(), this.getDealerUpCard(), allowedMoves);
 
@@ -196,41 +191,6 @@ public class Engine {
         } while (move == Move.Hit);
     }
 
-	private Set<Move> getAllowedMoves(Game game) {
-		Set<Move> allowedMoves = EnumSet.copyOf(allMoves);
-
-		if (!isSplitPossible(game)) {
-			allowedMoves.remove(Move.Split);
-		}
-		
-		if (!doubleRules.isDoublePossible(game) || 
-			(game.isSplitted() && ! this.doubleAfterSplit))
-			allowedMoves.remove(Move.Double);
-		
-		if (game.getInsuranceBet() != 0)
-			allowedMoves.remove(Move.Split);
-	
-		return allowedMoves;
-	}
-
-	private boolean isSplitPossible(Game game) {
-		if (game.gameState() != GameState.FirstDeal) {
-            return false;
-        }
-		
-		final CardHand playerCards = game.playerCards();
-		if (playerCards.count() != 2 || playerCards.get(0).getValue() != playerCards.get(1).getValue()) {
-			return false;
-		}
-		
-		if (!resplitAces &&
-				(game.isSplitted() && game.playerCards().count() == 1 && game.playerCards().getCards().get(0) == Card.ACE)) {
-			return false;
-		}
-		
-		return true;
-	}
-	
     protected void firstDeal(Game game) {
         assert game.gameState() == GameState.Started;
 
@@ -240,7 +200,7 @@ public class Engine {
 
         dealToPlayer(game);
 
-		if (this.peek)
+		if (rules.getPeek())
 			dealToDealer();
 
         game.setGameState(GameState.FirstDeal);
