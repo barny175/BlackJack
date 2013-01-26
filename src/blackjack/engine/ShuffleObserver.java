@@ -9,4 +9,6 @@ package blackjack.engine;
  */
 public interface ShuffleObserver {
     void shuffling();
+	
+	void cardDrawn(Card card);
 }

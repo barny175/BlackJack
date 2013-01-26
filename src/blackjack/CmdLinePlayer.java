@@ -103,6 +103,10 @@ public class CmdLinePlayer implements Player {
 			public void shuffling() {
 				BlackJack.println("Shuffling.");
 			}
+
+			@Override
+			public void cardDrawn(Card card) {
+			}
 		});
 	}
 

@@ -40,8 +40,6 @@ public class SimpleCountingPlayer extends BasePlayer implements ShuffleObserver 
     @Override
     public void gameEnded(Game game) {
         super.gameEnded(game);
-        countCards(game.playerCards());
-        countCards(game.dealerCards());
     }
 
     @Override
@@ -54,15 +52,6 @@ public class SimpleCountingPlayer extends BasePlayer implements ShuffleObserver 
         return player.move(cards, dealerUpCard, allowedMoves);
     }
 
-    private void countCards(CardHand playerCards) {
-        for (Card c : playerCards.getCards()) {
-            if (c.getValue() > 2 && c.getValue() < 8)
-                count++;
-            if (c.getSoftValue() >= 10)
-                count--;
-        }
-    }
-
     @Override
     public void shuffling() {
         this.count = 0;
@@ -73,6 +62,16 @@ public class SimpleCountingPlayer extends BasePlayer implements ShuffleObserver 
 		if (!registered) {
 			game.registerShufflingObserver(this);
 			registered = true;
+		}
+	}
+
+	@Override
+	public void cardDrawn(Card card) {
+		if (card.getValue() > 2 && card.getValue() < 8) {
+			count++;
+		}
+		if (card.getSoftValue() >= 10) {
+			count--;
 		}
 	}
 }
