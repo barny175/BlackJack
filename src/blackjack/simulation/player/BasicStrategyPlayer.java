@@ -6,6 +6,7 @@ package blackjack.simulation.player;
 
 import blackjack.engine.Card;
 import blackjack.engine.CardHand;
+import blackjack.engine.CardShuffler;
 import blackjack.engine.Move;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -19,10 +20,13 @@ public class BasicStrategyPlayer extends BasePlayer {
 
     public static final String DEPOSIT = "deposit";
     protected Object[][] strategy;
+	private final int decks;
 
 	@Inject
-    public BasicStrategyPlayer(@Named(BasicStrategyPlayer.DEPOSIT) int money) {
+    public BasicStrategyPlayer(@Named(BasicStrategyPlayer.DEPOSIT) int money, @Named(CardShuffler.DECKS) int decks) {
         super(money);
+		
+		this.decks = decks;
 
         initStrategy();
     }
@@ -112,6 +116,38 @@ public class BasicStrategyPlayer extends BasePlayer {
     }
 
     protected void initStrategy() {
+		if (this.decks == 1) {
+			this.strategy = new Object[][]{
+            {7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {8, "Hit", "Hit", "Hit", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {9, "Double", "Double", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {10, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
+            {11, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double"},
+            {12, "Hit", "Hit", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {13, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {14, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {15, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {16, "Stand", "Stand", "Stand", "Stand", "Stand", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {17, "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+            {"A2", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {"A3", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {"A4", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {"A5", "Hit", "Hit", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {"A6", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {"A7", "Stand", "DoubleStand", "DoubleStand", "DoubleStand", "DoubleStand", "Stand", "Stand", "Hit", "Hit", "Stand"},
+            {"A8", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+            {"A9", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+            {22, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+            {33, "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit"},
+            {44, "Hit", "Hit", "Hit", "Split", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {55, "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Double", "Hit", "Hit"},
+            {66, "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit", "Hit", "Hit"},
+            {77, "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Hit", "Hit", "Hit"},
+            {88, "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"},
+            {99, "Split", "Split", "Split", "Split", "Split", "Stand", "Split", "Split", "Stand", "Stand"},
+            {"TT", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
+            {"AA", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"}};
+		} else {
         this.strategy = new Object[][]{
             {7, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
             {8, "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit", "Hit"},
@@ -142,6 +178,7 @@ public class BasicStrategyPlayer extends BasePlayer {
             {99, "Split", "Split", "Split", "Split", "Split", "Stand", "Split", "Split", "Stand", "Stand"},
             {"TT", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand", "Stand"},
             {"AA", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split", "Split"}};
+		}
     }
 
 	protected Move stringToMove(String move, Set<Move> allowedMoves) {

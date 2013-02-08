@@ -30,6 +30,7 @@ public class SimulationPlayer extends BasicStrategyPlayer {
 		private Card[] playersCards;
 		private int money;
 		private boolean insurance;
+		private int decks;
 		
 		public SimulationPlayerBuilder move(String move) {
 			this.move = move;
@@ -55,15 +56,20 @@ public class SimulationPlayer extends BasicStrategyPlayer {
 			return this;
 		}
 		
+		public SimulationPlayerBuilder decks(int decks) {
+			this.decks = decks;
+			return this;
+		}
+		
 		public SimulationPlayer build() {
-			final SimulationPlayer simulationPlayer = new SimulationPlayer(this.playersCards, dealersCard, move, money);
+			final SimulationPlayer simulationPlayer = new SimulationPlayer(this.playersCards, dealersCard, move, money, decks);
 			simulationPlayer.setInsurance(this.insurance);
 			return simulationPlayer;
 		}
 	}
 	
-	public SimulationPlayer(Card[] playersCards, Card dealersCard, String move, int money) {
-		super(money);
+	public SimulationPlayer(Card[] playersCards, Card dealersCard, String move, int money, int decks) {
+		super(money, decks);
 
 		this.dealersCard = dealersCard;
 		

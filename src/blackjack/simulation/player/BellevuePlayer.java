@@ -18,7 +18,7 @@ public class BellevuePlayer extends BasicStrategyPlayer {
 
     @Inject
     public BellevuePlayer(@Named(BasicStrategyPlayer.DEPOSIT) int money) {
-        super(money);
+        super(money, 6);
     }
 
     @Override
